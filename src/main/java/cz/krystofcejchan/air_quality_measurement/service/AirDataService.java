@@ -16,8 +16,7 @@ import java.util.UUID;
 @Service
 public class AirDataService {
     private final AirDataRepository airDataRepository;
-
-    @Autowired
+       @Autowired
     @Contract(pure = true)
     public AirDataService(AirDataRepository airDataRepository) {
         this.airDataRepository = airDataRepository;
@@ -48,6 +47,10 @@ public class AirDataService {
 
     public void deleteAirData(Long id) {
         airDataRepository.delete(findAirData(id));
+    }
+
+    public boolean existAirData(Long id){
+     return airDataRepository.existsById(id);
     }
 
 }

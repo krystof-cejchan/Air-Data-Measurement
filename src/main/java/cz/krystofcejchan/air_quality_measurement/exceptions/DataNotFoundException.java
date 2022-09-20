@@ -6,4 +6,8 @@ public class DataNotFoundException extends RuntimeException {
     public DataNotFoundException(@NotNull Long id) {
         super("Data with id value of " + id + " does not exist.");
     }
+
+    public DataNotFoundException() {
+        super();
+    }
 }

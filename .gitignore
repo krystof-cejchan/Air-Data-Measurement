@@ -4,6 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+
 ### STS ###
 .apt_generated
 .classpath
@@ -15,6 +16,7 @@ target/
 
 ### IntelliJ IDEA ###
 .idea
+.run/AqmApplication.run.xml
 *.iws
 *.iml
 *.ipr
