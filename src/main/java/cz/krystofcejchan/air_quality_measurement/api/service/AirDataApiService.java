@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
@@ -27,7 +26,7 @@ public class AirDataApiService extends AirDataService {
         if (paramLocation != null && Location.toList()
                 .stream().map(Enum::toString)
                 .anyMatch(location -> location.equals(paramLocation))) {
-            //@RequestParam is set and its value matches at least one Location
+            //paramLocation is set and its value matches at least one Location
             try {
                 AirData airData = airDataRepository.findByLocationOrderByReceivedDataDateTimeDesc(Location.of(paramLocation))
                         .orElseThrow(DataNotFoundException::new).get(0);
