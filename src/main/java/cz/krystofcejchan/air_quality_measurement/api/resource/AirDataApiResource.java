@@ -29,7 +29,10 @@ public class AirDataApiResource {
     }
 
     @GetMapping("/period")
-    public ResponseEntity<?> getAirDataById(@RequestHeader(required = true) String startDate, @RequestHeader(required = true) String finishDate, @RequestHeader(required = false) String startTime, @RequestHeader(required = false) String finishTime) {
+    public ResponseEntity<?> getAirDataFromPeriodOfTime(@RequestHeader(required = true) String startDate,
+                                                        @RequestHeader(required = true) String finishDate,
+                                                        @RequestHeader(required = false) String startTime,
+                                                        @RequestHeader(required = false) String finishTime) {
         LocalTime startT, finishT;
         LocalDate startD, finishD;
         try {
