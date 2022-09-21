@@ -9,10 +9,14 @@
 </head>
 
 <body>
-<span> test 01-- </span>
-<div *ngFor="let airdata of airdatas">
-  <div>{{airdata.airQuality}}</div>
-</div>
+  <span> test 01-- </span>
+  <div *ngFor="let airdata of airdatas" class="alldata">
+    <div>{{airdata.location}} on {{airdata.receivedDataDateTime}} || {{airdata.temperature}}°C, {{airdata.humidity}}
+      humidity,
+      {{airdata.airQuality}} ppm
+    </div>
+  </div>
 </body>
+<router-outlet></router-outlet>
 
 </html>

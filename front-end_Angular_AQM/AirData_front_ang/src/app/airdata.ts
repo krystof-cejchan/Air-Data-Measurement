@@ -2,7 +2,7 @@ export interface AirData{
     id:number;
     location:string;
     arduinoTime:string;
-    recivedDataDateTime:string;
+    receivedDataDateTime:string;
     airQuality:number;
     temperature:number;
     humidity:number;

@@ -1,26 +1,25 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { AirDataService } from './air-data.service';
-import { AirData } from './airdata';
+import { AirData } from '../airdata';
+import { AirDataApiService } from './air-data-api.service';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: 'app-api-data',
+  templateUrl: './api-data.component.html',
+  styleUrls: ['./api-data.component.css']
 })
-export class AppComponent implements OnInit {
-  title = 'AirData_front_ang';
+export class ApiDataComponent implements OnInit {
 
   public airdatas: AirData[] = [];
 
-  constructor(private airDataService: AirDataService) { }
+  constructor(private airdataApiService: AirDataApiService) { }
 
   ngOnInit(): void {
     this.getAirDatas();
   }
 
   public getAirDatas(): void {
-    this.airDataService.getAirData().subscribe(
+    this.airdataApiService.getLatestData().subscribe(
       (response: AirData[]) => {
         this.airdatas = response;
       },

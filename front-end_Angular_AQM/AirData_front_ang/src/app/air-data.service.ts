@@ -6,23 +6,23 @@ import { AirData } from './airdata';
 
 @Injectable({ providedIn: 'root' })
 export class AirDataService {
-    private apiServerUrl = environment.apiBaseUrl;
+    private baseUrl = environment.baseUrl;
 
     constructor(private http: HttpClient) { }
 
     public getAirData(): Observable<AirData[]> {
-        return this.http.get<AirData[]>(`${this.apiServerUrl}/airdata/all`);
+        return this.http.get<AirData[]>(`${this.baseUrl}/airdata/all`);
     }
 
     public addAirData(airdata: AirData): Observable<AirData> {
-        return this.http.post<AirData>(`${this.apiServerUrl}/airdata/add`, airdata);
+        return this.http.post<AirData>(`${this.baseUrl}/airdata/add`, airdata);
     }
 
     public updateAirData(airdata: AirData): Observable<AirData> {
-        return this.http.put<AirData>(`${this.apiServerUrl}/airdata/update`, airdata);
+        return this.http.put<AirData>(`${this.baseUrl}/airdata/update`, airdata);
     }
 
     public deleteAirData(id: number): Observable<void> {
-        return this.http.delete<void>(`${this.apiServerUrl}/airdata/delete/${id}`);
+        return this.http.delete<void>(`${this.baseUrl}/airdata/delete/${id}`);
     }
 }

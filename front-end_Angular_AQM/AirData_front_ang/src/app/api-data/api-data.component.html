@@ -1,0 +1,7 @@
+<h1>the Latest data</h1>
+<div *ngFor="let airdata of airdatas" class="latestdata">
+    <div>{{airdata.location}} on {{airdata.receivedDataDateTime}} || {{airdata.temperature}}°C, {{airdata.humidity}}
+        humidity,
+        {{airdata.airQuality}} ppm
+    </div>
+</div>
