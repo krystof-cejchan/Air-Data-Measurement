@@ -6,12 +6,13 @@ import { AirDataService } from './air-data.service';
 import { AppComponent } from './app.component';
 import { ApiDataComponent } from './api-data/api-data.component';
 import { AppRoutingModule } from './app-routing.module';
+import { ErrorsComponent } from './errors/errors.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ApiDataComponent,
-    ApiDataComponent
+    ErrorsComponent
   ],
   imports: [
     BrowserModule, HttpClientModule, AppRoutingModule
