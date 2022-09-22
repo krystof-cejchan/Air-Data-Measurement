@@ -6,12 +6,10 @@ import { ErrorsComponent } from './errors/errors.component'
 
 
 const routes: Routes = [
-  { path: '**', component: ErrorsComponent },
+  { path: '', pathMatch:'full',component: AppComponent },
 
-  { path: '', component: AppComponent },
-
-
-  { path: 'api', component: ApiDataComponent }
+  //{ path: '**', component: ErrorsComponent },
+  { path: 'api', pathMatch: 'full', component: ApiDataComponent }
 ];
 
 

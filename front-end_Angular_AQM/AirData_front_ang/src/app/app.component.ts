@@ -13,10 +13,12 @@ export class AppComponent implements OnInit {
 
   public airdatas: AirData[] = [];
 
-  constructor(private airDataService: AirDataService) { }
+  constructor(private airDataService: AirDataService) {
+  }
 
   ngOnInit(): void {
-    this.getAirDatas();
+    this.getAirDatas();  
+
   }
 
   public getAirDatas(): void {

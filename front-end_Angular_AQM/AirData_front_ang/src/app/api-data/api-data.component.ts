@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { empty } from 'rxjs';
 import { AirData } from '../airdata';
 import { AirDataApiService } from './air-data-api.service';
 
@@ -12,10 +13,15 @@ export class ApiDataComponent implements OnInit {
 
   public airdatas: AirData[] = [];
 
-  constructor(private airdataApiService: AirDataApiService) { }
+  scriptElement: HTMLScriptElement | undefined;
+
+  constructor(private airdataApiService: AirDataApiService) {
+
+  }
 
   ngOnInit(): void {
     this.getAirDatas();
+    this.setJsScripts();
   }
 
   public getAirDatas(): void {
@@ -30,4 +36,10 @@ export class ApiDataComponent implements OnInit {
     );
   }
 
+  private setJsScripts() {
+    this.scriptElement = document.createElement("script");
+    this.scriptElement.src = "scr/assets/js/airdata.receivedDataDateTime_editAndFormat.js"
+  }
+
 }
+

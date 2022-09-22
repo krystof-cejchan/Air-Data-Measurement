@@ -8,6 +8,7 @@ import { ApiDataComponent } from './api-data/api-data.component';
 import { AppRoutingModule } from './app-routing.module';
 import { ErrorsComponent } from './errors/errors.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,
