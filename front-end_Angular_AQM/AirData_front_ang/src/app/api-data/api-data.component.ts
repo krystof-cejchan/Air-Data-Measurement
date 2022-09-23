@@ -1,8 +1,9 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { empty } from 'rxjs';
 import { AirData } from '../airdata';
 import { AirDataApiService } from './air-data-api.service';
+import { formatDate } from '@angular/common';
+
 
 @Component({
   selector: 'app-api-data',
@@ -12,8 +13,7 @@ import { AirDataApiService } from './air-data-api.service';
 export class ApiDataComponent implements OnInit {
 
   public airdatas: AirData[] = [];
-
-  scriptElement: HTMLScriptElement | undefined;
+  private formattedAirDatas: AirData[] = [];
 
   constructor(private airdataApiService: AirDataApiService) {
 
@@ -21,13 +21,21 @@ export class ApiDataComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAirDatas();
-    this.setJsScripts();
   }
 
   public getAirDatas(): void {
     this.airdataApiService.getLatestData().subscribe(
       (response: AirData[]) => {
-        this.airdatas = response;
+        this.formattedAirDatas = response;
+        try {
+          this.formattedAirDatas.forEach(airdata => {
+            let formattedAitDate = airdata;
+            formattedAitDate.receivedDataDateTime = this.formatDate(new Date(airdata.receivedDataDateTime));
+            this.airdatas.push(formattedAitDate);
+          })
+        } catch (error) {
+          this.airdatas = response;
+        }
       },
       (error: HttpErrorResponse) => {
         console.log(error.message);
@@ -35,11 +43,12 @@ export class ApiDataComponent implements OnInit {
       }
     );
   }
-
-  private setJsScripts() {
-    this.scriptElement = document.createElement("script");
-    this.scriptElement.src = "scr/assets/js/airdata.receivedDataDateTime_editAndFormat.js"
+  /**
+   * @param date Date taken from back-end
+   * @returns formatted date as string
+   */
+  private formatDate(date: Date): string {
+    return formatDate(date, 'dd-MM • hh:mm:ss', "en-US");
   }
-
 }
 

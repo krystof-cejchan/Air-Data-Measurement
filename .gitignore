@@ -16,7 +16,6 @@ target/
 
 ### IntelliJ IDEA ###
 .idea
-.run/AqmApplication.run.xml
 *.iws
 *.iml
 *.ipr
@@ -33,3 +32,4 @@ build/
 
 ### VS Code ###
 .vscode/
+/.run/

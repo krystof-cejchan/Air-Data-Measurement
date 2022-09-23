@@ -1,19 +1,18 @@
-function dateAndTimeFormat() {
-    var elements = document.querySelectorAll("#airdata_receivedDataDateTime");
-    console.log(elements);
-    elements.forEach(element => {
-        console.log(element);
-        if (!(element.innerText === null || element.innerText.lenght === 0)) {
-            var elementText = element.innerText;
-            try {
-                element.innerText = formatDateAndTime(elementText);
-            }
-            catch (error) {
-                element.innerText = elementText;
-            }
+console.log(document.querySelectorAll('small'));
+var elements = document.querySelectorAll('#span');
+console.log(elements);console.log('ahoj');
+elements.forEach(element => {
+    console.log(element);
+    if (!(element.innerText === null || element.innerText.lenght === 0)) {
+        var elementText = element.innerText;
+        try {
+            element.innerText = formatDateAndTime(elementText);
         }
-    });
-}
+        catch (error) {
+            element.innerText = elementText;
+        }
+    }
+});
 
 function formatDateAndTime(unformattedDate) {
     // example:  2022-09-18T16:00:15 ::: js can handle java date format 

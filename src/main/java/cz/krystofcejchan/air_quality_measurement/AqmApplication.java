@@ -1,5 +1,6 @@
 package cz.krystofcejchan.air_quality_measurement;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -12,8 +13,10 @@ import java.util.List;
 
 @SpringBootApplication
 public class AqmApplication {
+    public static String dbpsd = "";
 
-    public static void main(String[] args) {
+    public static void main(String @NotNull [] args) {
+        dbpsd = args[0];
         SpringApplication.run(AqmApplication.class, args);
     }
 
