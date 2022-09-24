@@ -1,15 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Monda&display=swap');
 
-html,body{
+html, body {
     font-family: 'Monda', sans-serif;
+    padding-top: 50px;
 }
 
-span {
-    font-size: xx-large;
+.navbar-nav>li {
+    padding-left: 50px;
+    padding-right: 50px;
+
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: large;
 }
 
 .alldata {
     font-family: 'Monda', sans-serif;
-
     text-align: center;
 }

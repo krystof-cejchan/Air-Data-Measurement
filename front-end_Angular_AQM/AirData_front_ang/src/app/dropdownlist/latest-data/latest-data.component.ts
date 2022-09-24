@@ -1,21 +1,20 @@
+import { formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { AirData } from '../airdata';
-import { AirDataApiService } from './air-data-api.service';
-import { formatDate } from '@angular/common';
-
+import { AirData } from 'src/app/airdata';
+import { LatestDataService } from './latest-data.service';
 
 @Component({
-  selector: 'app-api-data',
-  templateUrl: './api-data.component.html',
-  styleUrls: ['./api-data.component.css']
+  selector: 'app-latest-data',
+  templateUrl: './latest-data.component.html',
+  styleUrls: ['./latest-data.component.css']
 })
-export class ApiDataComponent implements OnInit {
+export class LatestDataComponent implements OnInit {
 
   public airdatas: AirData[] = [];
   private formattedAirDatas: AirData[] = [];
 
-  constructor(private airdataApiService: AirDataApiService) {
+  constructor(private latestDataService: LatestDataService) {
 
   }
 
@@ -24,7 +23,7 @@ export class ApiDataComponent implements OnInit {
   }
 
   public getAirDatas(): void {
-    this.airdataApiService.getLatestData().subscribe(
+    this.latestDataService.getLatestData().subscribe(
       (response: AirData[]) => {
         this.formattedAirDatas = response;
         try {
@@ -50,5 +49,5 @@ export class ApiDataComponent implements OnInit {
   private formatDate(date: Date): string {
     return formatDate(date, 'dd-MM • hh:mm:ss', "en-US");
   }
-}
 
+}

@@ -2,6 +2,7 @@ package cz.krystofcejchan.air_quality_measurement.resource;
 
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
 import cz.krystofcejchan.air_quality_measurement.service.AirDataService;
+import org.jetbrains.annotations.Contract;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.List;
 public class AirDataResource {
     private final AirDataService airDataService;
 
+    @Contract(pure = true)
     public AirDataResource(AirDataService airDataService) {
         this.airDataService = airDataService;
     }
@@ -41,8 +43,11 @@ public class AirDataResource {
     @PostMapping("/add")
     public ResponseEntity<AirData> addAirData(@RequestBody AirData airData,
                                               @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        // if token is correct...
-        return new ResponseEntity<>(airDataService.addAirData(airData), HttpStatus.CREATED);
+        if (token.equals("password"))
+            return new ResponseEntity<>(airDataService.addAirData(airData), HttpStatus.CREATED);
+        else
+            return new ResponseEntity<>(airData, HttpStatus.BAD_REQUEST);
+
     }
 
     @PutMapping("/update")
@@ -51,7 +56,7 @@ public class AirDataResource {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> updateAirData(@PathVariable("id") Long id) {
+    public ResponseEntity<HttpStatus> updateAirData(@PathVariable("id") Long id) {
         airDataService.deleteAirData(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

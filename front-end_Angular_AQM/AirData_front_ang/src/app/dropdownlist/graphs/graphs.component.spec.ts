@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ApiDataComponent } from './api-data.component';
+import { GraphsComponent } from './graphs.component';
 
-describe('ApiDataComponent', () => {
-  let component: ApiDataComponent;
-  let fixture: ComponentFixture<ApiDataComponent>;
+describe('GraphsComponent', () => {
+  let component: GraphsComponent;
+  let fixture: ComponentFixture<GraphsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ApiDataComponent ]
+      declarations: [ GraphsComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ApiDataComponent);
+    fixture = TestBed.createComponent(GraphsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

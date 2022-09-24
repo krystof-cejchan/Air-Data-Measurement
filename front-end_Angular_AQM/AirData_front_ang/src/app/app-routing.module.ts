@@ -1,16 +1,28 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AppComponent } from './app.component'
-import { ApiDataComponent } from './api-data/api-data.component'
+import { ErrorsComponent } from './errors/errors.component';
+import { AboutProjectComponent } from './about-project/about-project.component';
+import { HowItWorksComponent } from './how-it-works/how-it-works.component';
+import { LatestDataComponent } from './dropdownlist/latest-data/latest-data.component';
 
 
 const routes: Routes = [
   {
-    path: '', pathMatch: 'full', component: AppComponent
+    path: '', component: LatestDataComponent
   },
 
-  //{ path: '**', component: ErrorsComponent },
-  { path: 'api', pathMatch: 'full', component: ApiDataComponent }
+  {
+    path: 'funkce/:spec', pathMatch: 'full', component: LatestDataComponent
+  },
+  {
+    path: 'projekt', pathMatch: 'full', component: AboutProjectComponent
+  },
+  {
+    path: 'jaktofunguje', pathMatch: 'full', component: HowItWorksComponent
+  },
+  {
+    path: '**', component: ErrorsComponent
+  }
 ];
 
 

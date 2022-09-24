@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AirDataApiService } from './air-data-api.service';
+import { LatestDataService } from './latest-data.service';
 
-describe('AirDataAPIService', () => {
-  let service: AirDataApiService;
+describe('LatestDataService', () => {
+  let service: LatestDataService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(AirDataApiService);
+    service = TestBed.inject(LatestDataService);
   });
 
   it('should be created', () => {
