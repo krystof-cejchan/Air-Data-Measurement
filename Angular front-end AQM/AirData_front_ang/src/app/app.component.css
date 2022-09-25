@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Monda&display=swap');
+
+html, body {
+    font-family: 'Monda', sans-serif;
+    padding-top: 50px;
+}
+
+nav.navbar {
+    background-color: #3caeff !important;
+}
+
+.navbar-nav>li {
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: large;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+    background-color: #3caeff !important;
+}
+
+.alldata {
+    font-family: 'Monda', sans-serif;
+    text-align: center;
+}
