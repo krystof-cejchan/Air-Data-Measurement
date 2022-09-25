@@ -33,8 +33,9 @@ export const MY_FORMATS = {
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ]
 })
+
 export class HistorySearchBarComponent implements OnInit {
-  date = new FormControl(moment());
+  date = new FormControl(moment()); //WHEN SENDING REQUEST TO BACK-END THE DATE FORMAT MUST BE AS FOLLOWING: YYYY-MM-DD
   minDate: Date;
   maxDate: Date;
 

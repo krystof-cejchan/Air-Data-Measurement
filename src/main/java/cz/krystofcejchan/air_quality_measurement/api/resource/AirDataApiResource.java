@@ -28,7 +28,7 @@ public class AirDataApiResource {
         return airDataApiService.getLatestAirData(location);
     }
 
-    @GetMapping("/period")
+    @GetMapping("/time/period")
     public ResponseEntity<?> getAirDataFromPeriodOfTime(@RequestHeader(required = true) String startDate,
                                                         @RequestHeader(required = true) String finishDate,
                                                         @RequestHeader(required = false) String startTime,
@@ -44,5 +44,16 @@ public class AirDataApiResource {
             return new ResponseEntity<>(dateTimeParseException.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return airDataApiService.getAirDataFromDateToDate(LocalDateTime.of(startD, startT), LocalDateTime.of(finishD, finishT));
+    }
+
+    @GetMapping("/time/day")
+    public ResponseEntity<?> getAirDataForSpecificDay(@RequestHeader(required = true) String date) {
+        LocalDate startD;
+        try {
+            startD = LocalDate.parse(date);
+        } catch (DateTimeParseException dateTimeParseException) {
+            return new ResponseEntity<>(dateTimeParseException.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        return airDataApiService.gerAirDataForOneSpecificDay(startD);
     }
 }

@@ -11,6 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AirDataApiService extends AirDataService {
@@ -46,10 +49,21 @@ public class AirDataApiService extends AirDataService {
     }
 
     public ResponseEntity<?> getAirDataFromDateToDate(LocalDateTime start, LocalDateTime end) {
-        return airDataRepository.findByReceivedDataDateTimeBetween(start, end).isEmpty() ?
+        Optional<List<AirData>> receivedDate = airDataRepository.findByReceivedDataDateTimeBetween(start, end);
+        return receivedDate.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase(), HttpStatus.BAD_REQUEST) :
-                new ResponseEntity<>(airDataRepository.findByReceivedDataDateTimeBetween(start, end)
-                        .orElseThrow(DataNotFoundException::new).stream().toList(), HttpStatus.OK);
+                new ResponseEntity<>(receivedDate.orElseThrow(DataNotFoundException::new)
+                        .stream().toList(), HttpStatus.OK);
+    }
 
+    public ResponseEntity<?> gerAirDataForOneSpecificDay(java.time.LocalDate day) {
+        Optional<List<AirData>> receivedDate = airDataRepository
+                .findByReceivedDataDateTimeBetween(LocalDateTime.of(day, LocalTime.MIN),
+                        LocalDateTime.of(day, LocalTime.MAX));
+
+        return receivedDate.isEmpty() ?
+                new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase(), HttpStatus.BAD_REQUEST) :
+                new ResponseEntity<>(receivedDate.orElseThrow(DataNotFoundException::new)
+                        .stream().toList(), HttpStatus.OK);
     }
 }
