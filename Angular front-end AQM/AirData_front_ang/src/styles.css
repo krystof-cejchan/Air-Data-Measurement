@@ -2,8 +2,7 @@
 
 html,
 body {
-    font-family: 'Monda', sans-serif;
+    font-family: 'Monda', sans-serif !important;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+

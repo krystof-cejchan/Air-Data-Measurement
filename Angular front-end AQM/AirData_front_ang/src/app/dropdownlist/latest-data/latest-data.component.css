@@ -92,18 +92,11 @@ body {
 
 .card {
     border: 0 solid transparent !important;
-
-}
-
-.col {
-    overflow: hidden;
-}
-
-.card {
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
     transition: transform .6s ease;
+
 }
 
 .card:hover {
@@ -113,4 +106,23 @@ body {
 .feature-icon-small {
     width: 3rem;
     height: 3rem;
+}
+
+span {
+    font-size: xx-large;
+}
+
+.alldata {
+    font-family: 'Monda', sans-serif;
+    text-align: center;
+}
+
+.display-6 {
+    font-family: 'Monda', sans-serif !important;
+}
+
+@media (min-width: 1200px) {
+    .display-6 {
+        font-size: 2rem;
+    }
 }
