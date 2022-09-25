@@ -4,6 +4,10 @@ import { ErrorsComponent } from './errors/errors.component';
 import { AboutProjectComponent } from './about-project/about-project.component';
 import { HowItWorksComponent } from './how-it-works/how-it-works.component';
 import { LatestDataComponent } from './dropdownlist/latest-data/latest-data.component';
+import { HistorySearchBarComponent } from './dropdownlist/history-search-bar/history-search-bar.component';
+import { HistoryComponent } from './dropdownlist/history/history.component';
+import { GraphsComponent } from './dropdownlist/graphs/graphs.component';
+import { LeaderboardComponent } from './dropdownlist/leaderboard/leaderboard.component';
 
 
 const routes: Routes = [
@@ -13,6 +17,18 @@ const routes: Routes = [
 
   {
     path: 'funkce/:spec', pathMatch: 'full', component: LatestDataComponent
+  },
+  {
+    path: 'nejnovejsi-data', pathMatch: 'full', component: LatestDataComponent
+  },
+  {
+    path: 'nekdejsi-data', pathMatch: 'full', component: HistorySearchBarComponent
+  },
+  {
+    path: 'grafy', pathMatch: 'full', component: GraphsComponent
+  },
+  {
+    path: 'zebricky', pathMatch: 'full', component: LeaderboardComponent
   },
   {
     path: 'projekt', pathMatch: 'full', component: AboutProjectComponent

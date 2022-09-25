@@ -5,13 +5,20 @@ html, body {
     padding-top: 50px;
 }
 
+nav.navbar {
+    background-color: #3caeff !important;
+}
+
 .navbar-nav>li {
     padding-left: 50px;
     padding-right: 50px;
-
     padding-top: 5px;
     padding-bottom: 5px;
     font-size: large;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+    background-color: #3caeff !important;
 }
 
 .alldata {

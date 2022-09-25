@@ -8,11 +8,8 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-xl fixed-top navbar-light" style="background-color: #3caeff;">
+  <nav class="navbar navbar-expand-xl fixed-top navbar-light">
     <div class="container-fluid">
-      <a class="navbar-brand" routerLink="" routerLinkActive="active">
-        <img src="https://slunakov.cz/wp-content/uploads/2019/12/upol.jpg" alt="Bootstrap" width="30" height="24">
-      </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
         aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -27,10 +24,10 @@
               Všechny funkce
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Nejnovější</a></li>
-              <li><a class="dropdown-item" href="#">Historie</a></li>
-              <li><a class="dropdown-item" href="#">Grafy</a></li>
-              <li><a class="dropdown-item" href="#">Žebříčky</a></li>
+              <li><a class="dropdown-item" routerLink="/nejnovejsi-data" routerLinkActive="active">Nejnovější</a></li>
+              <li><a class="dropdown-item" routerLink="/nekdejsi-data" routerLinkActive="active">Historie</a></li>
+              <li><a class="dropdown-item" routerLink="/grafy" routerLinkActive="active">Grafy</a></li>
+              <li><a class="dropdown-item" routerLink="/zebricky" routerLinkActive="active">Žebříčky</a></li>
             </ul>
           </li>
           <li class="nav-item">

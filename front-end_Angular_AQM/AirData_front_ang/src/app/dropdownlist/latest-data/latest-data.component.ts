@@ -29,7 +29,10 @@ export class LatestDataComponent implements OnInit {
         try {
           this.formattedAirDatas.forEach(airdata => {
             let formattedAitDate = airdata;
+            //formatting date to more humanly readable date
             formattedAitDate.receivedDataDateTime = this.formatDate(new Date(airdata.receivedDataDateTime));
+            //background picture set to folder "assets/imgs/faculties/" where images are stored
+            formattedAitDate.bcgPictureUrl = "assets/imgs/faculties/" + airdata.location + "_cover.jpg";
             this.airdatas.push(formattedAitDate);
           })
         } catch (error) {
@@ -49,5 +52,4 @@ export class LatestDataComponent implements OnInit {
   private formatDate(date: Date): string {
     return formatDate(date, 'dd-MM • hh:mm:ss', "en-US");
   }
-
 }
