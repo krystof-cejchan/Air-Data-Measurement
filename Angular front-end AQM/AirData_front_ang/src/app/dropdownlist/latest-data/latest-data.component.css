@@ -121,6 +121,10 @@ span {
     font-family: 'Monda', sans-serif !important;
 }
 
+.pt-5 {
+    padding-top:0rem !important;
+}
+
 @media (min-width: 1200px) {
     .display-6 {
         font-size: 2rem;

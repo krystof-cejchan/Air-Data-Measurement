@@ -1,0 +1,19 @@
+.btn {
+    background-color: white;
+    color: #3caeff;
+    border-color: #3caeff;
+}
+
+.btn:hover {
+    background-color: #3caeff;
+    color: white;
+}
+
+.col-lg-6 {
+    text-align: center;
+}
+
+#datepicker {
+    border-top: #3caeff solid 1px;
+    padding-bottom: 5px;
+}

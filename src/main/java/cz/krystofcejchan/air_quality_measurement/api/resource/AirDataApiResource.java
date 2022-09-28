@@ -43,7 +43,7 @@ public class AirDataApiResource {
         } catch (DateTimeParseException dateTimeParseException) {
             return new ResponseEntity<>(dateTimeParseException.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return airDataApiService.getAirDataFromDateToDate(LocalDateTime.of(startD, startT), LocalDateTime.of(finishD, finishT));
+        return airDataApiService.getAverageAirDataFromDateToDate(LocalDateTime.of(startD, startT), LocalDateTime.of(finishD, finishT));
     }
 
     @GetMapping("/time/day")

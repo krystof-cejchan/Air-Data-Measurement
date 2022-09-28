@@ -1,6 +1,7 @@
 package cz.krystofcejchan.air_quality_measurement.api.service;
 
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
+import cz.krystofcejchan.air_quality_measurement.domain.other_objects.AirDataAverage;
 import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import cz.krystofcejchan.air_quality_measurement.exceptions.DataNotFoundException;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataRepository;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -48,7 +50,7 @@ public class AirDataApiService extends AirDataService {
         }
     }
 
-    public ResponseEntity<?> getAirDataFromDateToDate(LocalDateTime start, LocalDateTime end) {
+    public ResponseEntity<?> getAverageAirDataFromDateToDate(LocalDateTime start, LocalDateTime end) {
         Optional<List<AirData>> receivedDate = airDataRepository.findByReceivedDataDateTimeBetween(start, end);
         return receivedDate.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase(), HttpStatus.BAD_REQUEST) :
@@ -60,10 +62,27 @@ public class AirDataApiService extends AirDataService {
         Optional<List<AirData>> receivedDate = airDataRepository
                 .findByReceivedDataDateTimeBetween(LocalDateTime.of(day, LocalTime.MIN),
                         LocalDateTime.of(day, LocalTime.MAX));
+        if (receivedDate.isEmpty())
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase(), HttpStatus.BAD_REQUEST);
 
-        return receivedDate.isEmpty() ?
-                new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase(), HttpStatus.BAD_REQUEST) :
-                new ResponseEntity<>(receivedDate.orElseThrow(DataNotFoundException::new)
-                        .stream().toList(), HttpStatus.OK);
-    }
+        try {
+            BigDecimal airQualityAvg = BigDecimal.valueOf(receivedDate.orElseThrow(DataNotFoundException::new)
+                    .stream().map(AirData::getAirQuality)
+                    .mapToDouble(BigDecimal::doubleValue).average().orElseThrow(DataNotFoundException::new));
+            BigDecimal humidityAvg = BigDecimal.valueOf(receivedDate.orElseThrow(DataNotFoundException::new)
+                    .stream().map(AirData::getHumidity)
+                    .mapToDouble(BigDecimal::doubleValue).average().orElseThrow(DataNotFoundException::new));
+            BigDecimal temperatureAvg = BigDecimal.valueOf(receivedDate.orElseThrow(DataNotFoundException::new)
+                    .stream().map(AirData::getTemperature)
+                    .mapToDouble(BigDecimal::doubleValue).average().orElseThrow(DataNotFoundException::new));
+
+            return new ResponseEntity<>(
+                    new AirDataAverage(temperatureAvg, humidityAvg, airQualityAvg), HttpStatus.OK);
+
+        } catch (DataNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase() +
+                    '\n' + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+    }   
 }

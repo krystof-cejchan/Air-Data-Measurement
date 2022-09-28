@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ErrorsComponent } from './errors/errors.component';
 import { AboutProjectComponent } from './about-project/about-project.component';
@@ -22,7 +22,11 @@ const routes: Routes = [
     path: 'nejnovejsi-data', pathMatch: 'full', component: LatestDataComponent
   },
   {
-    path: 'nekdejsi-data', pathMatch: 'full', component: HistorySearchBarComponent
+    path: 'nekdejsi-data', component: HistorySearchBarComponent
+  },
+  {
+    path: 'nekdejsi-data/:date', component: HistorySearchBarComponent,
+    children: [{ path: 'prumer', component: HistoryComponent }]
   },
   {
     path: 'grafy', pathMatch: 'full', component: GraphsComponent

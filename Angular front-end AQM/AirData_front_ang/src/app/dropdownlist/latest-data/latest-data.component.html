@@ -56,8 +56,17 @@
                         linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.61)), url({{airdata.bcgPictureUrl}});
                         background-size:cover;">
                         <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                            <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">{{airdata.temperature}}°C<br>
-                                {{airdata.airQuality}}ppm</h3>
+                            <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">
+                                <span id="airQualityT" mat-raised-button matTooltip="Kvalita vzduchu"
+                                    matTooltipPosition="after">
+                                    {{airdata.airQuality}}ppm</span>
+                                <br>
+                                <span id="temperatureT" mat-raised-button matTooltip="Teplota"
+                                    matTooltipPosition="after"> {{airdata.temperature}}°C</span>
+                                <br>
+                                <span id="humidityT" mat-raised-button matTooltip="Vlhkost"
+                                    matTooltipPosition="after">{{airdata.humidity}}% </span>
+                            </h3>
                             <ul class="d-flex list-unstyled mt-auto">
                                 <li class="me-auto">
                                     <img src="assets/imgs/question_mark_help_for_latest_data.png" alt="" width="32"
@@ -73,14 +82,15 @@
                                     <svg class="bi me-2" width="1em" height="1em">
                                         <use xlink:href="#calendar3" />
                                     </svg>
-                                    <small routerLink="/projekt"
-                                        class="airdata_receivedDataDateTime">{{airdata.receivedDataDateTime}}</small>
+                                    <small class="airdata_receivedDataDateTime">{{airdata.receivedDataDateTime}}</small>
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="one" [innerHtml]="htmlToAdd"></div>
+
         </div>
     </main>
     <router-outlet></router-outlet>

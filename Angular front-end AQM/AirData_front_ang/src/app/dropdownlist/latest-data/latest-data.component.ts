@@ -11,6 +11,9 @@ import { LatestDataService } from './latest-data.service';
 })
 export class LatestDataComponent implements OnInit {
 
+  public htmlToAdd = '';
+
+
   public airdatas: AirData[] = [];
   private formattedAirDatas: AirData[] = [];
 
@@ -40,8 +43,7 @@ export class LatestDataComponent implements OnInit {
         }
       },
       (error: HttpErrorResponse) => {
-        console.log(error.message);
-        alert('Server did not respond succesfully!');
+        this.htmlToAdd = '<div class="errMsg">Server did not respond succesfully!<br>' + error.name + '</div>';
       }
     );
   }
