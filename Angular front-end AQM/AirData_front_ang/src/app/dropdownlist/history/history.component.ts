@@ -19,21 +19,25 @@ export class HistoryComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params:ParamMap) => {
-          this.date = params.get('date');
+    /* this.route.paramMap.subscribe((params:ParamMap) => {
+           this.date = params.get('date');
+     });
+     console.log(this.date);
+ 
+     if (this.date) {
+       this.service.getHistoryData(this.date).subscribe(
+         (response: AirDataAverage) => {
+           this.avgData = response;
+         },
+         (error: HttpErrorResponse) => {
+           console.log(error.message)
+         }
+       );
+     }*/
+    this.route.url.subscribe(() => {
+      if (this.route.snapshot.parent?.paramMap.get('date'))
+        console.log(this.route.snapshot.parent?.paramMap.get('date'));
     });
-    console.log(this.date);
-
-    if (this.date) {
-      this.service.getHistoryData(this.date).subscribe(
-        (response: AirDataAverage) => {
-          this.avgData = response;
-        },
-        (error: HttpErrorResponse) => {
-          console.log(error.message)
-        }
-      );
-    }
   }
   //showDataRelatedToTheDate() {
   //this.router.navigate(['prumer'], { relativeTo: this.route });
