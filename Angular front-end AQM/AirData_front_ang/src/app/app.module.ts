@@ -16,9 +16,10 @@ import { HistorySearchBarComponent } from './dropdownlist/history-search-bar/his
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import {MatInputModule} from '@angular/material/input'; 
+import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {MatTooltipModule} from '@angular/material/tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 
 
@@ -43,7 +44,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
-    MatTooltipModule
+    MatTooltipModule,
+    NgApexchartsModule
   ],
   providers: [AirDataService],
   bootstrap: [AppComponent]

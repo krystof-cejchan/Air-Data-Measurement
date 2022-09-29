@@ -1,1 +1,31 @@
-<p>graphs works!</p>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grafy</title>
+</head>
+
+<body>
+
+    <div id="chart_airQ">
+        <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart_airQ" [xaxis]="chartOptions.xaxis"
+            [stroke]="chartOptions.stroke" [tooltip]="chartOptions.tooltip" [dataLabels]="chartOptions.dataLabels"
+            [title]="chartOptions.title" [annotations]="chartOptions.annotations">
+        </apx-chart>
+    </div>
+    <!--<div id="chart_temp">
+    <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [xaxis]="chartOptions.xaxis"
+        [stroke]="chartOptions.stroke" [tooltip]="chartOptions.tooltip" [dataLabels]="chartOptions.dataLabels"
+        [title]="chartOptions.title"></apx-chart>
+</div>
+<div id="chart_hum">
+    <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [xaxis]="chartOptions.xaxis"
+        [stroke]="chartOptions.stroke" [tooltip]="chartOptions.tooltip" [dataLabels]="chartOptions.dataLabels"
+        [title]="chartOptions.title"></apx-chart>
+</div>-->
+</body>
+
+</html>
