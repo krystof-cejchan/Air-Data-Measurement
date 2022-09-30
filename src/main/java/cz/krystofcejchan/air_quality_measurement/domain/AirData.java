@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Contract;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 @Entity
 public class AirData implements Serializable {
@@ -24,6 +23,7 @@ public class AirData implements Serializable {
     @Column(nullable = false, updatable = false)
     private String rndHash;
 
+    @Contract(pure = true)
     public AirData() {
     }
 

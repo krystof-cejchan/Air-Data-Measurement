@@ -1,12 +1,10 @@
 package cz.krystofcejchan.air_quality_measurement.api.resource;
 
 import cz.krystofcejchan.air_quality_measurement.api.service.AirDataApiService;
+import org.jetbrains.annotations.Contract;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,6 +17,7 @@ public class AirDataApiResource {
     private final AirDataApiService airDataApiService;
 
 
+    @Contract(pure = true)
     public AirDataApiResource(AirDataApiService airDataApiService) {
         this.airDataApiService = airDataApiService;
     }
@@ -47,7 +46,7 @@ public class AirDataApiResource {
     }
 
     @GetMapping("/time/day")
-    public ResponseEntity<?> getAirDataForSpecificDay(@RequestHeader(required = true) String date) {
+    public ResponseEntity<?> getAirDataForSpecificDay(@RequestParam(required = true) String date) {
         LocalDate startD;
         try {
             startD = LocalDate.parse(date);

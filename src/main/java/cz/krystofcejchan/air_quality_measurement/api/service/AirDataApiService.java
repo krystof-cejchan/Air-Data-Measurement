@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -62,8 +63,10 @@ public class AirDataApiService extends AirDataService {
         Optional<List<AirData>> receivedDate = airDataRepository
                 .findByReceivedDataDateTimeBetween(LocalDateTime.of(day, LocalTime.MIN),
                         LocalDateTime.of(day, LocalTime.MAX));
-        if (receivedDate.isEmpty())
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase(), HttpStatus.BAD_REQUEST);
+
+        if (receivedDate.orElseThrow(DataNotFoundException::new).isEmpty())
+            return new ResponseEntity<AirDataAverage>(new AirDataAverage(null,null,null),
+                    HttpStatus.OK);
 
         try {
             BigDecimal airQualityAvg = BigDecimal.valueOf(receivedDate.orElseThrow(DataNotFoundException::new)
@@ -77,12 +80,15 @@ public class AirDataApiService extends AirDataService {
                     .mapToDouble(BigDecimal::doubleValue).average().orElseThrow(DataNotFoundException::new));
 
             return new ResponseEntity<>(
-                    new AirDataAverage(temperatureAvg, humidityAvg, airQualityAvg), HttpStatus.OK);
+                    new AirDataAverage(temperatureAvg.setScale(2, RoundingMode.HALF_UP),
+                            humidityAvg.setScale(2, RoundingMode.HALF_UP),
+                            airQualityAvg.setScale(2, RoundingMode.HALF_UP)),
+                    HttpStatus.OK);
 
         } catch (DataNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase() +
                     '\n' + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-    }   
+    }
 }

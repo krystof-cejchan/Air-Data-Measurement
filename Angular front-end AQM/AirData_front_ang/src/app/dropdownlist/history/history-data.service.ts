@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AirDataAverage } from 'src/app/airdata_average';
@@ -13,7 +13,6 @@ export class HistoryDataService {
   constructor(private http: HttpClient) { }
 
   public getHistoryData(date: string): Observable<AirDataAverage> {
-    const headers = new HttpHeaders().set("date", date);
-    return this.http.get<AirDataAverage>(`${this.apiServerUrl}/time/day`, { headers });
+    return this.http.get<AirDataAverage>(`${this.apiServerUrl}/time/day?date=${date}`);
   }
 }

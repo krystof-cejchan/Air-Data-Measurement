@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AirDataAverage } from 'src/app/airdata_average';
 import { HistoryDataService } from './history-data.service';
 
@@ -11,39 +11,43 @@ import { HistoryDataService } from './history-data.service';
 })
 export class HistoryComponent implements OnInit {
 
-  public date: string | null | undefined;
-  public avgData: AirDataAverage | undefined;
+  public htmlToAdd = '';
 
+  public avgDatas: AirDataAverage[] = [];
+  private dateFromParamM: string | undefined | null;
   constructor(
-    private route: ActivatedRoute, private router: Router, private service: HistoryDataService
+    private route: ActivatedRoute, private service: HistoryDataService
   ) { }
 
   ngOnInit(): void {
-    /* this.route.paramMap.subscribe((params:ParamMap) => {
-           this.date = params.get('date');
-     });
-     console.log(this.date);
- 
-     if (this.date) {
-       this.service.getHistoryData(this.date).subscribe(
-         (response: AirDataAverage) => {
-           this.avgData = response;
-         },
-         (error: HttpErrorResponse) => {
-           console.log(error.message)
-         }
-       );
-     }*/
+
     this.route.url.subscribe(() => {
-      if (this.route.snapshot.parent?.paramMap.get('date'))
-        console.log(this.route.snapshot.parent?.paramMap.get('date'));
+      if (this.route.snapshot.parent?.paramMap.get('date')) {
+        this.dateFromParamM = this.route.snapshot.parent?.paramMap.get('date');
+      }
     });
+
+    this.getAvgAirData();
   }
-  //showDataRelatedToTheDate() {
-  //this.router.navigate(['prumer'], { relativeTo: this.route });
+
+  public async getAvgAirData(): Promise<void> {
+    this.service.getHistoryData(this.dateFromParamM!).subscribe(
+      (response: AirDataAverage) => {
+        if (this.isNull(response) === false) {
+          this.avgDatas.push(response);
+        } else {
+          console.log(response);
+          this.htmlToAdd = '<div class="errMsg">Server did not respond succesfully!<br>There is no data for this date</div>';
+        }
+      },
+      (error: HttpErrorResponse) => {
+        this.htmlToAdd = '<div class="errMsg">Server did not respond succesfully!<br>' + error.name + '</div>';
+      }
+    );
+  }
+
+  private isNull(airdata_average: AirDataAverage): boolean {
+    return (airdata_average.avgAirQuality === null || airdata_average.avgHumidity === null || airdata_average.avgTemperature === null);
+  }
+
 }
-
-
-
-
-
