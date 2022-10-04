@@ -36,7 +36,6 @@ export class HistoryComponent implements OnInit {
         if (this.isNull(response) === false) {
           this.avgDatas.push(response);
         } else {
-          console.log(response);
           this.htmlToAdd = '<div class="errMsg">Server did not respond succesfully!<br>There is no data for this date</div>';
         }
       },

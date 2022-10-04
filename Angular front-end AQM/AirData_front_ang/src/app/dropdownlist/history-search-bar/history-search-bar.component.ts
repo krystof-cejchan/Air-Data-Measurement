@@ -62,7 +62,7 @@ export class HistorySearchBarComponent implements OnInit {
     if (this.pickedDate) {
       // this.updateChoosenDate();
       this.router.navigate(['/nekdejsi-data/' + this.pickedDate], { relativeTo: this.route });
-      this.updateChoosenDate();
+      this.updateChoosenDate(this.pickedDate);
     }
 
   }
@@ -71,12 +71,12 @@ export class HistorySearchBarComponent implements OnInit {
     this.updateChoosenDate();
   }
 
-  private async updateChoosenDate() {
-    let date = this.route.snapshot.params['date'];
+  private updateChoosenDate(prePickedDate?: string) {
+    let date = prePickedDate ? prePickedDate : this.route.snapshot.params['date'];
     if (date) {
       if (moment(new Date(date), "YYYY-MM-DD").isValid()) {
         console.log('now')
-        this.choosenDate = '<div class="choosenDate">' + formatDate(new Date(date), 'dd-MM-yyyy', 'en_US') + '</div>';
+        this.choosenDate = formatDate(new Date(date), 'dd-MM-yyyy', 'en_US');
       }
       else
         this.router.navigate(['/nekdejsi-data'], { relativeTo: this.route });
