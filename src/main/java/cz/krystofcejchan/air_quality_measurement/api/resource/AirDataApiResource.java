@@ -45,6 +45,17 @@ public class AirDataApiResource {
         return airDataApiService.getAverageAirDataFromDateToDate(LocalDateTime.of(startD, startT), LocalDateTime.of(finishD, finishT));
     }
 
+    @GetMapping("/time/day_avg")
+    public ResponseEntity<?> getAverageAirDataForSpecificDay(@RequestParam(required = true) String date) {
+        LocalDate startD;
+        try {
+            startD = LocalDate.parse(date);
+        } catch (DateTimeParseException dateTimeParseException) {
+            return new ResponseEntity<>(dateTimeParseException.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        return airDataApiService.gerAverageAirDataForOneSpecificDay(startD);
+    }
+
     @GetMapping("/time/day")
     public ResponseEntity<?> getAirDataForSpecificDay(@RequestParam(required = true) String date) {
         LocalDate startD;

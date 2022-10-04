@@ -5,7 +5,6 @@ import { AboutProjectComponent } from './about-project/about-project.component';
 import { HowItWorksComponent } from './how-it-works/how-it-works.component';
 import { LatestDataComponent } from './dropdownlist/latest-data/latest-data.component';
 import { HistorySearchBarComponent } from './dropdownlist/history-search-bar/history-search-bar.component';
-import { HistoryComponent } from './dropdownlist/history/history.component';
 import { GraphsComponent } from './dropdownlist/graphs/graphs.component';
 import { LeaderboardComponent } from './dropdownlist/leaderboard/leaderboard.component';
 
@@ -25,8 +24,8 @@ const routes: Routes = [
     path: 'nekdejsi-data', component: HistorySearchBarComponent
   },
   {
-    path: 'nekdejsi-data/:date', component: HistorySearchBarComponent,
-    children: [{ path: 'prumer', component: HistoryComponent }]
+    path: 'nekdejsi-data/:date', component: HistorySearchBarComponent
+   // children: [{ path: 'prumer', component: HistoryComponent }]
   },
   {
     path: 'grafy', pathMatch: 'full', component: GraphsComponent

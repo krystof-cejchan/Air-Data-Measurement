@@ -1,5 +1,6 @@
 import { formatDate } from '@angular/common';
-import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
@@ -7,7 +8,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import * as _moment from 'moment';
 import { default as _rollupMoment } from 'moment';
+import { AirData } from 'src/app/airdata';
 import { AirDataAverage } from 'src/app/airdata_average';
+import { HistorySearchBarService } from './history-search--bar.service';
 
 const moment = _rollupMoment || _moment;
 
@@ -42,15 +45,18 @@ export class HistorySearchBarComponent implements OnInit {
   date = new FormControl(moment()); //WHEN SENDING REQUEST TO BACK-END THE DATE FORMAT MUST BE AS FOLLOWING: YYYY-MM-DD
   minDate: Date;
   maxDate: Date;
+
   private pickedDate: string | undefined;
-  public airDataAvg: AirDataAverage | undefined;
   public choosenDate = '';
 
-  constructor(private route: ActivatedRoute, private router: Router) {
+  public avgDatas: AirDataAverage[] = [];
+  public airDataForDay: AirData[] = [];
+
+  htmlToAdd: string = '';
+
+  constructor(private route: ActivatedRoute, private router: Router, private service: HistorySearchBarService) {
     this.minDate = new Date(2022, 8, 23);
     this.maxDate = new Date();//new Date(date.getFullYear().toPrecision(1), date.getMonth(), date.getDay() - 1);
-
-
   }
 
   ngOnInit(): void {
@@ -63,10 +69,15 @@ export class HistorySearchBarComponent implements OnInit {
       // this.updateChoosenDate();
       this.router.navigate(['/nekdejsi-data/' + this.pickedDate], { relativeTo: this.route });
       this.updateChoosenDate(this.pickedDate);
+
+      //calling data from back-end
+      this.getAvgAirData(this.pickedDate);
+      this.getAirDataForDate(this.pickedDate);
+
     }
 
   }
-  updateDOB(dateObject: { value: any; }) {
+  updateDOB(dateObject: { value: string; }) {
     this.pickedDate = formatDate(new Date(dateObject.value), 'yyyy-MM-dd', 'en_US');
     this.updateChoosenDate();
   }
@@ -75,12 +86,44 @@ export class HistorySearchBarComponent implements OnInit {
     let date = prePickedDate ? prePickedDate : this.route.snapshot.params['date'];
     if (date) {
       if (moment(new Date(date), "YYYY-MM-DD").isValid()) {
-        console.log('now')
         this.choosenDate = formatDate(new Date(date), 'dd-MM-yyyy', 'en_US');
       }
       else
         this.router.navigate(['/nekdejsi-data'], { relativeTo: this.route });
     }
 
+  }
+
+
+  //getting data from back-end
+  public async getAvgAirData(date: string): Promise<void> {
+    this.service.getAverageData(date!).subscribe(
+      (response: AirDataAverage) => {
+        if (this.isNull(response) === false) {
+          this.avgDatas.push(response);
+          this.htmlToAdd = '';
+        } else {
+          this.htmlToAdd = 'Server did not respond succesfully!<br>There is no data for this date';
+        }
+      },
+      (error: HttpErrorResponse) => {
+        this.htmlToAdd = 'Server did not respond succesfully!<br>' + error.name;
+      }
+    );
+  }
+
+  private isNull(airdata_average: AirDataAverage): boolean {
+    return (airdata_average.avgAirQuality === null || airdata_average.avgHumidity === null || airdata_average.avgTemperature === null);
+  }
+
+  public async getAirDataForDate(date: string): Promise<void> {
+    this.service.getAllDataForDay(date!).subscribe(
+      (response: AirData[]) => {
+        this.airDataForDay = response;
+      },
+      (error: HttpErrorResponse) => {
+        this.htmlToAdd = 'Server did not respond succesfully!<br>' + error.name;
+      }
+    );
   }
 }

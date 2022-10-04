@@ -59,13 +59,13 @@ public class AirDataApiService extends AirDataService {
                         .stream().toList(), HttpStatus.OK);
     }
 
-    public ResponseEntity<?> gerAirDataForOneSpecificDay(java.time.LocalDate day) {
+    public ResponseEntity<?> gerAverageAirDataForOneSpecificDay(java.time.LocalDate day) {
         Optional<List<AirData>> receivedDate = airDataRepository
                 .findByReceivedDataDateTimeBetween(LocalDateTime.of(day, LocalTime.MIN),
                         LocalDateTime.of(day, LocalTime.MAX));
 
         if (receivedDate.orElseThrow(DataNotFoundException::new).isEmpty())
-            return new ResponseEntity<AirDataAverage>(new AirDataAverage(null,null,null),
+            return new ResponseEntity<AirDataAverage>(new AirDataAverage(null, null, null),
                     HttpStatus.OK);
 
         try {
@@ -89,6 +89,17 @@ public class AirDataApiService extends AirDataService {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase() +
                     '\n' + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
 
+    public ResponseEntity<?> gerAirDataForOneSpecificDay(java.time.LocalDate day) {
+        Optional<List<AirData>> receivedDate = airDataRepository
+                .findByReceivedDataDateTimeBetween(LocalDateTime.of(day, LocalTime.MIN),
+                        LocalDateTime.of(day, LocalTime.MAX));
+
+        if (receivedDate.orElseThrow(DataNotFoundException::new).isEmpty())
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                    HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(receivedDate, HttpStatus.OK);
     }
 }
