@@ -1,5 +1,7 @@
 package cz.krystofcejchan.air_quality_measurement;
 
+import cz.krystofcejchan.air_quality_measurement.scheduled_tasks.ScheduledTaskRunnable;
+import cz.krystofcejchan.air_quality_measurement.scheduled_tasks.ScheduledTaskRunnableManager;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,6 +20,7 @@ public class AqmApplication {
     public static void main(String @NotNull [] args) {
         dbpsd = args[0];
         SpringApplication.run(AqmApplication.class, args);
+        new ScheduledTaskRunnableManager().getRunnableList().forEach(ScheduledTaskRunnable::runScheduledTask);
     }
 
     @Bean
@@ -35,4 +38,6 @@ public class AqmApplication {
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
         return new CorsFilter(urlBasedCorsConfigurationSource);
     }
+
+
 }
