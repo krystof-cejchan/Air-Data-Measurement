@@ -13,7 +13,7 @@ public class CalcAverageAtMidnight implements ScheduledTaskRunnable {
     public void runScheduledTask() {
         final LocalDateTime now = LocalDateTime.now();
         final LocalDateTime triggerTime = LocalDateTime.now()
-                .withHour(24)
+                .withHour(0) //midnight
                 .withMinute(0)
                 .withSecond(0)
                 .withNano(0);

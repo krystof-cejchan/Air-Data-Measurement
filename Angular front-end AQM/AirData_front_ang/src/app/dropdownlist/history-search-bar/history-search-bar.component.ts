@@ -61,22 +61,23 @@ export class HistorySearchBarComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateChoosenDate();
+    this.showData(this.route.snapshot.params['date']);
   }
 
   //on button click function called from html component
-  public showData() {
-    if (this.pickedDate) {
+  public showData(prePickedDate?: string) {
+    let date = prePickedDate ? prePickedDate : this.pickedDate
+    if (date) {
       // this.updateChoosenDate();
-      this.router.navigate(['/nekdejsi-data/' + this.pickedDate], { relativeTo: this.route });
-      this.updateChoosenDate(this.pickedDate);
+      this.router.navigate(['/nekdejsi-data/' + date], { relativeTo: this.route });
+      this.updateChoosenDate(date);
 
       //calling data from back-end
-      this.getAvgAirData(this.pickedDate);
-      this.getAirDataForDate(this.pickedDate);
-
+      this.getAvgAirData(formatDate(new Date(date), 'yyyy-MM-dd', 'en_US'));
+      this.getAirDataForDate(formatDate(new Date(date), 'yyyy-MM-dd', 'en_US'));
     }
-
   }
+
   updateDOB(dateObject: { value: string; }) {
     this.pickedDate = formatDate(new Date(dateObject.value), 'yyyy-MM-dd', 'en_US');
     this.updateChoosenDate();
@@ -97,6 +98,7 @@ export class HistorySearchBarComponent implements OnInit {
 
   //getting data from back-end
   public async getAvgAirData(date: string): Promise<void> {
+    this.avgDatas = [];
     this.service.getAverageData(date!).subscribe(
       (response: AirDataAverage) => {
         if (this.isNull(response) === false) {
@@ -117,13 +119,33 @@ export class HistorySearchBarComponent implements OnInit {
   }
 
   public async getAirDataForDate(date: string): Promise<void> {
+    this.airDataForDay = [];
     this.service.getAllDataForDay(date!).subscribe(
       (response: AirData[]) => {
-        this.airDataForDay = response;
+        let formattedAirDatas: AirData[] = response;
+        try {
+          formattedAirDatas.forEach(airdata => {
+            let formattedAitDate = airdata;
+            //formatting date to more humanly readable date
+            formattedAitDate.receivedDataDateTime = this.formatDate(new Date(airdata.receivedDataDateTime));
+            this.airDataForDay.push(formattedAitDate);
+          })
+        } catch (error) {
+          this.airDataForDay = response;
+        }
       },
       (error: HttpErrorResponse) => {
         this.htmlToAdd = 'Server did not respond succesfully!<br>' + error.name;
       }
     );
+  }
+
+
+  /**
+  * @param date Date taken from back-end
+  * @returns formatted date as string
+  */
+  private formatDate(date: Date): string {
+    return formatDate(date, 'hh:mm:ss', "en-US");
   }
 }
