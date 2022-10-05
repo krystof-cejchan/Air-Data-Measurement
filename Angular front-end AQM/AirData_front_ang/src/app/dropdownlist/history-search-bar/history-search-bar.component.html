@@ -32,10 +32,10 @@
         <div class="one" [innerHtml]="choosenDate"></div>
     </div>
     <div class="col-lg-6 mx-auto">
-        <div class="err" [innerHtml]="htmlToAdd"></div>
+        <div class="err"></div>
     </div>
 
-    <table class="table-secondary">
+    <table class="table-secondary" *ngIf="tableShown">
         <thead>
             <tr>
                 <th scope="col">Čas</th>

@@ -27,7 +27,7 @@ export class AppComponent implements OnInit {
         this.airdatas = response;
       },
       (error: HttpErrorResponse) => {
-        console.log(error.message);
+       // console.log(error.message);
         alert('Server did not respond succesfully!');
       }
     );

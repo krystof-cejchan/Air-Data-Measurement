@@ -49,6 +49,8 @@ export class HistorySearchBarComponent implements OnInit {
   private pickedDate: string | undefined;
   public choosenDate = '';
 
+  public tableShown:boolean=false;
+
   public avgDatas: AirDataAverage[] = [];
   public airDataForDay: AirData[] = [];
 
@@ -130,12 +132,14 @@ export class HistorySearchBarComponent implements OnInit {
             formattedAitDate.receivedDataDateTime = this.formatDate(new Date(airdata.receivedDataDateTime));
             this.airDataForDay.push(formattedAitDate);
           })
+          this.tableShown=true;
         } catch (error) {
           this.airDataForDay = response;
         }
       },
       (error: HttpErrorResponse) => {
         this.htmlToAdd = 'Server did not respond succesfully!<br>' + error.name;
+        this.tableShown=false;
       }
     );
   }
