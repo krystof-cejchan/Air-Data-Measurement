@@ -1,6 +1,7 @@
 package cz.krystofcejchan.air_quality_measurement.resource;
 
 import cz.krystofcejchan.air_quality_measurement.domain.AirDataAverageOfDay;
+import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import cz.krystofcejchan.air_quality_measurement.service.AirDataAverageOfDayService;
 import org.jetbrains.annotations.Contract;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.HashMap;
 import java.util.Optional;
 
 @RestController
@@ -26,12 +28,13 @@ public class AirDataAverageForDayResource {
     }
 
     @GetMapping("/avg")
-    public ResponseEntity<?> getAllAirData() {
+    public ResponseEntity<?> calcAverage() {
 
-        Optional<AirDataAverageOfDay> optionalAirDataAverageOfDay
+        Optional<HashMap<Location, AirDataAverageOfDay>> optionalAirDataAverageOfDay
                 = service.getAverageAirDataForOneSpecificDay(LocalDate.now(ZoneId.of("Europe/Prague")));
 
-        optionalAirDataAverageOfDay.ifPresentOrElse(service::addAirData,
+        optionalAirDataAverageOfDay.ifPresentOrElse(
+                (key) -> key.keySet().forEach(k -> service.addAirData(key.get(k))),
                 () -> resultCode = HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(resultCode.getReasonPhrase(), resultCode);

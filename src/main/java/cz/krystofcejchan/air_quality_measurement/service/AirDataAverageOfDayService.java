@@ -2,6 +2,7 @@ package cz.krystofcejchan.air_quality_measurement.service;
 
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
 import cz.krystofcejchan.air_quality_measurement.domain.AirDataAverageOfDay;
+import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import cz.krystofcejchan.air_quality_measurement.exceptions.DataNotFoundException;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataAverageOfDayRepository;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataRepository;
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,35 +35,55 @@ public class AirDataAverageOfDayService {
         return avgRepository.save(airDataAverageOfDay);
     }
 
-    public Optional<AirDataAverageOfDay> getAverageAirDataForOneSpecificDay(java.time.LocalDate day) {
-        Optional<List<AirData>> receivedDate = airDataRepository
+    public Optional<HashMap<Location, AirDataAverageOfDay>> getAverageAirDataForOneSpecificDay(java.time.LocalDate day) {
+        Optional<List<AirData>> receivedData = airDataRepository
                 .findByReceivedDataDateTimeBetween(LocalDateTime.of(day, LocalTime.MIN),
                         LocalDateTime.of(day, LocalTime.MAX));
 
-        if (receivedDate.orElseThrow(DataNotFoundException::new).isEmpty())
+        if (receivedData.orElseThrow(DataNotFoundException::new).isEmpty())
             return Optional.empty();
 
-        try {
-            BigDecimal airQualityAvg = BigDecimal.valueOf(receivedDate.orElseThrow(DataNotFoundException::new)
-                    .stream().map(AirData::getAirQuality)
-                    .mapToDouble(BigDecimal::doubleValue).average().orElseThrow(DataNotFoundException::new));
-            BigDecimal humidityAvg = BigDecimal.valueOf(receivedDate.orElseThrow(DataNotFoundException::new)
-                    .stream().map(AirData::getHumidity)
-                    .mapToDouble(BigDecimal::doubleValue).average().orElseThrow(DataNotFoundException::new));
-            BigDecimal temperatureAvg = BigDecimal.valueOf(receivedDate.orElseThrow(DataNotFoundException::new)
-                    .stream().map(AirData::getTemperature)
-                    .mapToDouble(BigDecimal::doubleValue).average().orElseThrow(DataNotFoundException::new));
+        List<Location> locationList = receivedData.get().stream().map(AirData::getLocation)
+                .filter(location -> Location.toList()
+                        .stream().anyMatch(locationMatch -> locationMatch.equals(location)))
+                .toList();
 
-            return Optional.of(new AirDataAverageOfDay(
+        List<AirData> validAirData = receivedData.get().stream().filter(location -> locationList
+                        .stream().anyMatch(locationMatch -> locationMatch.equals(location.getLocation())))
+                .toList();
+
+        HashMap<Location, AirDataAverageOfDay> hashMapLocToAvgAirData = new HashMap<>();
+        for (Location location : locationList) {
+            List<AirData> validAirDataFilterToLocation = validAirData.stream()
+                    .filter(airData -> airData
+                            .getLocation().equals(location)).toList();
+
+            BigDecimal airQualityAvg = BigDecimal.valueOf(validAirDataFilterToLocation.stream()
+                    .map(AirData::getAirQuality)
+                    .mapToDouble(BigDecimal::doubleValue)
+                    .average()
+                    .orElse(Double.NaN)).setScale(2, RoundingMode.HALF_UP);
+
+            BigDecimal humidityAvg = BigDecimal.valueOf(validAirDataFilterToLocation.stream()
+                    .map(AirData::getHumidity)
+                    .mapToDouble(BigDecimal::doubleValue)
+                    .average()
+                    .orElse(Double.NaN)).setScale(2, RoundingMode.HALF_UP);
+
+            BigDecimal temperatureAvg = BigDecimal.valueOf(validAirDataFilterToLocation.stream()
+                    .map(AirData::getTemperature)
+                    .mapToDouble(BigDecimal::doubleValue)
+                    .average()
+                    .orElse(Double.NaN)).setScale(2, RoundingMode.HALF_UP);
+
+            hashMapLocToAvgAirData.putIfAbsent(location, new AirDataAverageOfDay(
                     0L,
-                    receivedDate.orElseThrow(DataNotFoundException::new).get(0).getLocation(),
+                    location,
                     day,
-                    temperatureAvg.setScale(2, RoundingMode.HALF_UP),
-                    humidityAvg.setScale(2, RoundingMode.HALF_UP),
-                    airQualityAvg.setScale(2, RoundingMode.HALF_UP)));
-
-        } catch (DataNotFoundException e) {
-            return Optional.empty();
+                    airQualityAvg,
+                    temperatureAvg,
+                    humidityAvg));
         }
+        return Optional.of(hashMapLocToAvgAirData);
     }
 }
