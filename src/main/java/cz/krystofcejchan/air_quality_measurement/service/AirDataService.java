@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class AirDataService {
@@ -24,7 +23,6 @@ public class AirDataService {
     }
 
     public AirData addAirData(@NotNull AirData airData) {
-        airData.setRndHash(UUID.randomUUID().toString());
         airData.setReceivedDataDateTime(LocalDateTime.now(ZoneId.of("Europe/Prague")));
         return airDataRepository.save(airData);
     }

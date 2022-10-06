@@ -1,19 +1,11 @@
-package cz.krystofcejchan.air_quality_measurement.domain.other_objects;
+package cz.krystofcejchan.air_quality_measurement.domain.nondatabase_objects;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import org.jetbrains.annotations.Contract;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-@Entity
 public class AirDataAverage implements Serializable {
-    @Id
-    @Column(name = "id", nullable = false)
-    private Long id;
-
     private BigDecimal avgTemperature, avgHumidity, avgAirQuality;
 
     @Contract(pure = true)

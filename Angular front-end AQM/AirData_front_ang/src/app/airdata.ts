@@ -6,7 +6,6 @@ export interface AirData {
     airQuality: number;
     temperature: number;
     humidity: number;
-    rndHash: string;
 
     //beyond java back-end object properties =>
     bcgPictureUrl: string;

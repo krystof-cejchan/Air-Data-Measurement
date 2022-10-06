@@ -19,8 +19,7 @@ public class JpaConfig {
          dataSourceBuilder.username("sql11521723");
          dataSourceBuilder.password(AqmApplication.dbpsd);
          return dataSourceBuilder.build();
-     }*/
-    @Primary
+     }
     @Bean
     public DataSource getSecondaryDataSource() {
         DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
@@ -28,13 +27,14 @@ public class JpaConfig {
         dataSourceBuilder.username("root");
         dataSourceBuilder.password("jetotereza");
         return dataSourceBuilder.build();
-    }
+    }*/
 
+    @Primary
     @Bean
     public DataSource getPrimaryDataSource() {
-        DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.url("jdbc:mysql://a046um.forpsi.com/f161376");
-        dataSourceBuilder.username("f161376");
+        DataSourceBuilder<? extends DataSource> dataSourceBuilder = DataSourceBuilder.create();
+        dataSourceBuilder.url("jdbc:mysql://sql11.freemysqlhosting.net/sql11521723");
+        dataSourceBuilder.username("sql11521723");
         dataSourceBuilder.password(AqmApplication.dbpsd);
         return dataSourceBuilder.build();
     }

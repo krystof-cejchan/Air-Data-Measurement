@@ -1,11 +1,11 @@
 package cz.krystofcejchan.air_quality_measurement.api.service;
 
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
-import cz.krystofcejchan.air_quality_measurement.domain.other_objects.AirDataAverage;
+import cz.krystofcejchan.air_quality_measurement.domain.nondatabase_objects.AirDataAverage;
 import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import cz.krystofcejchan.air_quality_measurement.exceptions.DataNotFoundException;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataRepository;
-import cz.krystofcejchan.air_quality_measurement.service.AirDataService;
+import org.jetbrains.annotations.Contract;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class AirDataApiService extends AirDataService {
+public class AirDataApiService {
     private final AirDataRepository airDataRepository;
 
+    @Contract(pure = true)
     @Autowired
     public AirDataApiService(AirDataRepository airDataRepository) {
-        super(airDataRepository);
         this.airDataRepository = airDataRepository;
     }
 
@@ -59,13 +59,13 @@ public class AirDataApiService extends AirDataService {
                         .stream().toList(), HttpStatus.OK);
     }
 
-    public ResponseEntity<?> gerAverageAirDataForOneSpecificDay(java.time.LocalDate day) {
+    public ResponseEntity<?> getAverageAirDataForOneSpecificDay(java.time.LocalDate day) {
         Optional<List<AirData>> receivedDate = airDataRepository
                 .findByReceivedDataDateTimeBetween(LocalDateTime.of(day, LocalTime.MIN),
                         LocalDateTime.of(day, LocalTime.MAX));
 
         if (receivedDate.orElseThrow(DataNotFoundException::new).isEmpty())
-            return new ResponseEntity<AirDataAverage>(new AirDataAverage(null, null, null),
+            return new ResponseEntity<>(new AirDataAverage(null, null, null),
                     HttpStatus.OK);
 
         try {
