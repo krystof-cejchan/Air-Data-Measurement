@@ -20,7 +20,7 @@ class CalcAverageAtMidnightTest {
     @Test
     void runScheduledTask() throws UnknownHostException {
         // Port
-      //  out.println(environment.getProperty("server.port"));
+        //  out.println(environment.getProperty("server.port"));
 
         // Local address
         out.println(InetAddress.getLocalHost().getHostAddress());
