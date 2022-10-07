@@ -13,10 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/airdata/auto")
+@RequestMapping("/airdata/avg")
 public class AirDataAverageForDayResource {
     private final AirDataAverageOfDayService service;
 
@@ -27,16 +28,21 @@ public class AirDataAverageForDayResource {
         this.service = service;
     }
 
-    @GetMapping("/avg")
+    @GetMapping("/calc")
     public ResponseEntity<?> calcAverage() {
 
         Optional<HashMap<Location, AirDataAverageOfDay>> optionalAirDataAverageOfDay
                 = service.getAverageAirDataForOneSpecificDay(LocalDate.now(ZoneId.of("Europe/Prague")));
 
         optionalAirDataAverageOfDay.ifPresentOrElse(
-                (key) -> key.keySet().forEach(k -> service.addAirData(key.get(k))),
-                () -> resultCode = HttpStatus.BAD_REQUEST);
+                (map) -> map.keySet().forEach(key -> service.addAirData(map.get(key))),
+                () -> this.resultCode = HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(resultCode.getReasonPhrase(), resultCode);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<AirDataAverageOfDay>> getAllData() {
+        return new ResponseEntity<>(service.getAllAvgAirData(), HttpStatus.OK);
     }
 }

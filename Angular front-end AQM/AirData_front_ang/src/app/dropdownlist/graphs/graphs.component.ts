@@ -1,4 +1,5 @@
-import { Component, ViewChild } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -10,7 +11,8 @@ import {
   ApexTitleSubtitle,
   ApexAnnotations
 } from "ng-apexcharts";
-import { ColdObservable } from 'rxjs/internal/testing/ColdObservable';
+import { AirDataAverageForDay } from 'src/app/objects/airDataAverageForDay';
+import { GraphsService } from './graphs.service';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -28,7 +30,7 @@ export type ChartOptions = {
   templateUrl: './graphs.component.html',
   styleUrls: ['./graphs.component.css']
 })
-export class GraphsComponent {
+export class GraphsComponent implements OnInit {
 
   @ViewChild("chart_temp", { static: false })
   chart_airQ!: ChartComponent;
@@ -42,19 +44,39 @@ export class GraphsComponent {
   private very_high_risk_color = "#A8000D";
   private color_opacity = .09;
 
+  public allDataFromDatabase: AirDataAverageForDay[] = [];
 
-  constructor() {
+  ngOnInit(): void {
+    this.service.getAllAirDataAverage().subscribe(
+      (response: AirDataAverageForDay[]) => {
+        this.allDataFromDatabase = response;
+        console.log(this.allDataFromDatabase)
+      },
+      (err: HttpErrorResponse) => {
+        alert('Error on the server has occured');
+      }
+    );
+
+
+    const eachLocation = this.allDataFromDatabase.flatMap(airData => airData.location);
+
+    console.log(this.allDataFromDatabase);
+
+  }
+
+  constructor(public service: GraphsService) {
+
+    const seriesNameToData = [{
+      name: "PdF",
+      data: [12.4, 15, 31.55, 110, 100, 1]
+    },
+    {
+      name: "FF",
+      data: [19.4, 10.7, 39.55, 120, 100, 1]
+    }];
+    // eachLocation = this.uniqByFilter<string>(eachLocation);
     this.chartOptions = {
-      series: [
-        {
-          name: "PdF",
-          data: [12.4, 15, 31.55, 110, 100, 1]
-        },
-        {
-          name: "FF",
-          data: [19.4, 10.7, 39.55, 120, 100, 1]
-        }
-      ],
+      series: seriesNameToData,
       chart_airQ: {
         height: 350,
         type: "area"
@@ -67,16 +89,8 @@ export class GraphsComponent {
       },
       xaxis: {
         type: "datetime",
-        categories: [
-          "2018-09-20",
-          "2018-09-21",
-          "2018-09-22",
-          "2018-09-23",
-          "2018-09-24",
-          "2018-09-25",
-          "2018-09-29",
-          "2018-09-30"
-        ]
+        categories: []
+
       },
       tooltip: {
         x: {
@@ -184,20 +198,7 @@ export class GraphsComponent {
     };
   }
 
-
-  /*  public generateData(baseval: number, count: number, yrange: { max: number; min: number; }) {
-      var i = 0;
-      var series = [];
-      while (i < count) {
-        var x = Math.floor(Math.random() * (750 - 1 + 1)) + 1;
-        var y =
-          Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
-        var z = Math.floor(Math.random() * (75 - 15 + 1)) + 15;
-  
-        series.push([x, y, z]);
-        baseval += 86400000;
-        i++;
-      }
-      return series;
-    }*/
+  private uniqByFilter<T>(array: T[]) {
+    return array.filter((value, index) => array.indexOf(value) === index);
+  }
 }

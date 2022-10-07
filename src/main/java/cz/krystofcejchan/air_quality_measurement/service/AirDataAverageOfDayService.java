@@ -96,4 +96,8 @@ public class AirDataAverageOfDayService {
         }
         return Optional.of(hashMapLocToAvgAirData);
     }
+
+    public List<AirDataAverageOfDay> getAllAvgAirData() {
+        return avgRepository.findAll();
+    }
 }
