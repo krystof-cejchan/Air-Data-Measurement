@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -43,9 +44,18 @@ public class AirDataAverageOfDayService {
         if (receivedData.orElseThrow(DataNotFoundException::new).isEmpty())
             return Optional.empty();
 
+        List<Location> locationToBeExcluded = new ArrayList<>();
+        Location.toList().forEach(location -> avgRepository
+                .findByLocationAndReceivedDataDate(location, day)
+                .ifPresent(avgData -> locationToBeExcluded
+                        .addAll(avgData.stream()
+                                .map(AirDataAverageOfDay::getLocation)
+                                .toList())));
+
         List<Location> locationList = receivedData.get().stream().map(AirData::getLocation)
                 .filter(location -> Location.toList()
                         .stream().anyMatch(locationMatch -> locationMatch.equals(location)))
+                .filter(l -> locationToBeExcluded.stream().noneMatch(lExcl -> lExcl.equals(l)))
                 .toList();
 
         List<AirData> validAirData = receivedData.get().stream().filter(location -> locationList
