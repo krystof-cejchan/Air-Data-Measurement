@@ -150,6 +150,6 @@ export class HistorySearchBarComponent implements OnInit {
   * @returns formatted date as string
   */
   private formatDate(date: Date): string {
-    return formatDate(date, 'hh:mm:ss', "en-US");
+    return formatDate(date, 'HH:mm:ss', "en-US");
   }
 }

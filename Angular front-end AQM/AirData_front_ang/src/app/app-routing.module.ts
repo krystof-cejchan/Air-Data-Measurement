@@ -1,4 +1,4 @@
-import { Component, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ErrorsComponent } from './errors/errors.component';
 import { AboutProjectComponent } from './about-project/about-project.component';
@@ -7,6 +7,7 @@ import { LatestDataComponent } from './dropdownlist/latest-data/latest-data.comp
 import { HistorySearchBarComponent } from './dropdownlist/history-search-bar/history-search-bar.component';
 import { GraphsComponent } from './dropdownlist/graphs/graphs.component';
 import { LeaderboardComponent } from './dropdownlist/leaderboard/leaderboard.component';
+import { AirDataDetailsComponent } from "./air-data-details/air-data-details.component";
 
 
 const routes: Routes = [
@@ -25,7 +26,7 @@ const routes: Routes = [
   },
   {
     path: 'nekdejsi-data/:date', component: HistorySearchBarComponent
-   // children: [{ path: 'prumer', component: HistoryComponent }]
+    // children: [{ path: 'prumer', component: HistoryComponent }]
   },
   {
     path: 'grafy', pathMatch: 'full', component: GraphsComponent
@@ -38,6 +39,9 @@ const routes: Routes = [
   },
   {
     path: 'jaktofunguje', pathMatch: 'full', component: HowItWorksComponent
+  },
+  {
+    path: 'data-detaily/:id/:hash', pathMatch: 'full', component: AirDataDetailsComponent
   },
   {
     path: '**', component: ErrorsComponent

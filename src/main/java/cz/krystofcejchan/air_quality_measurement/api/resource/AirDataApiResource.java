@@ -66,4 +66,10 @@ public class AirDataApiResource {
         }
         return airDataApiService.gerAirDataForOneSpecificDay(startD);
     }
+
+    @GetMapping("/getByIdAndHash")
+    public ResponseEntity<?> getAirDataByIdAndHash(@RequestParam(required = true) Long id,
+                                                   @RequestParam(required = true) String hash) {
+        return airDataApiService.getDataByIdAndHash(id, hash);
+    }
 }

@@ -19,6 +19,7 @@ import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { AirDataDetailsComponent } from './air-data-details/air-data-details.component';
 
 
 
@@ -31,7 +32,8 @@ import { NgApexchartsModule } from 'ng-apexcharts';
     LatestDataComponent,
     GraphsComponent,
     LeaderboardComponent,
-    HistorySearchBarComponent
+    HistorySearchBarComponent,
+    AirDataDetailsComponent
   ],
   imports: [
     BrowserModule, HttpClientModule, AppRoutingModule,

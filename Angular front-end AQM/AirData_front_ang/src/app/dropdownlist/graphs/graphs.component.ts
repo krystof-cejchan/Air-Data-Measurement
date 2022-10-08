@@ -1,6 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { AfterContentInit, AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import ApexCharts from 'apexcharts';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -12,7 +11,6 @@ import {
   ApexTitleSubtitle,
   ApexAnnotations
 } from "ng-apexcharts";
-import { first } from 'rxjs';
 import { AirDataAverageForDay } from 'src/app/objects/airDataAverageForDay';
 import { GraphsService } from './graphs.service';
 
@@ -74,7 +72,8 @@ export class GraphsComponent implements OnInit {
 
     locations.forEach(location => seriesNameToData
       .push({
-        name: location, data: this.allDataFromDatabase
+        name: location,
+        data: this.allDataFromDatabase
           .filter(f => f.location === location)
           .map(filteredData => filteredData.airQualityAvg)
       }));

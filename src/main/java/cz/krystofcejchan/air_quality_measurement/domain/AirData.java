@@ -20,19 +20,23 @@ public class AirData implements Serializable {
     private BigDecimal airQuality;
     private BigDecimal temperature;
     private BigDecimal humidity;
+    @Column(nullable = false, updatable = false)
+    private String rndHash;
 
     @Contract(pure = true)
     public AirData() {
     }
 
     @Contract(pure = true)
-    public AirData(Long id, String location, String arduinoTime, BigDecimal airQuality, BigDecimal temperature, BigDecimal humidity) {
+    public AirData(Long id, String location, String arduinoTime, BigDecimal airQuality, BigDecimal temperature,
+                   BigDecimal humidity, String rndHash) {
         this.id = id;
         this.location = Location.of(location);
         this.arduinoTime = arduinoTime;
         this.airQuality = airQuality;
         this.temperature = temperature;
         this.humidity = humidity;
+        this.rndHash = rndHash;
     }
 
     public Long getId() {
@@ -89,5 +93,13 @@ public class AirData implements Serializable {
 
     public void setHumidity(BigDecimal humidity) {
         this.humidity = humidity;
+    }
+
+    public String getRndHash() {
+        return rndHash;
+    }
+
+    public void setRndHash(String rndHash) {
+        this.rndHash = rndHash;
     }
 }

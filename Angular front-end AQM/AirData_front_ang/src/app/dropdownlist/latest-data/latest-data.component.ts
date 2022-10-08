@@ -1,6 +1,7 @@
 import { formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AfterContentInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AirData } from 'src/app/airdata';
 import { LatestDataService } from './latest-data.service';
 
@@ -17,7 +18,7 @@ export class LatestDataComponent implements OnInit {
   public airdatas: AirData[] = [];
   private formattedAirDatas: AirData[] = [];
 
-  constructor(private latestDataService: LatestDataService) {
+  constructor(private route: ActivatedRoute, private router: Router, private latestDataService: LatestDataService) {
   }
 
   ngOnInit(): void {
@@ -46,11 +47,15 @@ export class LatestDataComponent implements OnInit {
       }
     );
   }
+  public showDetails(airdataInfo: { id: number, hash: string }) {
+    this.router.navigate([`/data-detaily/${airdataInfo.id}/${airdataInfo.hash}`], { relativeTo: this.route });
+  }
+
   /**
    * @param date Date taken from back-end
    * @returns formatted date as string
    */
   private formatDate(date: Date): string {
-    return formatDate(date, 'dd-MM • hh:mm:ss', "en-US");
+    return formatDate(date, 'dd-MM • HH:mm:ss', "en-US");
   }
 }

@@ -102,4 +102,13 @@ public class AirDataApiService {
 
         return new ResponseEntity<>(receivedDate, HttpStatus.OK);
     }
+
+    public ResponseEntity<?> getDataByIdAndHash(Long id, String hash) {
+        Optional<AirData> receivedDate = airDataRepository.findByIdAndRndHash(id, hash);
+
+        if (receivedDate.isEmpty())
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase(), HttpStatus.BAD_REQUEST);
+        else
+            return new ResponseEntity<>(receivedDate, HttpStatus.OK);
+    }
 }
