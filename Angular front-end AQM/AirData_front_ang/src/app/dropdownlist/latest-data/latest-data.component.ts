@@ -1,6 +1,6 @@
 import { formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { AfterContentInit, Component, OnInit } from '@angular/core';
 import { AirData } from 'src/app/airdata';
 import { LatestDataService } from './latest-data.service';
 
@@ -18,7 +18,6 @@ export class LatestDataComponent implements OnInit {
   private formattedAirDatas: AirData[] = [];
 
   constructor(private latestDataService: LatestDataService) {
-
   }
 
   ngOnInit(): void {

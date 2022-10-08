@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -11,6 +11,7 @@ import {
   ApexTitleSubtitle,
   ApexAnnotations
 } from "ng-apexcharts";
+import { first } from 'rxjs';
 import { AirDataAverageForDay } from 'src/app/objects/airDataAverageForDay';
 import { GraphsService } from './graphs.service';
 
@@ -49,23 +50,15 @@ export class GraphsComponent implements OnInit {
   ngOnInit(): void {
     this.service.getAllAirDataAverage().subscribe(
       (response: AirDataAverageForDay[]) => {
-        this.allDataFromDatabase = response;
-        console.log(this.allDataFromDatabase)
+        response.forEach(respData => this.allDataFromDatabase.push(respData));
       },
       (err: HttpErrorResponse) => {
         alert('Error on the server has occured');
       }
     );
-
-
-    const eachLocation = this.allDataFromDatabase.flatMap(airData => airData.location);
-
-    console.log(this.allDataFromDatabase);
-
   }
 
   constructor(public service: GraphsService) {
-
     const seriesNameToData = [{
       name: "PdF",
       data: [12.4, 15, 31.55, 110, 100, 1]
