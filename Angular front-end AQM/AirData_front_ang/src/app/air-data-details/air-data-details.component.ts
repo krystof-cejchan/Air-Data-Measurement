@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AirDataDetailsService } from './air-data-details.service';
 import { AirData } from "../airdata";
 import { formatDate } from '@angular/common';
+declare const dataTableSet_js: any;
 
 @Component({
   selector: 'app-air-data-details',
@@ -41,5 +42,4 @@ export class AirDataDetailsComponent implements OnInit {
   private formatDate(date: Date): string {
     return formatDate(date, 'dd.MM.YYYY v HH:mm:ss', "en-US");
   }
-
 }

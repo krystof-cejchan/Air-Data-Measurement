@@ -1,11 +1,10 @@
 import { formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import * as _moment from 'moment';
 import { default as _rollupMoment } from 'moment';
 import { AirData } from 'src/app/airdata';
@@ -49,7 +48,7 @@ export class HistorySearchBarComponent implements OnInit {
   private pickedDate: string | undefined;
   public choosenDate = '';
 
-  public tableShown:boolean=false;
+  public tableShown: boolean = false;
 
   public avgDatas: AirDataAverage[] = [];
   public airDataForDay: AirData[] = [];
@@ -132,14 +131,14 @@ export class HistorySearchBarComponent implements OnInit {
             formattedAitDate.receivedDataDateTime = this.formatDate(new Date(airdata.receivedDataDateTime));
             this.airDataForDay.push(formattedAitDate);
           })
-          this.tableShown=true;
+          this.tableShown = true;
         } catch (error) {
           this.airDataForDay = response;
         }
       },
       (error: HttpErrorResponse) => {
         this.htmlToAdd = 'Server did not respond succesfully!<br>' + error.name;
-        this.tableShown=false;
+        this.tableShown = false;
       }
     );
   }
