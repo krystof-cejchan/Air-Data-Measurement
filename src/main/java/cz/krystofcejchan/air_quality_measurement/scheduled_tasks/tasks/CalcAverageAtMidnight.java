@@ -33,7 +33,7 @@ public class CalcAverageAtMidnight implements ScheduledTaskRunnable {
             //add to avg database
             String protocol = "http://";
             String localhost = InetAddress.getLoopbackAddress().getHostAddress();
-            String path = "/airdata/auto/avg";
+            String path = "/airdata/avg/calc";
             System.out.println(protocol + localhost + ":8080" + path);
             try {
                 URL url = new URL(protocol + localhost + ":8080" + path);

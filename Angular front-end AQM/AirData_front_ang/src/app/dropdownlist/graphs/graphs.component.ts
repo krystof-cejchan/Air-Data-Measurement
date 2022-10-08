@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { AfterContentInit, AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import ApexCharts from 'apexcharts';
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -46,8 +47,9 @@ export class GraphsComponent implements OnInit {
   private color_opacity = .09;
 
   public allDataFromDatabase: AirDataAverageForDay[] = [];
+  private series: ApexAxisChartSeries = [];
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.service.getAllAirDataAverage().subscribe(
       (response: AirDataAverageForDay[]) => {
         response.forEach(respData => this.allDataFromDatabase.push(respData));
@@ -56,20 +58,47 @@ export class GraphsComponent implements OnInit {
         alert('Error on the server has occured');
       }
     );
+
+    var counter = 0;
+    //400ms to wait | max wait for 5s
+    const msToWait = 400, msMaxToWait = 5000;
+    while (this.allDataFromDatabase.length === 0 && counter < msMaxToWait / msToWait) {
+      await new Promise(f => setTimeout(f, msToWait!));
+      counter++;
+    }
+    let dates = [];
+    let locations = [];
+    locations = this.uniqByFilter<string>(this.allDataFromDatabase.map(it => it.location));
+    dates = this.uniqByFilter(this.allDataFromDatabase.flatMap(it => it.receivedDataDate));
+    let seriesNameToData: ApexAxisChartSeries = [];
+
+    locations.forEach(location => seriesNameToData
+      .push({
+        name: location, data: this.allDataFromDatabase
+          .filter(f => f.location === location)
+          .map(filteredData => filteredData.airQualityAvg)
+      }));
+
+    console.log(seriesNameToData
+    )
+    console.log(dates)
+    this.setNewDataToGraph(seriesNameToData, dates);
+
   }
 
   constructor(public service: GraphsService) {
     const seriesNameToData = [{
-      name: "PdF",
-      data: [12.4, 15, 31.55, 110, 100, 1]
+      name: "Unknown",
+      data: [0]
     },
     {
-      name: "FF",
-      data: [19.4, 10.7, 39.55, 120, 100, 1]
+      name: "Server Error",
+      data: [500]
     }];
+    this.series = seriesNameToData;
     // eachLocation = this.uniqByFilter<string>(eachLocation);
     this.chartOptions = {
-      series: seriesNameToData,
+      series: this.series,
       chart_airQ: {
         height: 350,
         type: "area"
@@ -83,7 +112,129 @@ export class GraphsComponent implements OnInit {
       xaxis: {
         type: "datetime",
         categories: []
+      },
+      tooltip: {
+        x: {
+          format: "dd / MM  / yyyy"
+        }
+      },
+      title: {
+        text: 'Kvalita Vzduchu',
+        align: 'center',
+        margin: 10,
+        offsetX: 0,
+        offsetY: 0,
+        floating: false,
+        style: {
+          fontSize: '14px',
+          fontWeight: 'bold',
+          fontFamily: "Monda",
+          color: '#263238'
+        }
+      },
+      annotations: {
+        yaxis: [
+          {
+            y: 0,
+            y2: 25,
+            borderColor: "#696969",
+            fillColor: this.very_low_risk_color,
+            opacity: this.color_opacity,
+            label: {
+              borderColor: "#fff",
+              style: {
+                fontSize: "10px",
+                color: "#333",
+                background: this.very_low_risk_color
+              },
+              text: "Velmi nízká"
+            }
+          },
+          {
+            y: 25,
+            y2: 50,
+            borderColor: "#696969",
+            fillColor: this.low_risk_color,
+            opacity: this.color_opacity,
+            label: {
+              borderColor: "#fff",
+              style: {
+                fontSize: "10px",
+                color: "#333",
+                background: this.low_risk_color
+              },
+              text: "Nízká"
+            }
+          },
+          {
+            y: 50,
+            y2: 75,
+            borderColor: "#696969",
+            fillColor: this.medium_risk_color,
+            opacity: this.color_opacity,
+            label: {
+              borderColor: "#fff",
+              style: {
+                fontSize: "10px",
+                color: "#333",
+                background: this.medium_risk_color
+              },
+              text: "Střední"
+            }
+          },
+          {
+            y: 75,
+            y2: 100,
+            borderColor: "#696969",
+            fillColor: this.high_risk_color,
+            opacity: this.color_opacity,
+            label: {
+              borderColor: "#fff",
+              style: {
+                fontSize: "10px",
+                color: "#333",
+                background: this.high_risk_color
+              },
+              text: "Vysoká"
+            }
+          },
+          {
+            y: 100,
+            y2: 1000, //TO-DO get highest value and insert it here :: 1000 is staticly typed
+            borderColor: "#696969",
+            fillColor: this.very_high_risk_color,
+            opacity: this.color_opacity,
+            label: {
+              borderColor: "#fff",
+              style: {
+                fontSize: "10px",
+                color: "#333",
+                background: this.very_high_risk_color
+              },
+              text: "Velmi vysoká"
+            }
+          },]
 
+      }
+    };
+  }
+
+  private setNewDataToGraph(series_Data: ApexAxisChartSeries = [], categories_Dates: string[] = []) {
+    this.chartOptions = {
+      series: series_Data,
+      chart_airQ: {
+        height: 350,
+        type: "area"
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: "smooth"
+      },
+      xaxis: {
+        type: "datetime",
+        categories: categories_Dates
       },
       tooltip: {
         x: {
