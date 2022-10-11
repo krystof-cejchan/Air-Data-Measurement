@@ -20,6 +20,15 @@ float hum;
 float temp;
 int sleep = 1501;
 
+//Location data set-up, varies with each measuring device
+String location_name = "";//enum
+String city = "";
+String street = "";
+String house_number = "";
+//@Nullable
+String room_identifier = "";
+//@Nullable
+double meters_above_ground = 0.0;
 
 void setup() {
   Serial.begin(9600);
