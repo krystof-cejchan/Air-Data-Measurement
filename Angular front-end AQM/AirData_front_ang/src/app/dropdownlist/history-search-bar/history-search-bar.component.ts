@@ -28,7 +28,7 @@ export const MY_FORMATS = {
 @Component({
   selector: 'app-history-search-bar',
   templateUrl: './history-search-bar.component.html',
-  styleUrls: ['./history-search-bar.component.css'],
+  styleUrls: ['./history-search-bar.component.scss'],
   providers: [
     {
       provide: DateAdapter,

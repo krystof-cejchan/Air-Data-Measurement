@@ -66,7 +66,7 @@ public class AirDataAverageOfDayService {
         for (Location location : locationList) {
             List<AirData> validAirDataFilterToLocation = validAirData.stream()
                     .filter(airData -> airData
-                            .getLocation_data().getLocation().equals(location)).toList();
+                              .getLocation_data().getLocation().equals(location)).toList();
 
             BigDecimal airQualityAvg = BigDecimal.valueOf(validAirDataFilterToLocation.stream()
                     .map(AirData::getAirQuality)
