@@ -9,12 +9,11 @@ import java.math.BigDecimal;
 public class LocationData implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "id")
     private Long id;
     @Column(name = "outofservice", columnDefinition = "boolean default 0", insertable = false, nullable = false)
     private Boolean outOfService;
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
     private cz.krystofcejchan.air_quality_measurement.enums.Location location;
     @Column(nullable = false)
     private String street;

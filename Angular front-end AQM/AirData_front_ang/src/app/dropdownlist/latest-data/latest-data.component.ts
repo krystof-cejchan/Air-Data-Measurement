@@ -8,7 +8,7 @@ import { LatestDataService } from './latest-data.service';
 @Component({
   selector: 'app-latest-data',
   templateUrl: './latest-data.component.html',
-  styleUrls: ['./latest-data.component.css']
+  styleUrls: ['./latest-data.component.scss']
 })
 export class LatestDataComponent implements OnInit {
 

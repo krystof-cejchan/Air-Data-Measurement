@@ -26,7 +26,7 @@ public class AirData implements Serializable {
     @Column(columnDefinition = "boolean default '0'", insertable = false, nullable = false)
     private Boolean invalidData;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "location_id")
+    @JoinColumn(name = "location_id", referencedColumnName = "id")
     private LocationData location_data;
 
 

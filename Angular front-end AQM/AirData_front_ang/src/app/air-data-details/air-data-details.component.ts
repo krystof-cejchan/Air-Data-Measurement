@@ -8,7 +8,7 @@ declare const dataTableSet_js: any;
 @Component({
   selector: 'app-air-data-details',
   templateUrl: './air-data-details.component.html',
-  styleUrls: ['./air-data-details.component.css']
+  styleUrls: ['./air-data-details.component.scss']
 })
 export class AirDataDetailsComponent implements OnInit {
   public airdatas: AirData[] = [];
