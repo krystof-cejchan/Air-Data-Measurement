@@ -13,6 +13,8 @@ declare const dataTableSet_js: any;
 export class AirDataDetailsComponent implements OnInit {
   public airdatas: AirData[] = [];
 
+  public isDisabled = '';
+
   constructor(private route: ActivatedRoute, private service: AirDataDetailsService) { }
 
   async ngOnInit(): Promise<void> {
@@ -41,5 +43,17 @@ export class AirDataDetailsComponent implements OnInit {
    */
   private formatDate(date: Date): string {
     return formatDate(date, 'dd.MM.YYYY v HH:mm:ss', "en-US");
+  }
+
+  public reportAirData(id: number) {
+    this.service.reportAirData(id).subscribe(
+      (response: void) => {
+        this.isDisabled = 'disabled'
+      }
+      ,
+      () => {
+        this.isDisabled = ''
+      }
+    );
   }
 }

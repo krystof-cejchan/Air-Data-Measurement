@@ -55,6 +55,11 @@ public class AirDataResource {
         return new ResponseEntity<>(airDataService.updateAirData(airData), HttpStatus.OK);
     }
 
+    @PutMapping("/update_reportN")
+    public ResponseEntity<AirData> increaseReportNumberByOne(@RequestBody Long id) {
+        return new ResponseEntity<>(airDataService.updateNumberReportedById(id), HttpStatus.OK);
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> updateAirData(@PathVariable("id") Long id) {
         airDataService.deleteAirData(id);

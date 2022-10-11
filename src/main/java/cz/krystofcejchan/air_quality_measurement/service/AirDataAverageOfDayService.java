@@ -52,21 +52,21 @@ public class AirDataAverageOfDayService {
                                 .map(AirDataAverageOfDay::getLocation)
                                 .toList())));
 
-        List<Location> locationList = receivedData.get().stream().map(AirData::getLocation)
+        List<Location> locationList = receivedData.get().stream().map(airData -> airData.getLocation_data().getLocation())
                 .filter(location -> Location.toList()
                         .stream().anyMatch(locationMatch -> locationMatch.equals(location)))
                 .filter(l -> locationToBeExcluded.stream().noneMatch(lExcl -> lExcl.equals(l)))
                 .toList();
 
         List<AirData> validAirData = receivedData.get().stream().filter(location -> locationList
-                        .stream().anyMatch(locationMatch -> locationMatch.equals(location.getLocation())))
+                        .stream().anyMatch(locationMatch -> locationMatch.equals(location.getLocation_data().getLocation())))
                 .toList();
 
         HashMap<Location, AirDataAverageOfDay> hashMapLocToAvgAirData = new HashMap<>();
         for (Location location : locationList) {
             List<AirData> validAirDataFilterToLocation = validAirData.stream()
                     .filter(airData -> airData
-                            .getLocation().equals(location)).toList();
+                            .getLocation_data().getLocation().equals(location)).toList();
 
             BigDecimal airQualityAvg = BigDecimal.valueOf(validAirDataFilterToLocation.stream()
                     .map(AirData::getAirQuality)

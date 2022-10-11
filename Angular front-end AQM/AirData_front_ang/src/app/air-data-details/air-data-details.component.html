@@ -22,7 +22,7 @@
       <h3 class="fw-bold"><b>ID: </b>{{airdata.id}}<br><b>Hash: </b>{{airdata.rndHash}}</h3>
       <p class="text-muted">Data byla naměřena {{airdata.arduinoTime}} a zpracována
         {{airdata.receivedDataDateTime}} </p>
-      <a class="btn btn-danger btn-lg" href="#">Nahlásit chybná data!</a>
+      <a class="btn btn-danger btn-lg {{isDisabled}}" aria-disabled="true" (click)="reportAirData(airdata.id)">Nahlásit chybná data!</a>
     </div>
     <div class="row row-cols-1 row-cols-sm-2 g-4">
       <div class="d-flex flex-column gap-2">

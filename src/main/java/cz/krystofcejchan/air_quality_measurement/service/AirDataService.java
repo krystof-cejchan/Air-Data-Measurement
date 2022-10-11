@@ -6,6 +6,7 @@ import cz.krystofcejchan.air_quality_measurement.repository.AirDataRepository;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -36,6 +37,17 @@ public class AirDataService {
     public AirData updateAirData(AirData airData) {
         return airDataRepository.save(airData);
     }
+
+    @Nullable
+    public AirData updateNumberReportedById(Long id) {
+        if (airDataRepository.findById(id).isPresent()) {
+            AirData airData = airDataRepository.findById(id).get();
+            airData.setReportedN(airData.getReportedN() + 1);
+            return airDataRepository.save(airData);
+        }
+        return null;
+    }
+
 
     /**
      * @param id of the data in the database

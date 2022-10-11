@@ -32,7 +32,7 @@ public class AirDataApiService {
         if (paramLocation != null && Location.toList()
                 .stream().map(Enum::toString)
                 .anyMatch(location -> location.equals(paramLocation))) {
-            //paramLocation is set and its value matches at least one Location
+            //paramLocation is set and its value matches at least one LocationData
             try {
                 AirData airData = airDataRepository.findByLocationOrderByReceivedDataDateTimeDesc(Location.of(paramLocation))
                         .orElseThrow(DataNotFoundException::new).get(0);

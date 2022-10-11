@@ -1,6 +1,6 @@
 package cz.krystofcejchan.air_quality_measurement.domain;
 
-import cz.krystofcejchan.air_quality_measurement.enums.Location;
+import cz.krystofcejchan.air_quality_measurement.domain.location.LocationData;
 import jakarta.persistence.*;
 import org.jetbrains.annotations.Contract;
 
@@ -14,7 +14,6 @@ public class AirData implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false)
     private Long id;
-    private Location location;
     private String arduinoTime;
     private LocalDateTime receivedDataDateTime;
     private BigDecimal airQuality;
@@ -22,21 +21,33 @@ public class AirData implements Serializable {
     private BigDecimal humidity;
     @Column(nullable = false, updatable = false)
     private String rndHash;
+    @Column(columnDefinition = "integer default '0'", insertable = false, nullable = false)
+    private Integer reportedN;
+    @Column(columnDefinition = "boolean default '0'", insertable = false, nullable = false)
+    private Boolean invalidData;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "location_id")
+    private LocationData location_data;
+
 
     @Contract(pure = true)
     public AirData() {
     }
 
-    @Contract(pure = true)
-    public AirData(Long id, String location, String arduinoTime, BigDecimal airQuality, BigDecimal temperature,
-                   BigDecimal humidity, String rndHash) {
+    public AirData(Long id, String arduinoTime, LocalDateTime receivedDataDateTime,
+                   BigDecimal airQuality, BigDecimal temperature, BigDecimal humidity, String rndHash,
+                   Integer reportedN, Boolean invalidData,
+                   LocationData locationId) {
         this.id = id;
-        this.location = Location.of(location);
         this.arduinoTime = arduinoTime;
+        this.receivedDataDateTime = receivedDataDateTime;
         this.airQuality = airQuality;
         this.temperature = temperature;
         this.humidity = humidity;
         this.rndHash = rndHash;
+        this.reportedN = reportedN;
+        this.invalidData = invalidData;
+        this.location_data = locationId;
     }
 
     public Long getId() {
@@ -45,14 +56,6 @@ public class AirData implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = Location.of(location);
     }
 
     public String getArduinoTime() {
@@ -101,5 +104,29 @@ public class AirData implements Serializable {
 
     public void setRndHash(String rndHash) {
         this.rndHash = rndHash;
+    }
+
+    public Integer getReportedN() {
+        return reportedN;
+    }
+
+    public void setReportedN(Integer reportedN) {
+        this.reportedN = reportedN;
+    }
+
+    public Boolean getInvalidData() {
+        return invalidData;
+    }
+
+    public void setInvalidData(Boolean invalidData) {
+        this.invalidData = invalidData;
+    }
+
+    public LocationData getLocation_data() {
+        return location_data;
+    }
+
+    public void setLocation_data(LocationData location_data) {
+        this.location_data = location_data;
     }
 }
