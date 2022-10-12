@@ -1,11 +1,14 @@
 package cz.krystofcejchan.air_quality_measurement.domain.location;
 
+import cz.krystofcejchan.air_quality_measurement.domain.AirData;
+import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "locations")
 public class LocationData implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,22 +24,25 @@ public class LocationData implements Serializable {
     private String city;
     @Column(nullable = false)
     private Integer houseNumber;
-    @Column(name = "room_identifier")
     private String roomIdentifier;
-    @Column(name = "meters_above_ground")
+    @Column(name = "metersAboveGround")
     private BigDecimal metersAboveTheGroundApprox;
+    /*@OneToOne(mappedBy = "locationId",fetch = FetchType.LAZY,cascade=CascadeType.ALL)
+    @JoinColumn(name="id")
+    private AirData airdata;*/
 
     public LocationData() {
     }
 
-    public LocationData(Long id, Boolean outOfService, cz.krystofcejchan.air_quality_measurement.enums.Location location,
-                        String street, String city, Integer houseNumber, BigDecimal metersAboveTheGroundApprox) {
+    public LocationData(Long id, Boolean outOfService, Location location, String street, String city, Integer houseNumber,
+                        String roomIdentifier, BigDecimal metersAboveTheGroundApprox, AirData airdata) {
         this.id = id;
         this.outOfService = outOfService;
         this.location = location;
         this.street = street;
         this.city = city;
         this.houseNumber = houseNumber;
+        this.roomIdentifier = roomIdentifier;
         this.metersAboveTheGroundApprox = metersAboveTheGroundApprox;
     }
 
@@ -94,5 +100,13 @@ public class LocationData implements Serializable {
 
     public void setMetersAboveTheGroundApprox(BigDecimal metersAboveTheGroundApprox) {
         this.metersAboveTheGroundApprox = metersAboveTheGroundApprox;
+    }
+
+    public String getRoomIdentifier() {
+        return roomIdentifier;
+    }
+
+    public void setRoomIdentifier(String roomIdentifier) {
+        this.roomIdentifier = roomIdentifier;
     }
 }

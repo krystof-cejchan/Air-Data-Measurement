@@ -28,7 +28,7 @@ export type ChartOptions = {
 @Component({
   selector: 'app-graphs',
   templateUrl: './graphs.component.html',
-  styleUrls: ['./graphs.component.scss']
+  styleUrls: ['./graphs.component.css']
 })
 export class GraphsComponent implements OnInit {
 

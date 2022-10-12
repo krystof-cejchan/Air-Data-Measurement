@@ -1,8 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Monda&display=swap');
+$font-family_1: 'Monda', sans-serif;
+$background-color_1: rgba(0, 0, 0, .1);
 
-html,
+@import "https://fonts.googleapis.com/css2?family=Monda&display=swap";
+
+html {
+    font-family: $font-family_1 !important;
+}
+
 body {
-    font-family: 'Monda', sans-serif !important;
+    font-family: $font-family_1 !important;
 }
 
 .bd-placeholder-img {
@@ -12,15 +18,9 @@ body {
     user-select: none;
 }
 
-@media (min-width: 768px) {
-    .bd-placeholder-img-lg {
-        font-size: 3.5rem;
-    }
-}
-
 .b-example-divider {
     height: 3rem;
-    background-color: rgba(0, 0, 0, .1);
+    background-color: $background-color_1;
     border: solid rgba(0, 0, 0, .15);
     border-width: 1px 0;
     box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
@@ -42,17 +42,17 @@ body {
     z-index: 2;
     height: 2.75rem;
     overflow-y: hidden;
-}
 
-.nav-scroller .nav {
-    display: flex;
-    flex-wrap: nowrap;
-    padding-bottom: 1rem;
-    margin-top: -1px;
-    overflow-x: auto;
-    text-align: center;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
+    .nav {
+        display: flex;
+        flex-wrap: nowrap;
+        padding-bottom: 1rem;
+        margin-top: -1px;
+        overflow-x: auto;
+        text-align: center;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
 }
 
 .feature-icon {
@@ -61,15 +61,19 @@ body {
     border-radius: .75rem;
 }
 
-.icon-link>.bi {
-    margin-top: .125rem;
-    margin-left: .125rem;
-    fill: currentcolor;
-    transition: transform .25s ease-in-out;
-}
+.icon-link {
+    >.bi {
+        margin-top: .125rem;
+        margin-left: .125rem;
+        fill: currentcolor;
+        transition: transform .25s ease-in-out;
+    }
 
-.icon-link:hover>.bi {
-    transform: translate(.25rem);
+    &:hover {
+        >.bi {
+            transform: translate(.25rem);
+        }
+    }
 }
 
 .icon-square {
@@ -97,10 +101,9 @@ body {
     background-repeat: no-repeat;
     transition: transform .6s ease;
 
-}
-
-.card:hover {
-    transform: scale(1.012);
+    &:hover {
+        transform: scale(1.012);
+    }
 }
 
 .feature-icon-small {
@@ -113,20 +116,28 @@ span {
 }
 
 .alldata {
-    font-family: 'Monda', sans-serif;
+    font-family: $font-family_1;
     text-align: center;
 }
 
 .display-6 {
-    font-family: 'Monda', sans-serif !important;
+    font-family: $font-family_1 !important;
 }
 
 .pt-5 {
     padding-top: 0rem !important;
 }
-.me-auto{
+
+.me-auto {
     cursor: pointer;
 }
+
+@media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+    }
+}
+
 @media (min-width: 1200px) {
     .display-6 {
         font-size: 2rem;

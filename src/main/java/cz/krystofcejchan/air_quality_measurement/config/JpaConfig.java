@@ -19,7 +19,8 @@ public class JpaConfig {
          dataSourceBuilder.username("sql11521723");
          dataSourceBuilder.password(AqmApplication.dbpsd);
          return dataSourceBuilder.build();
-     }
+     }*/
+    @Primary
     @Bean
     public DataSource getSecondaryDataSource() {
         DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
@@ -27,9 +28,9 @@ public class JpaConfig {
         dataSourceBuilder.username("root");
         dataSourceBuilder.password("jetotereza");
         return dataSourceBuilder.build();
-    }*/
+    }
 
-    @Primary
+    /*@Primary
     @Bean
     public DataSource getPrimaryDataSource() {
         DataSourceBuilder<? extends DataSource> dataSourceBuilder = DataSourceBuilder.create();
@@ -37,5 +38,5 @@ public class JpaConfig {
         dataSourceBuilder.username("sql11521723");
         dataSourceBuilder.password(AqmApplication.dbpsd);
         return dataSourceBuilder.build();
-    }
+    }*/
 }

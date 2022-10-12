@@ -2,11 +2,11 @@
     background-color: white;
     color: #3caeff;
     border-color: #3caeff;
-}
 
-.btn:hover {
-    background-color: #3caeff;
-    color: white;
+    &:hover {
+        background-color: #3caeff;
+        color: white;
+    }
 }
 
 .col-lg-6 {
