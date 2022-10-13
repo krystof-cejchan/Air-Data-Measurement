@@ -7,6 +7,9 @@ export interface AirData {
     temperature: number;
     humidity: number;
     rndHash: string;
+    reportedN: number;
+    //invalidData:boolean;
+
 
     //beyond java back-end object properties =>
     bcgPictureUrl: string;

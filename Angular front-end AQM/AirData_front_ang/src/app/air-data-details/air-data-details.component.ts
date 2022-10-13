@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AirDataDetailsService } from './air-data-details.service';
 import { AirData } from "../airdata";
 import { formatDate } from '@angular/common';
-declare const dataTableSet_js: any;
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-air-data-details',
@@ -15,13 +15,23 @@ export class AirDataDetailsComponent implements OnInit {
 
   public isDisabled = '';
 
-  constructor(private route: ActivatedRoute, private service: AirDataDetailsService) { }
+  public userReported = "";
+  public reportedNumber: number = 0;
+
+  constructor(private cookieService: CookieService, private route: ActivatedRoute, private service: AirDataDetailsService) { }
 
   async ngOnInit(): Promise<void> {
-    this.service.getAirDataFromIdAndHash(this.route.snapshot.params['id'], this.route.snapshot.params['hash']).subscribe(
+    const ID_FROM_PARAMS: number = this.route.snapshot.params['id'];
+    this.service.getAirDataFromIdAndHash(ID_FROM_PARAMS, this.route.snapshot.params['hash']).subscribe(
       (response: AirData) => {
         response.receivedDataDateTime = this.formatDate(new Date(response.receivedDataDateTime))
+        this.reportedNumber = response.reportedN;
         this.airdatas.push(response);
+
+        if (this.existsCookie(ID_FROM_PARAMS.toString())) {
+          this.isDisabled = 'disabled';
+          this.userReported = " Tvoje nahlášení jsme již obdrželi!";
+        }
       },
       () => {
         alert('No data available for this input data');
@@ -46,14 +56,42 @@ export class AirDataDetailsComponent implements OnInit {
   }
 
   public reportAirData(id: number) {
-    this.service.reportAirData(id).subscribe(
-      (response: void) => {
-        this.isDisabled = 'disabled'
-      }
-      ,
-      () => {
-        this.isDisabled = ''
-      }
-    );
+    if (this.existsCookie(id.toString()) === false) {
+      this.service.reportAirData(id).subscribe(
+        (/*success*/) => {
+          this.isDisabled = 'disabled'
+          this.setCookie(id.toString());
+          this.userReported = " Tvoje nahlášení jsme již obdrželi!";
+          ++this.reportedNumber;
+        }
+        ,
+        (/*failure*/) => {
+          this.isDisabled = ''
+        }
+      );
+    }
+    else {
+      alert('Tvoje nahlášení jsme již obdrželi!')
+    }
   }
+
+
+  setCookie(cookieName: string) {
+    this.cookieService.set(cookieName, 'true');
+  }
+
+  getCookie(cookieName: string): string {
+    return this.cookieService.get(cookieName);
+  }
+  existsCookie(cookieName: string): boolean {
+    return !((this.getCookie(cookieName) === ""));
+  }
+  deleteCookie(cookieName: string) {
+    this.cookieService.delete(cookieName);
+  }
+
+  deleteAll() {
+    this.cookieService.deleteAll();
+  }
+
 }

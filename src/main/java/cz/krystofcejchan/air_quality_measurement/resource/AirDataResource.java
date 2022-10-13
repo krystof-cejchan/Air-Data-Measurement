@@ -3,6 +3,7 @@ package cz.krystofcejchan.air_quality_measurement.resource;
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
 import cz.krystofcejchan.air_quality_measurement.service.AirDataService;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,21 +13,19 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/airdata")
-public class AirDataResource {
-    private final AirDataService airDataService;
-
+public record AirDataResource(AirDataService airDataService) {
     @Contract(pure = true)
-    public AirDataResource(AirDataService airDataService) {
-        this.airDataService = airDataService;
+    public AirDataResource {
     }
 
+    @Contract(" -> new")
     @GetMapping("/all")
-    public ResponseEntity<List<AirData>> getAllAirData() {
+    public @NotNull ResponseEntity<List<AirData>> getAllAirData() {
         return new ResponseEntity<>(airDataService.findAllAirData(), HttpStatus.OK);
     }
 
     @GetMapping("/find/{id}")
-    public ResponseEntity<?> getAirDataById(@PathVariable("id") Long id) {
+    public @NotNull ResponseEntity<?> getAirDataById(@PathVariable("id") Long id) {
         if (airDataService.existAirData(id))
             return new ResponseEntity<>(airDataService.findAirData(id), HttpStatus.OK);
         else
@@ -35,14 +34,16 @@ public class AirDataResource {
                     .body(HttpStatus.BAD_REQUEST.getReasonPhrase());
     }
 
+    @Contract("_ -> new")
     @GetMapping("/exists/{id}")
-    public ResponseEntity<Boolean> existAirData(@PathVariable("id") Long id) {
+    public @NotNull ResponseEntity<Boolean> existAirData(@PathVariable("id") Long id) {
         return new ResponseEntity<>(airDataService.existAirData(id), HttpStatus.OK);
     }
 
+    @Contract("_, _ -> new")
     @PostMapping("/add")
-    public ResponseEntity<AirData> addAirData(@RequestBody AirData airData,
-                                              @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+    public @NotNull ResponseEntity<AirData> addAirData(@RequestBody AirData airData,
+                                                       @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         if (token.equals("password"))
             return new ResponseEntity<>(airDataService.addAirData(airData), HttpStatus.CREATED);
         else
@@ -50,18 +51,21 @@ public class AirDataResource {
 
     }
 
+    @Contract("_ -> new")
     @PutMapping("/update")
-    public ResponseEntity<AirData> updateAirData(@RequestBody AirData airData) {
+    public @NotNull ResponseEntity<AirData> updateAirData(@RequestBody AirData airData) {
         return new ResponseEntity<>(airDataService.updateAirData(airData), HttpStatus.OK);
     }
 
+    @Contract("_ -> new")
     @PutMapping("/update_reportN")
-    public ResponseEntity<AirData> increaseReportNumberByOne(@RequestBody Long id) {
+    public @NotNull ResponseEntity<AirData> increaseReportNumberByOne(@RequestBody Long id) {
         return new ResponseEntity<>(airDataService.updateNumberReportedById(id), HttpStatus.OK);
     }
 
+    @Contract("_ -> new")
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<HttpStatus> updateAirData(@PathVariable("id") Long id) {
+    public @NotNull ResponseEntity<HttpStatus> updateAirData(@PathVariable("id") Long id) {
         airDataService.deleteAirData(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

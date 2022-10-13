@@ -3,13 +3,14 @@ package cz.krystofcejchan.air_quality_measurement.domain.location;
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
 import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import jakarta.persistence.*;
+import org.jetbrains.annotations.Contract;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "locations")
-public class LocationData implements Serializable {
+public final class LocationData implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false, name = "id")
@@ -27,13 +28,14 @@ public class LocationData implements Serializable {
     private String roomIdentifier;
     @Column(name = "metersAboveGround")
     private BigDecimal metersAboveTheGroundApprox;
-    /*@OneToOne(mappedBy = "locationId",fetch = FetchType.LAZY,cascade=CascadeType.ALL)
-    @JoinColumn(name="id")
-    private AirData airdata;*/
+    @OneToOne(mappedBy = "locationId")
+    private AirData airdata;
 
+    @Contract(pure = true)
     public LocationData() {
     }
 
+    @Contract(pure = true)
     public LocationData(Long id, Boolean outOfService, Location location, String street, String city, Integer houseNumber,
                         String roomIdentifier, BigDecimal metersAboveTheGroundApprox, AirData airdata) {
         this.id = id;
@@ -44,6 +46,7 @@ public class LocationData implements Serializable {
         this.houseNumber = houseNumber;
         this.roomIdentifier = roomIdentifier;
         this.metersAboveTheGroundApprox = metersAboveTheGroundApprox;
+        this.airdata = airdata;
     }
 
     public Long getId() {
@@ -108,5 +111,13 @@ public class LocationData implements Serializable {
 
     public void setRoomIdentifier(String roomIdentifier) {
         this.roomIdentifier = roomIdentifier;
+    }
+
+    public AirData getAirdata() {
+        return airdata;
+    }
+
+    public void setAirdata(AirData airdata) {
+        this.airdata = airdata;
     }
 }
