@@ -38,11 +38,20 @@ public class AirDataService {
         return airDataRepository.save(airData);
     }
 
+    /**
+     * report a data {@link AirData} - adding +1 to reportedN column in database
+     *
+     * @param id identifier of the record
+     * @return AirData or null if no record matched the id
+     */
     @Nullable
     public AirData updateNumberReportedById(Long id) {
         if (airDataRepository.findById(id).isPresent()) {
             AirData airData = airDataRepository.findById(id).get();
             airData.setReportedN(airData.getReportedN() + 1);
+
+            //TODO check if the data are truly incorrect/invalid
+
             return airDataRepository.save(airData);
         }
         return null;

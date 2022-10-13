@@ -1,5 +1,6 @@
 package cz.krystofcejchan.air_quality_measurement.domain;
 
+import cz.krystofcejchan.air_quality_measurement.domain.location.LocationData;
 import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import jakarta.persistence.*;
 import org.jetbrains.annotations.Contract;
@@ -9,10 +10,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "airdata")
 public class AirData implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "id")
     private Long id;
     private String arduinoTime;
     private LocalDateTime receivedDataDateTime;
@@ -27,15 +29,16 @@ public class AirData implements Serializable {
     private Integer reportedN;
     @Column(columnDefinition = "boolean default '0'", insertable = false, nullable = false)
     private Boolean invalidData;
-    /*@OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
-    private LocationData locationId;*/
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
+    private LocationData locationId;
 
 
     @Contract(pure = true)
     public AirData() {
     }
 
+    @Contract(pure = true)
     public AirData(Long id, String arduinoTime, LocalDateTime receivedDataDateTime, BigDecimal airQuality,
                    Location location, BigDecimal temperature, BigDecimal humidity, String rndHash,
                    Integer reportedN, Boolean invalidData) {
