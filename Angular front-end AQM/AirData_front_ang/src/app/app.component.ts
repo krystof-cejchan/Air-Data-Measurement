@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+declare function collapseMenu(): any;
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -10,5 +12,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    collapseMenu();
   }
 }
