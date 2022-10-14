@@ -24,7 +24,9 @@
           {{airdata.receivedDataDateTime}} </p>
         <a class="btn btn-danger btn-lg {{isDisabled}}" aria-disabled="true"
           (click)="reportAirData(airdata.id)">Nahlásit chybná data!</a>
-        <span class="reported"><i>Nahlášeno: {{reportedNumber}}</i> <br><span [innerHtml]="userReported"></span></span>
+        <span class="reported"><i>Nahlášeno: {{reportedNumber}}</i> <br><span
+            [innerHtml]="userReported"></span></span><br>
+        <span class="validity" [innerHtml]="validity"></span>
       </div>
       <div class="row row-cols-1 row-cols-sm-2 g-4">
         <div class="d-flex flex-column gap-2">

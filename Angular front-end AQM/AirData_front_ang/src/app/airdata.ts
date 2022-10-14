@@ -8,7 +8,7 @@ export interface AirData {
     humidity: number;
     rndHash: string;
     reportedN: number;
-    //invalidData:boolean;
+    invalidData:boolean;
 
 
     //beyond java back-end object properties =>

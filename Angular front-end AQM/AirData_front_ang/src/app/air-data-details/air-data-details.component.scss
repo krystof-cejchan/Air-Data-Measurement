@@ -1,3 +1,7 @@
+:host{
+  --text-color:"#000000";
+}
+
 .feature-icon {
   width: 4rem;
   height: 4rem;
@@ -49,4 +53,9 @@
 
 .reported {
   color: #bababa;
+}
+
+.validity {
+  color: red !important;
+  font-size: large;
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AirDataDetailsService } from './air-data-details.service';
 import { AirData } from "../airdata";
@@ -11,14 +11,17 @@ import { CookieService } from 'ngx-cookie-service';
   styleUrls: ['./air-data-details.component.scss']
 })
 export class AirDataDetailsComponent implements OnInit {
+
   public airdatas: AirData[] = [];
 
   public isDisabled = '';
 
   public userReported = "";
+  public validity = "";
+
   public reportedNumber: number = 0;
 
-  constructor(private cookieService: CookieService, private route: ActivatedRoute, private service: AirDataDetailsService) { }
+  constructor(private cookieService: CookieService, private elRef: ElementRef, private route: ActivatedRoute, private service: AirDataDetailsService) { }
 
   async ngOnInit(): Promise<void> {
     const ID_FROM_PARAMS: number = this.route.snapshot.params['id'];
@@ -32,9 +35,25 @@ export class AirDataDetailsComponent implements OnInit {
           this.isDisabled = 'disabled';
           this.userReported = " Tvoje nahlášení jsme již obdrželi!";
         }
+        if (this.airdatas[0].invalidData) {
+          this.isDisabled = 'disabled';
+          this.validity = "<b>Tyto data byly vyhodnoceny jako nesprávné!</b>";
+        }
+
       },
       () => {
-        alert('No data available for this input data');
+        const errorAirData = {
+          id: -1,
+          rndHash: "n / a",
+          airQuality: -1,
+          temperature: -1,
+          humidity: -1,
+          location: "n / a",
+            arduinoTime: "nikdy",
+          receivedDataDateTime: "nikdy"
+        } as AirData;
+        this.airdatas.push(errorAirData);
+        this.validity = "<b>Tento záznam neexistuje!</b>";
       }
     );
     var counter = 0;
