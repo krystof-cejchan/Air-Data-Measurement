@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta content="IE=edge" http-equiv="X-UA-Compatible">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -15,7 +15,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.2.1/dist/js/bootstrap.min.js"
     integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
     crossorigin="anonymous"></script>
-
+  
 
   <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
 
@@ -24,7 +24,6 @@
 </head>
 
 <body>
-  <!--
   <nav class="navbar navbar-expand-xl fixed-top navbar-light">
     <div class="container-fluid">
       <button aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation"
@@ -56,40 +55,8 @@
         </ul>
       </div>
     </div>
-  </nav>-->
-  <div id="colorlib-page">
-    <a class="js-colorlib-nav-toggle colorlib-nav-toggle"><i></i></a>
-    <aside id="colorlib-aside" role="complementary" class="js-fullheight">
-      <nav id="colorlib-main-menu" role="navigation">
-        <ul>
-          <li class="colorlib-active"><a aria-current="page" class="nav-link active" routerLink=""
-              routerLinkActive="active">Úvodní strana</a></li>
-          <li><a routerLink="/nejnovejsi-data" routerLinkActive="active">Nejnovější</a></li>
-          <li><a routerLink="/nekdejsi-data" routerLinkActive="active">Historie</a></li>
-          <li><a routerLink="/grafy" routerLinkActive="active">Grafy</a></li>
-          <li><a routerLink="/zebricky" routerLinkActive="active">Žebříčky</a></li>
-        </ul>
-      </nav>
-    </aside>
-
-    <div id="colorlib-main">
-      <section class="ftco-section pt-4 mb-5 ftco-intro">
-        <div class="container-fluid px-3 px-md-0">
-          <router-outlet></router-outlet>
-        </div>
-      </section>
-    </div>
-  </div>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-
-  <script src="../assets/js/main-page-main.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-    integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-    integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
-    crossorigin="anonymous"></script>
-
+  </nav>
+  <router-outlet></router-outlet>
 </body>
 
 
