@@ -43,7 +43,7 @@ public record AirDataResource(AirDataService airDataService) {
     @Contract("_, _ -> new")
     @PostMapping("/add")
     public @NotNull ResponseEntity<AirData> addAirData(@RequestBody AirData airData,
-                                                       @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+                                                       @RequestHeader(HttpHeaders.AUTHORIZATION) @NotNull String token) {
         if (token.equals("password"))
             return new ResponseEntity<>(airDataService.addAirData(airData), HttpStatus.CREATED);
         else
@@ -59,7 +59,7 @@ public record AirDataResource(AirDataService airDataService) {
 
     @Contract("_ -> new")
     @PutMapping("/update_reportN")
-    public @NotNull ResponseEntity<AirData> increaseReportNumberByOne(@RequestBody Long id) {
+    public @NotNull ResponseEntity<AirData> increaseReportNumberByOne(@RequestBody @NotNull Long id) {
         return new ResponseEntity<>(airDataService.updateNumberReportedById(id), HttpStatus.OK);
     }
 
