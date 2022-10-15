@@ -20,6 +20,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { AirDataDetailsComponent } from './air-data-details/air-data-details.component';
+import { MainPageComponent } from './main-page/main-page.component';
 
 
 
@@ -33,7 +34,8 @@ import { AirDataDetailsComponent } from './air-data-details/air-data-details.com
     GraphsComponent,
     LeaderboardComponent,
     HistorySearchBarComponent,
-    AirDataDetailsComponent
+    AirDataDetailsComponent,
+    MainPageComponent,
   ],
   imports: [
     BrowserModule, HttpClientModule, AppRoutingModule,

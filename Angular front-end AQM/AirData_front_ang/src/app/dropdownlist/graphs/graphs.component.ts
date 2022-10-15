@@ -51,9 +51,6 @@ export class GraphsComponent implements OnInit {
     this.service.getAllAirDataAverage().subscribe(
       (response: AirDataAverageForDay[]) => {
         response.forEach(respData => this.allDataFromDatabase.push(respData));
-      },
-      (err: HttpErrorResponse) => {
-        alert('Error on the server has occured');
       }
     );
 

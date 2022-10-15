@@ -47,7 +47,6 @@ body {
         display: flex;
         flex-wrap: nowrap;
         padding-bottom: 1rem;
-        margin-top: -1px;
         overflow-x: auto;
         text-align: center;
         white-space: nowrap;
@@ -63,8 +62,6 @@ body {
 
 .icon-link {
     >.bi {
-        margin-top: .125rem;
-        margin-left: .125rem;
         fill: currentcolor;
         transition: transform .25s ease-in-out;
     }
@@ -113,6 +110,7 @@ body {
 
 span {
     font-size: xx-large;
+    color: white !important;
 }
 
 .alldata {

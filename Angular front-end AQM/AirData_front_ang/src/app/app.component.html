@@ -15,9 +15,16 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.2.1/dist/js/bootstrap.min.js"
     integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
     crossorigin="anonymous"></script>
+
+
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://kys.hys.cz/uloziste/krystofcejchan.cz/style.css">
 </head>
 
 <body>
+  <!--
   <nav class="navbar navbar-expand-xl fixed-top navbar-light">
     <div class="container-fluid">
       <button aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation"
@@ -49,8 +56,32 @@
         </ul>
       </div>
     </div>
-  </nav>
-  <router-outlet></router-outlet>
+  </nav>-->
+  <div id="colorlib-page">
+    <a class="js-colorlib-nav-toggle colorlib-nav-toggle"><i></i></a>
+    <aside id="colorlib-aside" role="complementary" class="js-fullheight">
+      <nav id="colorlib-main-menu" role="navigation">
+        <ul>
+          <li class="colorlib-active"><a aria-current="page" class="nav-link active" routerLink=""
+              routerLinkActive="active">Úvodní strana</a></li>
+          <li><a routerLink="/nejnovejsi-data" routerLinkActive="active">Nejnovější</a></li>
+          <li><a routerLink="/nekdejsi-data" routerLinkActive="active">Historie</a></li>
+          <li><a routerLink="/grafy" routerLinkActive="active">Grafy</a></li>
+          <li><a routerLink="/zebricky" routerLinkActive="active">Žebříčky</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <div id="colorlib-main">
+      <section class="ftco-section pt-4 mb-5 ftco-intro">
+        <div class="container-fluid px-3 px-md-0">
+          <router-outlet></router-outlet>
+        </div>
+      </section>
+    </div>
+  </div>
+
+
 </body>
 
 

@@ -8,11 +8,12 @@ import { HistorySearchBarComponent } from './dropdownlist/history-search-bar/his
 import { GraphsComponent } from './dropdownlist/graphs/graphs.component';
 import { LeaderboardComponent } from './dropdownlist/leaderboard/leaderboard.component';
 import { AirDataDetailsComponent } from "./air-data-details/air-data-details.component";
+import { MainPageComponent } from "./main-page/main-page.component";
 
 
 const routes: Routes = [
   {
-    path: '', component: LatestDataComponent
+    path: '', component: MainPageComponent
   },
 
   {

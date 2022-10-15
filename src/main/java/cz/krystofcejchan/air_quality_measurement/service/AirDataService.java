@@ -51,10 +51,16 @@ public record AirDataService(AirDataRepository airDataRepository) {
             AirData airData = airDataRepository.findById(id).get();
             airData.setReportedN(airData.getReportedN() + 1);
 
-            AirData previousAirData = airDataRepository.findByLocationAndReceivedDataDateTimeBefore(airData.getLocation(),
+          /*  AirData previousAirData = airDataRepository.findByLocationAndReceivedDataDateTimeBefore(airData.getLocation(),
                             airData.getReceivedDataDateTime())
                     .orElse(Collections.singletonList(airData))
-                    .get(0);
+                    .get(0);*/
+
+            List<AirData> optionalPreviousAirData = airDataRepository.findByLocationAndReceivedDataDateTimeBefore(airData.getLocation(),
+                            airData.getReceivedDataDateTime())
+                    .orElse(Collections.emptyList());
+
+            AirData previousAirData = optionalPreviousAirData.isEmpty() ? airData : optionalPreviousAirData.get(0);
 
             if (!areDataValid(airData) || !compareAirDataObjects(airData, previousAirData))
                 airData.setInvalidData(true);

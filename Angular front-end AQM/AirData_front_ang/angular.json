@@ -31,7 +31,7 @@
               "src/custom-theme.scss",
               "src/styles.scss"
             ],
-            "scripts": ["assets/js/collapseMenu.js"]
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -99,7 +99,7 @@
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
             ],
-            "scripts": ["assets/js/collapseMenu.js"]
+            "scripts": []
           }
         }
       }
