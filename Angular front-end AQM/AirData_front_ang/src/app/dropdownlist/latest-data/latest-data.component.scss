@@ -5,6 +5,7 @@ $background-color_1: rgba(0, 0, 0, .1);
 
 html {
     font-family: $font-family_1 !important;
+    scroll-behavior: smooth;
 }
 
 body {
@@ -139,5 +140,11 @@ span {
 @media (min-width: 1200px) {
     .display-6 {
         font-size: 2rem;
+    }
+}
+
+@media screen and (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
     }
 }

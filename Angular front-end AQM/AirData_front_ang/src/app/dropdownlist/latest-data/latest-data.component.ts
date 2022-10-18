@@ -1,6 +1,6 @@
-import { formatDate } from '@angular/common';
+import { DOCUMENT, formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AirData } from 'src/app/airdata';
 import { LatestDataService } from './latest-data.service';
@@ -18,13 +18,19 @@ export class LatestDataComponent implements OnInit {
   public airdatas: AirData[] = [];
   private formattedAirDatas: AirData[] = [];
 
-  constructor(private route: ActivatedRoute, private router: Router, private latestDataService: LatestDataService) {
+  constructor(@Inject(DOCUMENT) document: Document,
+    private route: ActivatedRoute,
+    private router: Router,
+    private latestDataService: LatestDataService) {
   }
 
   ngOnInit(): void {
     this.getAirDatas();
   }
 
+  /**
+   * tries to get AirData from the back-end
+   */
   public getAirDatas(): void {
     this.latestDataService.getLatestData().subscribe(
       (response: AirData[]) => {
@@ -47,6 +53,14 @@ export class LatestDataComponent implements OnInit {
       }
     );
   }
+
+  /**
+   * uses provided id and hash from data obtained from database to redirect a user to a page where details of the record found 
+   * by provided airdataInfo will be displayed, if nothing is found with such id and hash,
+   * the redirection will be executed anyway but 
+   * error message will be displayed in the component where the user would be redirected to
+   * @param airdataInfo 
+   */
   public showDetails(airdataInfo: { id: number, hash: string }) {
     this.router.navigate([`/data-detaily/${airdataInfo.id}/${airdataInfo.hash}`], { relativeTo: this.route });
   }
@@ -57,5 +71,17 @@ export class LatestDataComponent implements OnInit {
    */
   private formatDate(date: Date): string {
     return formatDate(date, 'dd-MM • HH:mm:ss', "en-US");
+  }
+
+  /**
+   * scrolls to the element only if the element is found with provided id
+   * @param id id of the element
+   */
+  scrollToElement(id: string): void {
+    document.getElementById(id)!.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+      inline: "nearest"
+    });
   }
 }

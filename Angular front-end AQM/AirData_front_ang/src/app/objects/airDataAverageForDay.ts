@@ -1,3 +1,6 @@
+/**
+ * class for creating its objects
+ */
 export interface AirDataAverageForDay {
     id: number;
     location: string;

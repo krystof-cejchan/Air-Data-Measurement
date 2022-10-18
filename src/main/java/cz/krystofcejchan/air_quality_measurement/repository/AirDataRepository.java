@@ -19,4 +19,5 @@ public interface AirDataRepository extends JpaRepository<AirData, Long> {
     Optional<AirData> findByIdAndRndHash(Long id, String rndHash);
 
     Optional<List<AirData>> findByLocationAndReceivedDataDateTimeBefore(Location location, LocalDateTime endTimeLine);
+
 }
