@@ -36,8 +36,8 @@ public class AirDataApiResource {
     }
 
     @GetMapping("/time/period")
-    public ResponseEntity<?> getAirDataFromPeriodOfTime(@RequestHeader(required = true) String startDate,
-                                                        @RequestHeader(required = true) String finishDate,
+    public ResponseEntity<?> getAirDataFromPeriodOfTime(@RequestHeader() String startDate,
+                                                        @RequestHeader() String finishDate,
                                                         @RequestHeader(required = false) String startTime,
                                                         @RequestHeader(required = false) String finishTime) {
         LocalTime startT, finishT;
@@ -54,7 +54,7 @@ public class AirDataApiResource {
     }
 
     @GetMapping("/time/day_avg")
-    public ResponseEntity<?> getAverageAirDataForSpecificDay(@RequestParam(required = true) String date) {
+    public ResponseEntity<?> getAverageAirDataForSpecificDay(@RequestParam() String date) {
         LocalDate startD;
         try {
             startD = LocalDate.parse(date);
@@ -65,7 +65,7 @@ public class AirDataApiResource {
     }
 
     @GetMapping("/time/day")
-    public ResponseEntity<?> getAirDataForSpecificDay(@RequestParam(required = true) String date) {
+    public ResponseEntity<?> getAirDataForSpecificDay(@RequestParam() String date) {
         LocalDate startD;
         try {
             startD = LocalDate.parse(date);
@@ -76,8 +76,8 @@ public class AirDataApiResource {
     }
 
     @GetMapping("/getByIdAndHash")
-    public ResponseEntity<?> getAirDataByIdAndHash(@RequestParam(required = true) Long id,
-                                                   @RequestParam(required = true) String hash) {
+    public ResponseEntity<?> getAirDataByIdAndHash(@RequestParam() Long id,
+                                                   @RequestParam() String hash) {
         return airDataApiService.getDataByIdAndHash(id, hash);
     }
 
