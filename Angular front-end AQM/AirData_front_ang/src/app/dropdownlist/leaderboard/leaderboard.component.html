@@ -1,1 +1,8 @@
-<p>leaderboard works!</p>
+<div class="d-flex justify-content-center">
+    <div *ngIf="showLoading" class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+    <div *ngFor="let leaderboard of leaderboard_data">
+        {{LeaderboardData_string}}
+    </div>
+</div>

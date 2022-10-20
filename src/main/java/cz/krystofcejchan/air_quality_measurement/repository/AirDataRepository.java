@@ -20,4 +20,17 @@ public interface AirDataRepository extends JpaRepository<AirData, Long> {
 
     Optional<List<AirData>> findByLocationAndReceivedDataDateTimeBefore(Location location, LocalDateTime endTimeLine);
 
+    Optional<List<AirData>> findTop3AirQualityDistinctByLocationOrderByAirQualityDesc(Location location);
+
+    Optional<List<AirData>> findTop3TemperatureDistinctByLocationOrderByAirQualityDesc(Location location);
+
+
+    Optional<List<AirData>> findTop3HumidityDistinctByLocationOrderByAirQualityDesc(Location location);
+
+    Optional<List<AirData>> findTop3HumidityDistinctByLocationOrderByAirQualityAsc(Location location);
+
+    Optional<List<AirData>> findTop3TemperatureDistinctByLocationOrderByAirQualityAsc(Location location);
+
+    Optional<List<AirData>> findTop3AirQualityDistinctByLocationOrderByAirQualityAsc(Location location);
+
 }

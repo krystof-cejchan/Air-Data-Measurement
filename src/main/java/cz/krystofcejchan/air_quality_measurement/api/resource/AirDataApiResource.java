@@ -1,6 +1,10 @@
 package cz.krystofcejchan.air_quality_measurement.api.resource;
 
 import cz.krystofcejchan.air_quality_measurement.api.service.AirDataApiService;
+import cz.krystofcejchan.air_quality_measurement.domain.AirData;
+import cz.krystofcejchan.air_quality_measurement.domain.nondatabase_objects.LeaderboardData;
+import cz.krystofcejchan.air_quality_measurement.enums.LeaderboardType;
+import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import org.jetbrains.annotations.Contract;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +14,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/airdata/api")
@@ -72,4 +80,27 @@ public class AirDataApiResource {
                                                    @RequestParam(required = true) String hash) {
         return airDataApiService.getDataByIdAndHash(id, hash);
     }
+
+    @GetMapping("/getLeaderboard")
+    public ResponseEntity<LeaderboardData> getLeaderBoardStats() {
+        Map<Map<Location, LeaderboardType>, List<AirData>> locationToMapOfLeaderboardTypeToAirData = new HashMap<>();
+
+        for (Location location : Location.values()) {
+            for (LeaderboardType leaderboardType : LeaderboardType.values()) {
+                locationToMapOfLeaderboardTypeToAirData
+                        .putIfAbsent(Map.of(location, leaderboardType),
+                                airDataApiService
+                                        .getLeaderBoardData(leaderboardType,
+                                                location)
+                                        .orElse(Collections.singletonList(new AirData((byte) 0)))
+                        );
+            }
+        }
+        locationToMapOfLeaderboardTypeToAirData.values().removeIf(value -> value.stream()
+                .allMatch(it -> it.getId() < 0L));
+
+        return new ResponseEntity<>(new LeaderboardData(locationToMapOfLeaderboardTypeToAirData),
+                locationToMapOfLeaderboardTypeToAirData.isEmpty() ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
+    }
+
 }

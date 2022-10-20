@@ -118,5 +118,6 @@ public record AirDataService(AirDataRepository airDataRepository) {
 
         return airQ_temp_hum.stream().allMatch(Boolean::booleanValue);
     }
+
 }
 

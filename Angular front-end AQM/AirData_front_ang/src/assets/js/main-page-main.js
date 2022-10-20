@@ -26,7 +26,7 @@
     var mobileMenuOutsideClick = function () {
 
         $(document).click(function (e) {
-            console.log(e)
+           // console.log(e)
             const container = $("a#III");
             const container2 = $("i#III");
             const this_component_body = $("body#mainbody");

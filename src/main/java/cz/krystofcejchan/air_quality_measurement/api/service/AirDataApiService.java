@@ -2,10 +2,12 @@ package cz.krystofcejchan.air_quality_measurement.api.service;
 
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
 import cz.krystofcejchan.air_quality_measurement.domain.nondatabase_objects.AirDataAverage;
+import cz.krystofcejchan.air_quality_measurement.enums.LeaderboardType;
 import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import cz.krystofcejchan.air_quality_measurement.exceptions.DataNotFoundException;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataRepository;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,96 +21,78 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class AirDataApiService {
-    private final AirDataRepository airDataRepository;
-
+public record AirDataApiService(AirDataRepository airDataRepository) {
     @Contract(pure = true)
     @Autowired
-    public AirDataApiService(AirDataRepository airDataRepository) {
-        this.airDataRepository = airDataRepository;
+    public AirDataApiService {
     }
 
-    public ResponseEntity<?> getLatestAirData(String paramLocation) {
-        if (paramLocation != null && Location.toList()
-                .stream().map(Enum::toString)
-                .anyMatch(location -> location.equals(paramLocation))) {
+    @Contract("null -> new")
+    public @NotNull ResponseEntity<?> getLatestAirData(String paramLocation) {
+        if (paramLocation != null && Location.toList().stream().map(Enum::toString).anyMatch(location -> location.equals(paramLocation))) {
             //paramLocation is set and its value matches at least one LocationData
             try {
-                AirData airData = airDataRepository.findByLocationOrderByReceivedDataDateTimeDesc(Location.of(paramLocation))
-                        .orElseThrow(DataNotFoundException::new).get(0);
+                AirData airData = airDataRepository.findByLocationOrderByReceivedDataDateTimeDesc(Location.of(paramLocation)).orElseThrow(DataNotFoundException::new).get(0);
                 return new ResponseEntity<>(airData, HttpStatus.OK);
             } catch (DataNotFoundException dataNotFoundException) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase(), HttpStatus.BAD_REQUEST);
             }
         } else {
-            return new ResponseEntity<>(Location.toList()
-                    .stream()
-                    .filter(location -> !airDataRepository.findByLocationOrderByReceivedDataDateTimeDesc(location)
-                            .orElseThrow(DataNotFoundException::new).isEmpty())
-                    .map(existingLocation -> airDataRepository.findByLocationOrderByReceivedDataDateTimeDesc(existingLocation)
-                            .orElseThrow(DataNotFoundException::new).get(0)).toList(),
-                    HttpStatus.OK);
+            return new ResponseEntity<>(Location.toList().stream().filter(location -> !airDataRepository.findByLocationOrderByReceivedDataDateTimeDesc(location).orElseThrow(DataNotFoundException::new).isEmpty()).map(existingLocation -> airDataRepository.findByLocationOrderByReceivedDataDateTimeDesc(existingLocation).orElseThrow(DataNotFoundException::new).get(0)).toList(), HttpStatus.OK);
         }
     }
 
-    public ResponseEntity<?> getAverageAirDataFromDateToDate(LocalDateTime start, LocalDateTime end) {
+    public @NotNull ResponseEntity<?> getAverageAirDataFromDateToDate(LocalDateTime start, LocalDateTime end) {
         Optional<List<AirData>> receivedDate = airDataRepository.findByReceivedDataDateTimeBetween(start, end);
-        return receivedDate.isEmpty() ?
-                new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase(), HttpStatus.BAD_REQUEST) :
-                new ResponseEntity<>(receivedDate.orElseThrow(DataNotFoundException::new)
-                        .stream().toList(), HttpStatus.OK);
+        return receivedDate.isEmpty() ? new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase(), HttpStatus.BAD_REQUEST) : new ResponseEntity<>(receivedDate.orElseThrow(DataNotFoundException::new).stream().toList(), HttpStatus.OK);
     }
 
-    public ResponseEntity<?> getAverageAirDataForOneSpecificDay(java.time.LocalDate day) {
-        Optional<List<AirData>> receivedDate = airDataRepository
-                .findByReceivedDataDateTimeBetween(LocalDateTime.of(day, LocalTime.MIN),
-                        LocalDateTime.of(day, LocalTime.MAX));
+    @Contract("_ -> new")
+    public @NotNull ResponseEntity<?> getAverageAirDataForOneSpecificDay(java.time.LocalDate day) {
+        Optional<List<AirData>> receivedDate = airDataRepository.findByReceivedDataDateTimeBetween(LocalDateTime.of(day, LocalTime.MIN), LocalDateTime.of(day, LocalTime.MAX));
 
         if (receivedDate.orElseThrow(DataNotFoundException::new).isEmpty())
-            return new ResponseEntity<>(new AirDataAverage(null, null, null),
-                    HttpStatus.OK);
+            return new ResponseEntity<>(new AirDataAverage(null, null, null), HttpStatus.OK);
 
         try {
-            BigDecimal airQualityAvg = BigDecimal.valueOf(receivedDate.orElseThrow(DataNotFoundException::new)
-                    .stream().map(AirData::getAirQuality)
-                    .mapToDouble(BigDecimal::doubleValue).average().orElseThrow(DataNotFoundException::new));
-            BigDecimal humidityAvg = BigDecimal.valueOf(receivedDate.orElseThrow(DataNotFoundException::new)
-                    .stream().map(AirData::getHumidity)
-                    .mapToDouble(BigDecimal::doubleValue).average().orElseThrow(DataNotFoundException::new));
-            BigDecimal temperatureAvg = BigDecimal.valueOf(receivedDate.orElseThrow(DataNotFoundException::new)
-                    .stream().map(AirData::getTemperature)
-                    .mapToDouble(BigDecimal::doubleValue).average().orElseThrow(DataNotFoundException::new));
+            BigDecimal airQualityAvg = BigDecimal.valueOf(receivedDate.orElseThrow(DataNotFoundException::new).stream().map(AirData::getAirQuality).mapToDouble(BigDecimal::doubleValue).average().orElseThrow(DataNotFoundException::new));
+            BigDecimal humidityAvg = BigDecimal.valueOf(receivedDate.orElseThrow(DataNotFoundException::new).stream().map(AirData::getHumidity).mapToDouble(BigDecimal::doubleValue).average().orElseThrow(DataNotFoundException::new));
+            BigDecimal temperatureAvg = BigDecimal.valueOf(receivedDate.orElseThrow(DataNotFoundException::new).stream().map(AirData::getTemperature).mapToDouble(BigDecimal::doubleValue).average().orElseThrow(DataNotFoundException::new));
 
-            return new ResponseEntity<>(
-                    new AirDataAverage(temperatureAvg.setScale(2, RoundingMode.HALF_UP),
-                            humidityAvg.setScale(2, RoundingMode.HALF_UP),
-                            airQualityAvg.setScale(2, RoundingMode.HALF_UP)),
-                    HttpStatus.OK);
+            return new ResponseEntity<>(new AirDataAverage(temperatureAvg.setScale(2, RoundingMode.HALF_UP), humidityAvg.setScale(2, RoundingMode.HALF_UP), airQualityAvg.setScale(2, RoundingMode.HALF_UP)), HttpStatus.OK);
 
         } catch (DataNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase() +
-                    '\n' + e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase() + '\n' + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
-    public ResponseEntity<?> gerAirDataForOneSpecificDay(java.time.LocalDate day) {
-        Optional<List<AirData>> receivedDate = airDataRepository
-                .findByReceivedDataDateTimeBetween(LocalDateTime.of(day, LocalTime.MIN),
-                        LocalDateTime.of(day, LocalTime.MAX));
+    @Contract("_ -> new")
+    public @NotNull ResponseEntity<?> gerAirDataForOneSpecificDay(java.time.LocalDate day) {
+        Optional<List<AirData>> receivedDate = airDataRepository.findByReceivedDataDateTimeBetween(LocalDateTime.of(day, LocalTime.MIN), LocalDateTime.of(day, LocalTime.MAX));
 
         if (receivedDate.orElseThrow(DataNotFoundException::new).isEmpty())
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                    HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase(), HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(receivedDate, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> getDataByIdAndHash(Long id, String hash) {
+    @Contract("_, _ -> new")
+    public @NotNull ResponseEntity<?> getDataByIdAndHash(Long id, String hash) {
         Optional<AirData> receivedDate = airDataRepository.findByIdAndRndHash(id, hash);
 
         if (receivedDate.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase(), HttpStatus.BAD_REQUEST);
-        else
-            return new ResponseEntity<>(receivedDate, HttpStatus.OK);
+        else return new ResponseEntity<>(receivedDate, HttpStatus.OK);
+    }
+
+    public Optional<List<AirData>> getLeaderBoardData(LeaderboardType leaderboardType, Location location) {
+        return switch (leaderboardType) {
+            case HIGHEST_AIRQ -> airDataRepository.findTop3AirQualityDistinctByLocationOrderByAirQualityDesc(location);
+            case LOWEST_AIRQ -> airDataRepository.findTop3AirQualityDistinctByLocationOrderByAirQualityAsc(location);
+            case HIGHEST_TEMP -> airDataRepository.findTop3TemperatureDistinctByLocationOrderByAirQualityDesc(location);
+            case LOWEST_TEMP -> airDataRepository.findTop3TemperatureDistinctByLocationOrderByAirQualityAsc(location);
+            case HIGHEST_HUM -> airDataRepository.findTop3HumidityDistinctByLocationOrderByAirQualityDesc(location);
+            case LOWEST_HUM -> airDataRepository.findTop3HumidityDistinctByLocationOrderByAirQualityAsc(location);
+        };
     }
 }

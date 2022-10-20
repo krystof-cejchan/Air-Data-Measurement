@@ -39,6 +39,11 @@ public class AirData implements Serializable {
     }
 
     @Contract(pure = true)
+    public AirData(byte auto) {
+        this(-1L, null, null, null, null, null, null, null, null, null);
+    }
+
+    @Contract(pure = true)
     public AirData(Long id, String arduinoTime, LocalDateTime receivedDataDateTime, BigDecimal airQuality,
                    Location location, BigDecimal temperature, BigDecimal humidity, String rndHash,
                    Integer reportedN, Boolean invalidData) {
