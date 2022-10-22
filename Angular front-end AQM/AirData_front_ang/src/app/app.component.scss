@@ -3,6 +3,13 @@
 html,
 body {
 	font-family: 'Monda', sans-serif;
+
+	scroll-behavior: auto;
+	margin: 0 0 0 0;
+	min-width: 0;
+}
+
+#marginFromNav {
 	padding-top: 50px;
 }
 
@@ -25,4 +32,15 @@ nav.navbar {
 .alldata {
 	font-family: 'Monda', sans-serif;
 	text-align: center;
+}
+
+.main_background_photo {
+	height: 100vh;
+	background-color:
+		linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.85));
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	background-repeat: no-repeat;
 }

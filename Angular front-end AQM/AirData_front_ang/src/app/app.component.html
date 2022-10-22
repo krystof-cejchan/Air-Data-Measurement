@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
   <meta charset="UTF-8">
@@ -15,7 +15,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.2.1/dist/js/bootstrap.min.js"
     integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
     crossorigin="anonymous"></script>
-  
+
 
   <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
 
@@ -24,39 +24,46 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-xl fixed-top navbar-light">
-    <div class="container-fluid">
-      <button aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation"
-        class="navbar-toggler" data-bs-target="#navbarNavDropdown" data-bs-toggle="collapse" type="button">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavDropdown">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a aria-current="page" class="nav-link active" routerLink="" routerLinkActive="active">Úvodní strana</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button">
-              Všechny funkce
-            </a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" routerLink="/nejnovejsi-data" routerLinkActive="active">Nejnovější</a></li>
-              <li><a class="dropdown-item" routerLink="/nekdejsi-data" routerLinkActive="active">Historie</a></li>
-              <li><a class="dropdown-item" routerLink="/grafy" routerLinkActive="active">Grafy</a></li>
-              <li><a class="dropdown-item" routerLink="/zebricky" routerLinkActive="active">Žebříčky</a></li>
+  <div class="main_background_photo" id="main_photobcg">
+    <div id="marginFromNav">
+      <nav class="navbar navbar-expand-xl fixed-top navbar-light">
+        <div class="container-fluid">
+          <button aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation"
+            class="navbar-toggler" data-bs-target="#navbarNavDropdown" data-bs-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a aria-current="page" class="nav-link active" routerLink="" routerLinkActive="active">Úvodní strana</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
+                  role="button">
+                  Všechny funkce
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" routerLink="/nejnovejsi-data" routerLinkActive="active">Nejnovější</a>
+                  </li>
+                  <li><a class="dropdown-item" routerLink="/nekdejsi-data" routerLinkActive="active">Historie</a></li>
+                  <li><a class="dropdown-item" routerLink="/grafy" routerLinkActive="active">Grafy</a></li>
+                  <li><a class="dropdown-item" routerLink="/zebricky" routerLinkActive="active">Žebříčky</a></li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/jaktofunguje" routerLinkActive="active">Jak to funguje?</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/projekt" routerLinkActive="active">O projektu</a>
+              </li>
             </ul>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/jaktofunguje" routerLinkActive="active">Jak to funguje?</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/projekt" routerLinkActive="active">O projektu</a>
-          </li>
-        </ul>
-      </div>
+          </div>
+        </div>
+      </nav>
     </div>
-  </nav>
-  <router-outlet></router-outlet>
+    <router-outlet></router-outlet>
+  </div>
+
 </body>
 
 
