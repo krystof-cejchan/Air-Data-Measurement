@@ -5,13 +5,26 @@ import org.jetbrains.annotations.Contract;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+/**
+ * The type Air data average.
+ */
 public class AirDataAverage implements Serializable {
     private BigDecimal avgTemperature, avgHumidity, avgAirQuality;
 
+    /**
+     * Instantiates a new Air data average.
+     */
     @Contract(pure = true)
     public AirDataAverage() {
     }
 
+    /**
+     * Instantiates a new Air data average.
+     *
+     * @param avgTemperature the avg temperature
+     * @param avgHumidity    the avg humidity
+     * @param avgAirQuality  the avg air quality
+     */
     public AirDataAverage(BigDecimal avgTemperature, BigDecimal avgHumidity, BigDecimal avgAirQuality) {
         this.avgTemperature = avgTemperature;
         this.avgHumidity = avgHumidity;
@@ -19,14 +32,29 @@ public class AirDataAverage implements Serializable {
     }
 
 
+    /**
+     * Gets avg temperature.
+     *
+     * @return the avg temperature
+     */
     public BigDecimal getAvgTemperature() {
         return avgTemperature;
     }
 
+    /**
+     * Gets avg humidity.
+     *
+     * @return the avg humidity
+     */
     public BigDecimal getAvgHumidity() {
         return avgHumidity;
     }
 
+    /**
+     * Gets avg air quality.
+     *
+     * @return the avg air quality
+     */
     public BigDecimal getAvgAirQuality() {
         return avgAirQuality;
     }

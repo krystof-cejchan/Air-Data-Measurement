@@ -19,22 +19,45 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The type Air data api resource.
+ */
 @RestController
 @RequestMapping("/airdata/api")
 public class AirDataApiResource {
     private final AirDataApiService airDataApiService;
 
 
+    /**
+     * Instantiates a new Air data api resource.
+     *
+     * @param airDataApiService the air data api service
+     */
     @Contract(pure = true)
     public AirDataApiResource(AirDataApiService airDataApiService) {
         this.airDataApiService = airDataApiService;
     }
 
+    /**
+     * Gets air data by id.
+     *
+     * @param location the location
+     * @return the air data by id
+     */
     @GetMapping("/latest")
     public ResponseEntity<?> getAirDataById(@RequestHeader(required = false) String location) {
         return airDataApiService.getLatestAirData(location);
     }
 
+    /**
+     * Gets air data from period of time.
+     *
+     * @param startDate  the start date
+     * @param finishDate the finish date
+     * @param startTime  the start time
+     * @param finishTime the finish time
+     * @return the air data from period of time
+     */
     @GetMapping("/time/period")
     public ResponseEntity<?> getAirDataFromPeriodOfTime(@RequestHeader() String startDate,
                                                         @RequestHeader() String finishDate,
@@ -53,6 +76,13 @@ public class AirDataApiResource {
         return airDataApiService.getAverageAirDataFromDateToDate(LocalDateTime.of(startD, startT), LocalDateTime.of(finishD, finishT));
     }
 
+
+    /**
+     * Gets average air data for specific day.
+     *
+     * @param date the date
+     * @return the average air data for specific day
+     */
     @GetMapping("/time/day_avg")
     public ResponseEntity<?> getAverageAirDataForSpecificDay(@RequestParam() String date) {
         LocalDate startD;
@@ -75,20 +105,32 @@ public class AirDataApiResource {
         return airDataApiService.gerAirDataForOneSpecificDay(startD);
     }
 
+    /**
+     * Gets air data by id and hash.
+     *
+     * @param id   the id
+     * @param hash the hash
+     * @return the air data by id and hash
+     */
     @GetMapping("/getByIdAndHash")
     public ResponseEntity<?> getAirDataByIdAndHash(@RequestParam() Long id,
                                                    @RequestParam() String hash) {
         return airDataApiService.getDataByIdAndHash(id, hash);
     }
 
+    /**
+     * Gets leader board stats.
+     *
+     * @return the leader board stats
+     */
     @GetMapping("/getLeaderboard")
     public ResponseEntity<LeaderboardData> getLeaderBoardStats() {
-        Map<Map<Location, LeaderboardType>, List<AirData>> locationToMapOfLeaderboardTypeToAirData = new HashMap<>();
+        Map<String, List<AirData>> locationToMapOfLeaderboardTypeToAirData = new HashMap<>();
 
         for (Location location : Location.values()) {
             for (LeaderboardType leaderboardType : LeaderboardType.values()) {
                 locationToMapOfLeaderboardTypeToAirData
-                        .putIfAbsent(Map.of(location, leaderboardType),
+                        .putIfAbsent(location.toString() + '=' + leaderboardType.toString(),
                                 airDataApiService
                                         .getLeaderBoardData(leaderboardType,
                                                 location)

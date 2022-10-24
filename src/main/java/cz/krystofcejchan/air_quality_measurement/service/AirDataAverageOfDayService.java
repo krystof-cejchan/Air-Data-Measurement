@@ -20,11 +20,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Air data average of day service.
+ */
 @Service
 public class AirDataAverageOfDayService {
     private final AirDataAverageOfDayRepository avgRepository;
     private final AirDataRepository airDataRepository;
 
+    /**
+     * Instantiates a new Air data average of day service.
+     *
+     * @param avgRepository     the avg repository
+     * @param airDataRepository the air data repository
+     */
     @Autowired
     @Contract(pure = true)
     public AirDataAverageOfDayService(AirDataAverageOfDayRepository avgRepository, AirDataRepository airDataRepository) {
@@ -32,10 +41,22 @@ public class AirDataAverageOfDayService {
         this.airDataRepository = airDataRepository;
     }
 
-    public AirDataAverageOfDay addAirData(@NotNull AirDataAverageOfDay airDataAverageOfDay) {
+    /**
+     * Adds and saves AirDataAverage
+     *
+     * @param airDataAverageOfDay the air data average of day
+     * @return the air data average of day
+     */
+    public AirDataAverageOfDay addAirDataAverageOfDay(@NotNull AirDataAverageOfDay airDataAverageOfDay) {
         return avgRepository.save(airDataAverageOfDay);
     }
 
+    /**
+     * Gets average air data for one specific day.
+     *
+     * @param day the day
+     * @return the average air data for one specific day
+     */
     public Optional<HashMap<Location, AirDataAverageOfDay>> getAverageAirDataForOneSpecificDay(java.time.LocalDate day) {
         Optional<List<AirData>> receivedData = airDataRepository
                 .findByReceivedDataDateTimeBetween(LocalDateTime.of(day, LocalTime.MIN),
@@ -96,6 +117,11 @@ public class AirDataAverageOfDayService {
         return Optional.of(hashMapLocToAvgAirData);
     }
 
+    /**
+     * Gets all avg air data.
+     *
+     * @return the all avg air data
+     */
     public List<AirDataAverageOfDay> getAllAvgAirData() {
         return avgRepository.findAll();
     }

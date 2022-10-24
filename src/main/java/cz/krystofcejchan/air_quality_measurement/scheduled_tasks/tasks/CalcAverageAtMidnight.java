@@ -17,9 +17,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * The type Calc average at midnight.
+ */
 @RestController
 
 public class CalcAverageAtMidnight implements ScheduledTaskRunnable {
+    /**
+     * The Environment.
+     */
     @Autowired
     Environment environment;
 

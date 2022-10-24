@@ -20,13 +20,27 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Air data api service.
+ */
 @Service
 public record AirDataApiService(AirDataRepository airDataRepository) {
+    /**
+     * Instantiates a new Air data api service.
+     *
+     * @param airDataRepository the air data repository
+     */
     @Contract(pure = true)
     @Autowired
     public AirDataApiService {
     }
 
+    /**
+     * Gets latest air data.
+     *
+     * @param paramLocation the param location
+     * @return the latest air data
+     */
     @Contract("null -> new")
     public @NotNull ResponseEntity<?> getLatestAirData(String paramLocation) {
         if (paramLocation != null && Location.toList().stream().map(Enum::toString).anyMatch(location -> location.equals(paramLocation))) {
@@ -42,11 +56,24 @@ public record AirDataApiService(AirDataRepository airDataRepository) {
         }
     }
 
+    /**
+     * Gets average air data from date to date.
+     *
+     * @param start the start
+     * @param end   the end
+     * @return the average air data from date to date
+     */
     public @NotNull ResponseEntity<?> getAverageAirDataFromDateToDate(LocalDateTime start, LocalDateTime end) {
         Optional<List<AirData>> receivedDate = airDataRepository.findByReceivedDataDateTimeBetween(start, end);
         return receivedDate.isEmpty() ? new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase(), HttpStatus.BAD_REQUEST) : new ResponseEntity<>(receivedDate.orElseThrow(DataNotFoundException::new).stream().toList(), HttpStatus.OK);
     }
 
+    /**
+     * Gets average air data for one specific day.
+     *
+     * @param day the day
+     * @return the average air data for one specific day
+     */
     @Contract("_ -> new")
     public @NotNull ResponseEntity<?> getAverageAirDataForOneSpecificDay(java.time.LocalDate day) {
         Optional<List<AirData>> receivedDate = airDataRepository.findByReceivedDataDateTimeBetween(LocalDateTime.of(day, LocalTime.MIN), LocalDateTime.of(day, LocalTime.MAX));
@@ -66,6 +93,12 @@ public record AirDataApiService(AirDataRepository airDataRepository) {
         }
     }
 
+    /**
+     * Ger air data for one specific day response entity.
+     *
+     * @param day the day
+     * @return the response entity
+     */
     @Contract("_ -> new")
     public @NotNull ResponseEntity<?> gerAirDataForOneSpecificDay(java.time.LocalDate day) {
         Optional<List<AirData>> receivedDate = airDataRepository.findByReceivedDataDateTimeBetween(LocalDateTime.of(day, LocalTime.MIN), LocalDateTime.of(day, LocalTime.MAX));
@@ -76,6 +109,13 @@ public record AirDataApiService(AirDataRepository airDataRepository) {
         return new ResponseEntity<>(receivedDate, HttpStatus.OK);
     }
 
+    /**
+     * Gets data by id and hash.
+     *
+     * @param id   the id
+     * @param hash the hash
+     * @return the data by id and hash
+     */
     @Contract("_, _ -> new")
     public @NotNull ResponseEntity<?> getDataByIdAndHash(Long id, String hash) {
         Optional<AirData> receivedDate = airDataRepository.findByIdAndRndHash(id, hash);
@@ -85,6 +125,13 @@ public record AirDataApiService(AirDataRepository airDataRepository) {
         else return new ResponseEntity<>(receivedDate, HttpStatus.OK);
     }
 
+    /**
+     * Gets leader board data.
+     *
+     * @param leaderboardType the leaderboard type
+     * @param location        the location
+     * @return the leader board data
+     */
     public Optional<List<AirData>> getLeaderBoardData(LeaderboardType leaderboardType, Location location) {
         return switch (leaderboardType) {
             case HIGHEST_AIRQ -> airDataRepository.findTop3AirQualityDistinctByLocationOrderByAirQualityDesc(location);

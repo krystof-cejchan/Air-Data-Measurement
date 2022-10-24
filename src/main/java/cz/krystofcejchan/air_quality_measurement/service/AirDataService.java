@@ -18,23 +18,48 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * The type Air data service.
+ */
 @Service
 public record AirDataService(AirDataRepository airDataRepository) {
+    /**
+     * Instantiates a new Air data service.
+     *
+     * @param airDataRepository the air data repository
+     */
     @Autowired
     @Contract(pure = true)
     public AirDataService {
     }
 
+    /**
+     * Add air data air data.
+     *
+     * @param airData the air data
+     * @return the air data
+     */
     public @NotNull AirData addAirData(@NotNull AirData airData) {
         airData.setReceivedDataDateTime(LocalDateTime.now(ZoneId.of("Europe/Prague")));
         airData.setRndHash(UUID.randomUUID().toString());
         return airDataRepository.save(airData);
     }
 
+    /**
+     * Find all air data list.
+     *
+     * @return the list
+     */
     public @NotNull List<AirData> findAllAirData() {
         return airDataRepository.findAll();
     }
 
+    /**
+     * Update air data air data.
+     *
+     * @param airData the air data
+     * @return the air data
+     */
     public @NotNull AirData updateAirData(AirData airData) {
         return airDataRepository.save(airData);
     }
@@ -72,6 +97,8 @@ public record AirDataService(AirDataRepository airDataRepository) {
 
 
     /**
+     * Find air data air data.
+     *
      * @param id of the data in the database
      * @return AirData {@link AirData} object
      * @throws DataNotFoundException if no record with such an id exists
@@ -80,10 +107,21 @@ public record AirDataService(AirDataRepository airDataRepository) {
         return airDataRepository.findById(id).orElseThrow(() -> new DataNotFoundException(id));
     }
 
+    /**
+     * Delete air data.
+     *
+     * @param id the id
+     */
     public void deleteAirData(Long id) {
         airDataRepository.delete(findAirData(id));
     }
 
+    /**
+     * Exist air data boolean.
+     *
+     * @param id the id
+     * @return the boolean
+     */
     public boolean existAirData(Long id) {
         return airDataRepository.existsById(id);
     }
