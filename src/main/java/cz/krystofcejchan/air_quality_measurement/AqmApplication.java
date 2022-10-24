@@ -13,16 +13,32 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Main Class
+ */
 @SpringBootApplication
 public class AqmApplication {
+    /**
+     * a secret passed to the database
+     */
     public static String dbpsd = "";
 
+    /**
+     * Main.
+     *
+     * @param args the args
+     */
     public static void main(String @NotNull [] args) {
         dbpsd = args[0];
         SpringApplication.run(AqmApplication.class, args);
         new ScheduledTaskRunnableManager().getRunnableList().forEach(ScheduledTaskRunnable::runScheduledTask);
     }
 
+    /**
+     * Cors filter
+     *
+     * @return the cors filter
+     */
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();

@@ -16,6 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Air data average for day resource.
+ */
 @RestController
 @RequestMapping("/airdata/avg")
 public class AirDataAverageForDayResource {
@@ -23,11 +26,21 @@ public class AirDataAverageForDayResource {
 
     private HttpStatus resultCode = HttpStatus.OK;
 
+    /**
+     * Instantiates a new Air data average for day resource.
+     *
+     * @param service the service
+     */
     @Contract(pure = true)
     public AirDataAverageForDayResource(AirDataAverageOfDayService service) {
         this.service = service;
     }
 
+    /**
+     * Calc average response entity.
+     *
+     * @return the response entity
+     */
     @GetMapping("/calc")
     public ResponseEntity<?> calcAverage() {
 
@@ -35,12 +48,17 @@ public class AirDataAverageForDayResource {
                 = service.getAverageAirDataForOneSpecificDay(LocalDate.now(ZoneId.of("Europe/Prague")));
 
         optionalAirDataAverageOfDay.ifPresentOrElse(
-                (map) -> map.keySet().forEach(key -> service.addAirData(map.get(key))),
+                (map) -> map.keySet().forEach(key -> service.addAirDataAverageOfDay(map.get(key))),
                 () -> this.resultCode = HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(resultCode.getReasonPhrase(), resultCode);
     }
 
+    /**
+     * Gets all data.
+     *
+     * @return the all data
+     */
     @GetMapping("/all")
     public ResponseEntity<List<AirDataAverageOfDay>> getAllData() {
         return new ResponseEntity<>(service.getAllAvgAirData(), HttpStatus.OK);
