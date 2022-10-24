@@ -26,7 +26,7 @@ export class LeaderboardComponent implements OnInit {
       let mapping = new Map<string, string>();
       mapping.set("FF", "LOWEST_AIRQ");
 
-      console.log(this.leaderboard_data.allData.entries());
+      console.log(this.leaderboard_data.allData["FF=HIGHEST_AIRQ"]);
 
       this.showLoading = false;
       this.LeaderboardData_string = this.leaderboard_data.toString();

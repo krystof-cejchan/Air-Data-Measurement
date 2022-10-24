@@ -128,5 +128,5 @@ import { AirData } from "../airdata";
  */
 export interface LeaderboardData {
     //java syntax -> Map<Map<Location(enum), LeaderboarType(enum)>, List<AirData>>
-    allData: Map<Map<string, string>, AirData[]>;
+    allData: Record<string, AirData[]>;
 }   

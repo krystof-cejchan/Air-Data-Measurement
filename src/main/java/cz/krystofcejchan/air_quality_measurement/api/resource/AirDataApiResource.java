@@ -125,12 +125,12 @@ public class AirDataApiResource {
      */
     @GetMapping("/getLeaderboard")
     public ResponseEntity<LeaderboardData> getLeaderBoardStats() {
-        Map<Map<Location, LeaderboardType>, List<AirData>> locationToMapOfLeaderboardTypeToAirData = new HashMap<>();
+        Map<String, List<AirData>> locationToMapOfLeaderboardTypeToAirData = new HashMap<>();
 
         for (Location location : Location.values()) {
             for (LeaderboardType leaderboardType : LeaderboardType.values()) {
                 locationToMapOfLeaderboardTypeToAirData
-                        .putIfAbsent(Map.of(location, leaderboardType),
+                        .putIfAbsent(location.toString() + '=' + leaderboardType.toString(),
                                 airDataApiService
                                         .getLeaderBoardData(leaderboardType,
                                                 location)
