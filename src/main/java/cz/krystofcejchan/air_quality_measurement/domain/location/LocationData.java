@@ -8,6 +8,9 @@ import org.jetbrains.annotations.Contract;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+/**
+ * The type Location data.
+ */
 @Entity
 @Table(name = "locations")
 public final class LocationData implements Serializable {
@@ -31,10 +34,26 @@ public final class LocationData implements Serializable {
     @OneToOne(mappedBy = "locationId")
     private AirData airdata;
 
+    /**
+     * Instantiates a new Location data.
+     */
     @Contract(pure = true)
     public LocationData() {
     }
 
+    /**
+     * Instantiates a new Location data.
+     *
+     * @param id                         the id
+     * @param outOfService               the out of service
+     * @param location                   the location
+     * @param street                     the street
+     * @param city                       the city
+     * @param houseNumber                the house number
+     * @param roomIdentifier             the room identifier
+     * @param metersAboveTheGroundApprox the meters above the ground approx
+     * @param airdata                    the airdata
+     */
     @Contract(pure = true)
     public LocationData(Long id, Boolean outOfService, Location location, String street, String city, Integer houseNumber,
                         String roomIdentifier, BigDecimal metersAboveTheGroundApprox, AirData airdata) {
@@ -49,74 +68,164 @@ public final class LocationData implements Serializable {
         this.airdata = airdata;
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Gets out of service.
+     *
+     * @return the out of service
+     */
     public Boolean getOutOfService() {
         return outOfService;
     }
 
+    /**
+     * Sets out of service.
+     *
+     * @param outOfService the out of service
+     */
     public void setOutOfService(Boolean outOfService) {
         this.outOfService = outOfService;
     }
 
+    /**
+     * Gets location.
+     *
+     * @return the location
+     */
     public cz.krystofcejchan.air_quality_measurement.enums.Location getLocation() {
         return location;
     }
 
+    /**
+     * Sets location.
+     *
+     * @param location the location
+     */
     public void setLocation(cz.krystofcejchan.air_quality_measurement.enums.Location location) {
         this.location = location;
     }
 
+    /**
+     * Gets street.
+     *
+     * @return the street
+     */
     public String getStreet() {
         return street;
     }
 
+    /**
+     * Sets street.
+     *
+     * @param street the street
+     */
     public void setStreet(String street) {
         this.street = street;
     }
 
+    /**
+     * Gets city.
+     *
+     * @return the city
+     */
     public String getCity() {
         return city;
     }
 
+    /**
+     * Sets city.
+     *
+     * @param city the city
+     */
     public void setCity(String city) {
         this.city = city;
     }
 
+    /**
+     * Gets house number.
+     *
+     * @return the house number
+     */
     public Integer getHouseNumber() {
         return houseNumber;
     }
 
+    /**
+     * Sets house number.
+     *
+     * @param houseNumber the house number
+     */
     public void setHouseNumber(Integer houseNumber) {
         this.houseNumber = houseNumber;
     }
 
+    /**
+     * Gets meters above the ground approx.
+     *
+     * @return the meters above the ground approx
+     */
     public BigDecimal getMetersAboveTheGroundApprox() {
         return metersAboveTheGroundApprox;
     }
 
+    /**
+     * Sets meters above the ground approx.
+     *
+     * @param metersAboveTheGroundApprox the meters above the ground approx
+     */
     public void setMetersAboveTheGroundApprox(BigDecimal metersAboveTheGroundApprox) {
         this.metersAboveTheGroundApprox = metersAboveTheGroundApprox;
     }
 
+    /**
+     * Gets room identifier.
+     *
+     * @return the room identifier
+     */
     public String getRoomIdentifier() {
         return roomIdentifier;
     }
 
+    /**
+     * Sets room identifier.
+     *
+     * @param roomIdentifier the room identifier
+     */
     public void setRoomIdentifier(String roomIdentifier) {
         this.roomIdentifier = roomIdentifier;
     }
 
+    /**
+     * Gets airdata.
+     *
+     * @return the airdata
+     */
     public AirData getAirdata() {
         return airdata;
     }
 
+    /**
+     * Sets airdata.
+     *
+     * @param airdata the airdata
+     */
     public void setAirdata(AirData airdata) {
         this.airdata = airdata;
     }

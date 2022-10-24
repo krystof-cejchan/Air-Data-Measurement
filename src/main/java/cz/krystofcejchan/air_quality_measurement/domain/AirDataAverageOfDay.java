@@ -8,6 +8,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * The type Air data average of day.
+ */
 @Entity
 public class AirDataAverageOfDay implements Serializable {
     @Id
@@ -20,11 +23,24 @@ public class AirDataAverageOfDay implements Serializable {
     private BigDecimal temperatureAvg;
     private BigDecimal humidityAvg;
 
+    /**
+     * Instantiates a new Air data average of day.
+     */
     @Contract(pure = true)
     public AirDataAverageOfDay() {
     }
 
 
+    /**
+     * Instantiates a new Air data average of day.
+     *
+     * @param id               the id
+     * @param location         the location
+     * @param receivedDataDate the received data date
+     * @param airQualityAvg    the air quality avg
+     * @param temperatureAvg   the temperature avg
+     * @param humidityAvg      the humidity avg
+     */
     @Contract(pure = true)
     public AirDataAverageOfDay(Long id, Location location, LocalDate receivedDataDate, BigDecimal airQualityAvg,
                                BigDecimal temperatureAvg, BigDecimal humidityAvg) {
@@ -36,50 +52,110 @@ public class AirDataAverageOfDay implements Serializable {
         this.humidityAvg = humidityAvg;
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Gets location.
+     *
+     * @return the location
+     */
     public Location getLocation() {
         return location;
     }
 
+    /**
+     * Sets location.
+     *
+     * @param location the location
+     */
     public void setLocation(Location location) {
         this.location = location;
     }
 
+    /**
+     * Gets received data date.
+     *
+     * @return the received data date
+     */
     public LocalDate getReceivedDataDate() {
         return receivedDataDate;
     }
 
+    /**
+     * Sets received data date.
+     *
+     * @param receivedDataDate the received data date
+     */
     public void setReceivedDataDate(LocalDate receivedDataDate) {
         this.receivedDataDate = receivedDataDate;
     }
 
+    /**
+     * Gets air quality avg.
+     *
+     * @return the air quality avg
+     */
     public BigDecimal getAirQualityAvg() {
         return airQualityAvg;
     }
 
+    /**
+     * Sets air quality avg.
+     *
+     * @param airQualityAvg the air quality avg
+     */
     public void setAirQualityAvg(BigDecimal airQualityAvg) {
         this.airQualityAvg = airQualityAvg;
     }
 
+    /**
+     * Gets temperature avg.
+     *
+     * @return the temperature avg
+     */
     public BigDecimal getTemperatureAvg() {
         return temperatureAvg;
     }
 
+    /**
+     * Sets temperature avg.
+     *
+     * @param temperatureAvg the temperature avg
+     */
     public void setTemperatureAvg(BigDecimal temperatureAvg) {
         this.temperatureAvg = temperatureAvg;
     }
 
+    /**
+     * Gets humidity avg.
+     *
+     * @return the humidity avg
+     */
     public BigDecimal getHumidityAvg() {
         return humidityAvg;
     }
 
+    /**
+     * Sets humidity avg.
+     *
+     * @param humidityAvg the humidity avg
+     */
     public void setHumidityAvg(BigDecimal humidityAvg) {
         this.humidityAvg = humidityAvg;
     }

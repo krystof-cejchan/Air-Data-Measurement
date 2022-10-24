@@ -8,8 +8,16 @@ import org.jetbrains.annotations.Contract;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The type Leaderboard data.
+ */
 public record LeaderboardData(
         Map<Map<Location, LeaderboardType>, List<AirData>> allData) {
+    /**
+     * Instantiates a new Leaderboard data.
+     *
+     * @param allData the all data
+     */
     @Contract(pure = true)
     public LeaderboardData {
     }
