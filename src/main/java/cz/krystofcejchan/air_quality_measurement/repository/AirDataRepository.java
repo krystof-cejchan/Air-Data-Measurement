@@ -51,12 +51,12 @@ public interface AirDataRepository extends JpaRepository<AirData, Long> {
     Optional<List<AirData>> findByLocationAndReceivedDataDateTimeBefore(Location location, LocalDateTime endTimeLine);
 
     /**
-     * Find top 3 air quality distinct by location order by air quality desc optional.
+     * Find top 3 temperature distinct by location order by air quality asc optional.
      *
      * @param location the location
      * @return the optional
      */
-    Optional<List<AirData>> findTop3AirQualityDistinctByLocationOrderByAirQualityDesc(Location location);
+    Optional<List<AirData>> findTop3TemperatureByLocationOrderByTemperatureAsc(Location location);
 
     /**
      * Find top 3 temperature distinct by location order by air quality desc optional.
@@ -64,7 +64,7 @@ public interface AirDataRepository extends JpaRepository<AirData, Long> {
      * @param location the location
      * @return the optional
      */
-    Optional<List<AirData>> findTop3TemperatureDistinctByLocationOrderByAirQualityDesc(Location location);
+    Optional<List<AirData>> findTop3TemperatureByLocationOrderByTemperatureDesc(Location location);
 
     /**
      * Find top 3 humidity distinct by location order by air quality desc optional.
@@ -72,7 +72,7 @@ public interface AirDataRepository extends JpaRepository<AirData, Long> {
      * @param location the location
      * @return the optional
      */
-    Optional<List<AirData>> findTop3HumidityDistinctByLocationOrderByAirQualityDesc(Location location);
+    Optional<List<AirData>> findTop3HumidityByLocationOrderByHumidityDesc(Location location);
 
     /**
      * Find top 3 humidity distinct by location order by air quality asc optional.
@@ -80,15 +80,7 @@ public interface AirDataRepository extends JpaRepository<AirData, Long> {
      * @param location the location
      * @return the optional
      */
-    Optional<List<AirData>> findTop3HumidityDistinctByLocationOrderByAirQualityAsc(Location location);
-
-    /**
-     * Find top 3 temperature distinct by location order by air quality asc optional.
-     *
-     * @param location the location
-     * @return the optional
-     */
-    Optional<List<AirData>> findTop3TemperatureDistinctByLocationOrderByAirQualityAsc(Location location);
+    Optional<List<AirData>> findTop3HumidityByLocationOrderByHumidityAsc(Location location);
 
     /**
      * Find top 3 air quality distinct by location order by air quality asc optional.
@@ -96,6 +88,15 @@ public interface AirDataRepository extends JpaRepository<AirData, Long> {
      * @param location the location
      * @return the optional
      */
-    Optional<List<AirData>> findTop3AirQualityDistinctByLocationOrderByAirQualityAsc(Location location);
+    Optional<List<AirData>> findTop3AirQualityByLocationOrderByAirQualityAsc(Location location);
+
+    /**
+     * Find top 3 air quality distinct by location order by air quality desc optional.
+     *
+     * @param location the location
+     * @return the optional
+     */
+    Optional<List<AirData>> findTop3AirQualityByLocationOrderByAirQualityDesc(Location location);
+
 
 }
