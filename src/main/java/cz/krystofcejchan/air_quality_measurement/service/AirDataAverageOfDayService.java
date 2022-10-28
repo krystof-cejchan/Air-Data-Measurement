@@ -24,10 +24,9 @@ import java.util.Optional;
  * The type Air data average of day service.
  */
 @Service
-public class AirDataAverageOfDayService {
-    private final AirDataAverageOfDayRepository avgRepository;
-    private final AirDataRepository airDataRepository;
-
+public record AirDataAverageOfDayService(
+        AirDataAverageOfDayRepository avgRepository,
+        AirDataRepository airDataRepository) {
     /**
      * Instantiates a new Air data average of day service.
      *
@@ -36,19 +35,16 @@ public class AirDataAverageOfDayService {
      */
     @Autowired
     @Contract(pure = true)
-    public AirDataAverageOfDayService(AirDataAverageOfDayRepository avgRepository, AirDataRepository airDataRepository) {
-        this.avgRepository = avgRepository;
-        this.airDataRepository = airDataRepository;
+    public AirDataAverageOfDayService {
     }
 
     /**
      * Adds and saves AirDataAverage
      *
      * @param airDataAverageOfDay the air data average of day
-     * @return the air data average of day
      */
-    public AirDataAverageOfDay addAirDataAverageOfDay(@NotNull AirDataAverageOfDay airDataAverageOfDay) {
-        return avgRepository.save(airDataAverageOfDay);
+    public void addAirDataAverageOfDay(@NotNull AirDataAverageOfDay airDataAverageOfDay) {
+        avgRepository.save(airDataAverageOfDay);
     }
 
     /**

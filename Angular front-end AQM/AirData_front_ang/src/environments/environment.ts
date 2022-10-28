@@ -4,7 +4,10 @@
 
 export const environment = {
   production: false,
-  baseUrl: 'http://localhost:8080', baseUrlAPI: 'http://localhost:8080/airdata/api'
+  baseUrl: 'http://localhost:8080',
+  baseUrlAPI: 'http://localhost:8080/airdata/api',
+  APP_INITIALIZER_URL: 'http://localhost:8080/airdata/APP_INITIALIZER',
+  Locations:[""]
 };
 
 /*
