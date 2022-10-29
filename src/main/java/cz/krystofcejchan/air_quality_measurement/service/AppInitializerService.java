@@ -14,7 +14,10 @@ public class AppInitializerService {
     }
 
     public Location[] getAllLocations() {
-        return Location.values();
+        return Location.toList().stream()
+                .filter(location -> !location.equals(Location.OTHER))
+                .toList()
+                .toArray(new Location[0]);
     }
 
     public LeaderboardType[] getAllLeaderboardTypes() {

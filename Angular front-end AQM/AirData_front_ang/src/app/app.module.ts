@@ -21,7 +21,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { AirDataDetailsComponent } from './air-data-details/air-data-details.component';
 import { MainPageComponent } from './main-page/main-page.component';
-import { APP_INITIALIZER } from '@angular/core';
 import { environment } from "src/environments/environment";
 
 
@@ -73,9 +72,9 @@ export function initializeApp(http: HttpClient) {
     NgApexchartsModule,
     AppRoutingModule
   ],
-  providers: [AirDataService, { provide: APP_INITIALIZER, useFactory: initializeApp, multi: true }],
+  providers: [AirDataService, /*{ provide: APP_INITIALIZER, useFactory: initializeApp, multi: true }*/],
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor(http: HttpClient) { }
+  constructor() { }
 }
