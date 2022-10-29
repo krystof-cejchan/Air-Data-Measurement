@@ -11,7 +11,10 @@ export class LeaderboardService {
   private apiServerUrl = environment.baseUrlAPI;
 
   constructor(private http: HttpClient) { }
-
+/**
+ * gets All LeaderBoardData
+ * @returns LeaderBoardData
+ */
   public getAllLeaderboardData(): Observable<LeaderboardData> {
     return this.http.get<LeaderboardData>(`${this.apiServerUrl}/getLeaderboard`);
   }
