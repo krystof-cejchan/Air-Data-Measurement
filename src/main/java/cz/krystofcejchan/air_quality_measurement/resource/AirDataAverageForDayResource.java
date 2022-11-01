@@ -21,7 +21,7 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/airdata/avg")
-public class AirDataAverageForDayResource {
+public final class AirDataAverageForDayResource {
     private final AirDataAverageOfDayService service;
 
     private HttpStatus resultCode = HttpStatus.OK;

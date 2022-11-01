@@ -13,7 +13,7 @@ public class MathUtils {
      * @param number  the number
      * @param start   the start
      * @param end     the end
-     * @param include if true -> ">=" will be used, else >
+     * @param include if true -> ">=" will be used, else ">"
      * @return the boolean
      */
     @Contract(pure = true)
