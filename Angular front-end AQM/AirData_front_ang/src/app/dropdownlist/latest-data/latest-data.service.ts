@@ -11,7 +11,10 @@ export class LatestDataService {
   private apiServerUrl = environment.baseUrlAPI;
 
   constructor(private http: HttpClient) { }
-
+  /**
+   * gets one latest AirData for each available location
+   * @returns latest AirData
+   */
   public getLatestData(): Observable<AirData[]> {
     return this.http.get<AirData[]>(`${this.apiServerUrl}/latest`);
   }

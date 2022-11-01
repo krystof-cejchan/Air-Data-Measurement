@@ -2,7 +2,6 @@ package cz.krystofcejchan.air_quality_measurement.api.resource;
 
 import cz.krystofcejchan.air_quality_measurement.api.service.AirDataApiService;
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
-import cz.krystofcejchan.air_quality_measurement.domain.nondatabase_objects.LeaderboardData;
 import cz.krystofcejchan.air_quality_measurement.enums.LeaderboardType;
 import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import org.jetbrains.annotations.Contract;
@@ -14,10 +13,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The type Air data api resource.
@@ -124,25 +122,24 @@ public class AirDataApiResource {
      * @return the leader board stats
      */
     @GetMapping("/getLeaderboard")
-    public ResponseEntity<LeaderboardData> getLeaderBoardStats() {
-        Map<String, List<AirData>> locationToMapOfLeaderboardTypeToAirData = new HashMap<>();
-
-        for (Location location : Location.values()) {
-            for (LeaderboardType leaderboardType : LeaderboardType.values()) {
-                locationToMapOfLeaderboardTypeToAirData
-                        .putIfAbsent(location.toString() + '=' + leaderboardType.toString(),
-                                airDataApiService
-                                        .getLeaderBoardData(leaderboardType,
-                                                location)
-                                        .orElse(Collections.singletonList(new AirData((byte) 0)))
-                        );
-            }
+    public ResponseEntity<? extends Collection<AirData>> getLeaderBoardStats(@RequestParam() String location,
+                                                                             @RequestParam() String leaderboardType) {
+        Location location1;
+        LeaderboardType leaderboardType1;
+        try {
+            location1 = Location.valueOf(location);
+            leaderboardType1 = LeaderboardType.valueOf(leaderboardType);
+        } catch (IllegalArgumentException e) {
+            //location or leaderboardType is not a correct enum value
+            return new ResponseEntity<>(Collections.emptyList(), HttpStatus.BAD_REQUEST);
         }
-        locationToMapOfLeaderboardTypeToAirData.values().removeIf(value -> value.stream()
-                .allMatch(it -> it.getId() < 0L));
+        List<AirData> top3 = airDataApiService.getLeaderBoardData(leaderboardType1, location1)
+                .orElse(Collections.emptyList())
+                .stream()
+                .filter(airData -> airData.getId() > 0L)
+                .toList();
 
-        return new ResponseEntity<>(new LeaderboardData(locationToMapOfLeaderboardTypeToAirData),
-                locationToMapOfLeaderboardTypeToAirData.isEmpty() ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
+        return new ResponseEntity<>(top3, top3.isEmpty() ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
     }
 
 }

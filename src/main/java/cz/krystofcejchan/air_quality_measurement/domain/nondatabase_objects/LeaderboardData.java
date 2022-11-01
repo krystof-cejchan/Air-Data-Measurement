@@ -12,7 +12,7 @@ import java.util.Map;
  * The type Leaderboard data.
  */
 public record LeaderboardData(
-        Map<String/*Map<Location, LeaderboardType>*/, List<AirData>> allData) {
+        Map<Map<Location, LeaderboardType>, List<AirData>> allData) {
     /**
      * Instantiates a new Leaderboard data.
      *

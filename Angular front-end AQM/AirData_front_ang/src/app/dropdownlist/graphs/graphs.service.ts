@@ -11,7 +11,11 @@ export class GraphsService {
   private apiServerUrl = environment.baseUrl;
 
   constructor(private http: HttpClient) { }
-
+/**
+ * gets all AirDataAverage for the graphs
+ * also see getAverageData in HistorySearchBarService
+ * @returns 
+ */
   public getAllAirDataAverage(): Observable<AirDataAverageForDay[]> {
     return this.http.get<AirDataAverageForDay[]>(`${this.apiServerUrl}/airdata/avg/all`);
   }

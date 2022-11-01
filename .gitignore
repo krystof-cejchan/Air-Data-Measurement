@@ -4,6 +4,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+/Angular front-end AQM/AirData_front_ang/src/assets/secret
+
 
 ### STS ###
 .apt_generated
