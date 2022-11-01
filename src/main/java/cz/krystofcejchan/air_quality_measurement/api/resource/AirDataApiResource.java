@@ -13,9 +13,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * The type Air data api resource.
@@ -23,8 +25,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/airdata/api")
 public class AirDataApiResource {
+    static List<AirData> top3 = new ArrayList<>();
     private final AirDataApiService airDataApiService;
-
 
     /**
      * Instantiates a new Air data api resource.
@@ -74,7 +76,6 @@ public class AirDataApiResource {
         return airDataApiService.getAverageAirDataFromDateToDate(LocalDateTime.of(startD, startT), LocalDateTime.of(finishD, finishT));
     }
 
-
     /**
      * Gets average air data for specific day.
      *
@@ -117,13 +118,15 @@ public class AirDataApiResource {
     }
 
     /**
-     * Gets leader board stats.
+     * takes top 3 records from database where location matches according to {@link LeaderboardType}
      *
-     * @return the leader board stats
+     * @param location        @{@link RequestParam}
+     * @param leaderboardType @{@link RequestParam}
+     * @return <? extends Collection<AirData>>
      */
-    @GetMapping("/getLeaderboard")
-    public ResponseEntity<? extends Collection<AirData>> getLeaderBoardStats(@RequestParam() String location,
-                                                                             @RequestParam() String leaderboardType) {
+    @GetMapping("/getRawLeaderboardStats")
+    public synchronized ResponseEntity<? extends Collection<AirData>> getLeaderBoardStats(@RequestParam() String location,
+                                                                                          @RequestParam() String leaderboardType) {
         Location location1;
         LeaderboardType leaderboardType1;
         try {
@@ -133,13 +136,36 @@ public class AirDataApiResource {
             //location or leaderboardType is not a correct enum value
             return new ResponseEntity<>(Collections.emptyList(), HttpStatus.BAD_REQUEST);
         }
-        List<AirData> top3 = airDataApiService.getLeaderBoardData(leaderboardType1, location1)
-                .orElse(Collections.emptyList())
-                .stream()
-                .filter(airData -> airData.getId() > 0L)
-                .toList();
+
+        ExecutorService service = Executors.newSingleThreadExecutor();
+        try {
+
+            CyclicBarrier c1 = new CyclicBarrier(1);
+            CyclicBarrier c2 = new CyclicBarrier(1);
+
+            service.submit(() -> {
+
+                try {
+                    top3 = airDataApiService.getLeaderBoardData(leaderboardType1, location1)
+                            .orElse(Collections.emptyList())
+                            .stream()
+                            .filter(airData -> airData.getId() > 0L)
+                            .toList();
+                    c1.await();
+                    top3.sort(Comparator.comparing(AirData::getAirQuality));
+                    c2.await();
+                } catch (InterruptedException | BrokenBarrierException e) {
+                    e.printStackTrace();
+                }
+
+            });
+        } finally {
+            service.shutdown();
+        }
+
 
         return new ResponseEntity<>(top3, top3.isEmpty() ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
     }
+
 
 }

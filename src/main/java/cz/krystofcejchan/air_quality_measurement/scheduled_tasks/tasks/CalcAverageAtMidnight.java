@@ -32,7 +32,7 @@ public class CalcAverageAtMidnight implements ScheduledTaskRunnable {
     @Override
     public void runScheduledTask() {
         //new ScheduledExecutorService with one assigned thread
-        final ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
+        final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
 
         //what happens when service is triggered
         Runnable calcAverageDataAndAddToDatabase = () -> {
@@ -43,11 +43,11 @@ public class CalcAverageAtMidnight implements ScheduledTaskRunnable {
             System.out.println(protocol + localhost + ":8080" + path);
             try {
                 URL url = new URL(protocol + localhost + ":8080" + path);
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("GET");
-                con.connect();
-                System.out.println(con.getResponseCode() < 299 ? "average calculated" : "average NOT calculated");
-                con.disconnect();
+                HttpURLConnection httpUrlConn = (HttpURLConnection) url.openConnection();
+                httpUrlConn.setRequestMethod("GET");
+                httpUrlConn.connect();
+                System.out.println(httpUrlConn.getResponseCode() < 299 ? "average calculated" : "average NOT calculated");
+                httpUrlConn.disconnect();
             } catch (IOException e) {
                 e.printStackTrace();
             }

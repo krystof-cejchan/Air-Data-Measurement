@@ -91,7 +91,7 @@ public record AirDataResource(AirDataService airDataService) {
      */
     @Contract("_ -> new")
     @PutMapping("/update")
-    public @NotNull ResponseEntity<AirData> updateAirData(@RequestBody AirData airData) {
+    public @NotNull ResponseEntity<AirData> deleteAirData(@RequestBody AirData airData) {
         return new ResponseEntity<>(airDataService.updateAirData(airData), HttpStatus.OK);
     }
 
@@ -115,7 +115,7 @@ public record AirDataResource(AirDataService airDataService) {
      */
     @Contract("_ -> new")
     @DeleteMapping("/delete/{id}")
-    public @NotNull ResponseEntity<HttpStatus> updateAirData(@PathVariable("id") Long id) {
+    public @NotNull ResponseEntity<HttpStatus> deleteAirData(@PathVariable("id") Long id) {
         airDataService.deleteAirData(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
