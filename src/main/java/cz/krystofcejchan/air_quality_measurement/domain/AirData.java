@@ -45,9 +45,9 @@ public class AirData implements Serializable {
     }
 
     /**
-     * Instantiates a new Air data.
+     * Instantiates a new Air data with null values
      *
-     * @param auto the auto
+     * @param auto serves as a distinguisher for nullable {@link AirData}
      */
     @Contract(pure = true)
     public AirData(byte auto) {

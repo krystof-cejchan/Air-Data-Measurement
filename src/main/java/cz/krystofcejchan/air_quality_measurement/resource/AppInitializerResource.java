@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/airdata/APP_INITIALIZER/")
-public record AppInitializerRepository(
+public record AppInitializerResource(
         AppInitializerService appInitializerService) {
     @Contract(pure = true)
-    public AppInitializerRepository {
+    public AppInitializerResource {
     }
 
     @Contract(" -> new")
