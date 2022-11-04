@@ -16,7 +16,7 @@ public class AirDataLeaderboard implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false)
     private Long id;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(referencedColumnName = "id")
     private AirData airDataId;
     @Enumerated(EnumType.STRING)
@@ -36,6 +36,16 @@ public class AirDataLeaderboard implements Serializable {
     public AirDataLeaderboard(Long id, AirData airDataId, LeaderboardType leaderboardType, Location location,
                               Integer position) {
         this.id = id;
+        this.airDataId = airDataId;
+        this.leaderboardType = leaderboardType;
+        this.location = location;
+        this.position = position;
+    }
+
+    @Contract(pure = true)
+    public AirDataLeaderboard(AirData airDataId, LeaderboardType leaderboardType, Location location,
+                              Integer position) {
+        this.id = -2L;
         this.airDataId = airDataId;
         this.leaderboardType = leaderboardType;
         this.location = location;

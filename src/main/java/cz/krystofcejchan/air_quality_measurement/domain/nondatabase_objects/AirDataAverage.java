@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 /**
  * The type Air data average.
  */
-public class AirDataAverage implements Serializable {
+public final class AirDataAverage implements Serializable {
     private BigDecimal avgTemperature, avgHumidity, avgAirQuality;
 
     /**
@@ -37,6 +37,7 @@ public class AirDataAverage implements Serializable {
      *
      * @return the avg temperature
      */
+    @Contract(pure = true)
     public BigDecimal getAvgTemperature() {
         return avgTemperature;
     }
@@ -46,6 +47,7 @@ public class AirDataAverage implements Serializable {
      *
      * @return the avg humidity
      */
+    @Contract(pure = true)
     public BigDecimal getAvgHumidity() {
         return avgHumidity;
     }
@@ -55,6 +57,7 @@ public class AirDataAverage implements Serializable {
      *
      * @return the avg air quality
      */
+    @Contract(pure = true)
     public BigDecimal getAvgAirQuality() {
         return avgAirQuality;
     }

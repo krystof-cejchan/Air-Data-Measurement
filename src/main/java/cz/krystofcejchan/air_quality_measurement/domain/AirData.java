@@ -263,4 +263,21 @@ public class AirData implements Serializable {
     public void setLocation(Location location) {
         this.location = location;
     }
+
+    @Override
+    public String toString() {
+        return "AirData{" +
+                "id=" + id +
+                ", arduinoTime='" + arduinoTime + '\'' +
+                ", receivedDataDateTime=" + receivedDataDateTime +
+                ", airQuality=" + airQuality +
+                ", location=" + location +
+                ", temperature=" + temperature +
+                ", humidity=" + humidity +
+                ", rndHash='" + rndHash + '\'' +
+                ", reportedN=" + reportedN +
+                ", invalidData=" + invalidData +
+                ", locationId=" + locationId +
+                '}';
+    }
 }

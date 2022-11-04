@@ -1,6 +1,7 @@
 package cz.krystofcejchan.air_quality_measurement;
 
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
+import cz.krystofcejchan.air_quality_measurement.domain.AirDataLeaderboard;
 import cz.krystofcejchan.air_quality_measurement.enums.LeaderboardType;
 import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataLeaderboardRepository;
@@ -19,8 +20,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.stream.Stream;
 
 /**
  * Main Class
@@ -56,51 +56,54 @@ public class AqmApplication implements CommandLineRunner {
      */
     @Override
     public void run(String... args) throws Exception {
-//        AirDataLeaderboard airDataLeaderboard = new AirDataLeaderboard(1L,
-//                airDataRepo.findById(2L).get(),
-//                LeaderboardType.HIGHEST_AIRQ,
-//                Location.PdF,
-//                1);
-//        airDataLeaderboardRepo.save(airDataLeaderboard);
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        try {
 
-               executorService.execute(() -> airDataLeaderboardRepo.deleteAll());
-           // executorService.execute(()->airDataLeaderboardRepo.saveAll());
-        } finally {
-            executorService.shutdown();
-        }
+        List<AirData> existingAirData = airDataLeaderboardRepo.findAll().stream().map(AirDataLeaderboard::getAirDataId).toList();
+        Thread.sleep(2500);
+        Map<LeaderBoardKey, List<AirData>> map = this.getFreshDataForLeaderboard();
+        Thread.sleep(5000);
 
+        map.forEach((key, value) -> value.forEach(airData -> {
+            if (existingAirData.stream().noneMatch(data -> Objects.equals(data.getId(), airData.getId()))) {
+                airDataLeaderboardRepo.save(new AirDataLeaderboard(airData,
+                        key.getT(),
+                        key.getL(),
+                        value.indexOf(airData) + 1));
+            }
+        }));
     }
 
+    /**
+     * Prepares data from AirData database to be inserted into the leaderboard database
+     * @return Map {@link LeaderBoardKey} to {@link List} of {@link AirData}
+     */
     @Contract(pure = true)
-    private @NotNull Map<Map<LeaderboardType, Location>, List<AirData>> getFreshDataForLeaderboard() {
-        Map<Map<LeaderboardType, Location>, List<AirData>> map = new HashMap<>();
+    private @NotNull Map<LeaderBoardKey, List<AirData>> getFreshDataForLeaderboard() {
+        Map<LeaderBoardKey, List<AirData>> map = new HashMap<>();
 
         for (Location location : Location.values()) {
             for (LeaderboardType leaderboardType : LeaderboardType.values()) {
                 switch (leaderboardType) {
-                    case HIGHEST_HUM -> map.putIfAbsent(Map.of(leaderboardType, location),
+                    case HIGHEST_HUM -> map.putIfAbsent(new LeaderBoardKey(leaderboardType, location),
                             airDataRepo
                                     .findTop3HumidityByLocationOrderByHumidityDesc(location)
                                     .orElse(Collections.singletonList(new AirData((byte) -1))));
-                    case LOWEST_HUM -> map.putIfAbsent(Map.of(leaderboardType, location),
+                    case LOWEST_HUM -> map.putIfAbsent(new LeaderBoardKey(leaderboardType, location),
                             airDataRepo
                                     .findTop3HumidityByLocationOrderByHumidityAsc(location)
                                     .orElse(Collections.singletonList(new AirData((byte) -1))));
-                    case HIGHEST_AIRQ -> map.putIfAbsent(Map.of(leaderboardType, location),
+                    case HIGHEST_AIRQ -> map.putIfAbsent(new LeaderBoardKey(leaderboardType, location),
                             airDataRepo
                                     .findTop3AirQualityByLocationOrderByAirQualityDesc(location)
                                     .orElse(Collections.singletonList(new AirData((byte) -1))));
-                    case LOWEST_AIRQ -> map.putIfAbsent(Map.of(leaderboardType, location),
+                    case LOWEST_AIRQ -> map.putIfAbsent(new LeaderBoardKey(leaderboardType, location),
                             airDataRepo
                                     .findTop3AirQualityByLocationOrderByAirQualityAsc(location)
                                     .orElse(Collections.singletonList(new AirData((byte) -1))));
-                    case HIGHEST_TEMP -> map.putIfAbsent(Map.of(leaderboardType, location),
+                    case HIGHEST_TEMP -> map.putIfAbsent(new LeaderBoardKey(leaderboardType, location),
                             airDataRepo
                                     .findTop3TemperatureByLocationOrderByTemperatureDesc(location)
                                     .orElse(Collections.singletonList(new AirData((byte) -1))));
-                    case LOWEST_TEMP -> map.putIfAbsent(Map.of(leaderboardType, location),
+                    case LOWEST_TEMP -> map.putIfAbsent(new LeaderBoardKey(leaderboardType, location),
                             airDataRepo
                                     .findTop3TemperatureByLocationOrderByTemperatureAsc(location)
                                     .orElse(Collections.singletonList(new AirData((byte) -1))));
@@ -109,6 +112,10 @@ public class AqmApplication implements CommandLineRunner {
             }
         }
         map.values().removeIf(values -> values.isEmpty() || values.stream().anyMatch(value -> value.getId() < 1));
+        Stream.iterate('*', i -> i)
+                .limit(2000)
+                .forEach(System.out::print);
+
         return map;
     }
 
@@ -121,7 +128,7 @@ public class AqmApplication implements CommandLineRunner {
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:4200"));
+        corsConfiguration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
         corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-Origin", "Content-Type",
                 "Accept", "Authorization", "Origin, Accept", "X-Requested-With",
                 "Access-Control-Request-Method", "Access-Control-Request-Headers"));
@@ -133,4 +140,20 @@ public class AqmApplication implements CommandLineRunner {
         return new CorsFilter(urlBasedCorsConfigurationSource);
     }
 
+}
+
+record LeaderBoardKey(LeaderboardType t, Location l) {
+    @Contract(pure = true)
+    LeaderBoardKey {
+    }
+
+    @Contract(pure = true)
+    public LeaderboardType getT() {
+        return t;
+    }
+
+    @Contract(pure = true)
+    public Location getL() {
+        return l;
+    }
 }
