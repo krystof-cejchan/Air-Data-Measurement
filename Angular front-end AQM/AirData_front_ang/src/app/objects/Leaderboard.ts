@@ -5,128 +5,337 @@ import { AirData } from "../airdata";
  * 
  * _______________________________
  * EXAMPLE OUTPUT:
- * {
-    "{FF=HIGHEST_AIRQ}": [
-        {
-            "id": 3,
-            "arduinoTime": "13.10.2022",
-            "receivedDataDateTime": "2022-10-13T23:46:08",
-            "airQuality": 18.74,
+ * [
+    {
+        "id": 170,
+        "airDataId": {
+            "id": 13,
+            "arduinoTime": "04.11.2022",
+            "receivedDataDateTime": "2022-11-04T19:39:27",
+            "airQuality": -13.74,
             "location": "FF",
-            "temperature": 42.00,
-            "humidity": 57.55,
-            "rndHash": "644cff07-e837-4497-81d2-4ba2eaa6354e",
-            "reportedN": 1,
-            "invalidData": false
-        }
-    ],
-    "{PdF=HIGHEST_HUM}": [
-        {
-            "id": 5,
-            "arduinoTime": "20.10.2022",
-            "receivedDataDateTime": "2022-10-20T18:41:28",
-            "airQuality": 11.74,
-            "location": "PdF",
-            "temperature": 10.00,
-            "humidity": 40.55,
-            "rndHash": "2d5e7bf1-54f8-4417-9731-c71901de8e12",
+            "temperature": 182.00,
+            "humidity": 400.55,
+            "rndHash": "5f0965d0-bcf5-4df2-afdf-493450dcd32c",
             "reportedN": 0,
             "invalidData": false
         },
-        {
-            "id": 6,
-            "arduinoTime": "20.10.2022",
-            "receivedDataDateTime": "2022-10-20T18:46:13",
-            "airQuality": 11.74,
-            "location": "PdF",
-            "temperature": 12.00,
-            "humidity": 40.55,
-            "rndHash": "45eef218-1e48-4ac0-813a-8feb347cabec",
-            "reportedN": 0,
-            "invalidData": false
-        },
-        {
-            "id": 7,
-            "arduinoTime": "20.10.2022",
-            "receivedDataDateTime": "2022-10-20T18:57:22",
-            "airQuality": 11.74,
-            "location": "PdF",
-            "temperature": 18.00,
-            "humidity": 40.55,
-            "rndHash": "7dfbff8d-630d-4df0-bd69-99b51f555e76",
-            "reportedN": 0,
-            "invalidData": false
-        }
-    ],
-    "{FZV=LOWEST_TEMP}": [
-        {
-            "id": 1,
-            "arduinoTime": "08.10.2022",
-            "receivedDataDateTime": "2022-10-13T22:13:32",
-            "airQuality": 10.74,
-            "location": "FZV",
-            "temperature": 4.00,
-            "humidity": 87.55,
-            "rndHash": "b454d01c-fa90-48a3-afc2-70b1839ad50c",
-            "reportedN": 29,
-            "invalidData": false
-        }
-    ],
-    "{FF=LOWEST_TEMP}": [
-        {
-            "id": 3,
-            "arduinoTime": "13.10.2022",
-            "receivedDataDateTime": "2022-10-13T23:46:08",
-            "airQuality": 18.74,
+        "leaderboardType": "HIGHEST_TEMP",
+        "location": "FF",
+        "position": 1
+    },
+    {
+        "id": 171,
+        "airDataId": {
+            "id": 14,
+            "arduinoTime": "04.11.2022",
+            "receivedDataDateTime": "2022-11-04T19:44:00",
+            "airQuality": 1.74,
             "location": "FF",
-            "temperature": 42.00,
-            "humidity": 57.55,
-            "rndHash": "644cff07-e837-4497-81d2-4ba2eaa6354e",
-            "reportedN": 1,
-            "invalidData": false
-        }
-    ],
-    "{PdF=HIGHEST_TEMP}": [
-        {
-            "id": 5,
-            "arduinoTime": "20.10.2022",
-            "receivedDataDateTime": "2022-10-20T18:41:28",
-            "airQuality": 11.74,
-            "location": "PdF",
-            "temperature": 10.00,
-            "humidity": 40.55,
-            "rndHash": "2d5e7bf1-54f8-4417-9731-c71901de8e12",
+            "temperature": 172.00,
+            "humidity": 404.55,
+            "rndHash": "7308f215-5dfd-46c3-800c-062f07e2e427",
             "reportedN": 0,
             "invalidData": false
         },
-        {
-            "id": 6,
-            "arduinoTime": "20.10.2022",
-            "receivedDataDateTime": "2022-10-20T18:46:13",
-            "airQuality": 11.74,
-            "location": "PdF",
-            "temperature": 12.00,
-            "humidity": 40.55,
-            "rndHash": "45eef218-1e48-4ac0-813a-8feb347cabec",
+        "leaderboardType": "HIGHEST_TEMP",
+        "location": "FF",
+        "position": 2
+    },
+    {
+        "id": 172,
+        "airDataId": {
+            "id": 13,
+            "arduinoTime": "04.11.2022",
+            "receivedDataDateTime": "2022-11-04T19:39:27",
+            "airQuality": -13.74,
+            "location": "FF",
+            "temperature": 182.00,
+            "humidity": 400.55,
+            "rndHash": "5f0965d0-bcf5-4df2-afdf-493450dcd32c",
             "reportedN": 0,
             "invalidData": false
         },
-        {
-            "id": 7,
-            "arduinoTime": "20.10.2022",
-            "receivedDataDateTime": "2022-10-20T18:57:22",
-            "airQuality": 11.74,
-            "location": "PdF",
-            "temperature": 18.00,
-            "humidity": 40.55,
-            "rndHash": "7dfbff8d-630d-4df0-bd69-99b51f555e76",
+        "leaderboardType": "LOWEST_HUM",
+        "location": "FF",
+        "position": 1
+    },
+    {
+        "id": 173,
+        "airDataId": {
+            "id": 14,
+            "arduinoTime": "04.11.2022",
+            "receivedDataDateTime": "2022-11-04T19:44:00",
+            "airQuality": 1.74,
+            "location": "FF",
+            "temperature": 172.00,
+            "humidity": 404.55,
+            "rndHash": "7308f215-5dfd-46c3-800c-062f07e2e427",
             "reportedN": 0,
             "invalidData": false
-        }
-    ]...
-}
+        },
+        "leaderboardType": "LOWEST_HUM",
+        "location": "FF",
+        "position": 2
+    },
+    {
+        "id": 174,
+        "airDataId": {
+            "id": 15,
+            "arduinoTime": "04.11.2022",
+            "receivedDataDateTime": "2022-11-04T19:56:29",
+            "airQuality": 10.00,
+            "location": "PdF",
+            "temperature": 13.95,
+            "humidity": 99.00,
+            "rndHash": "169f7101-7313-4a3e-af20-a924127a1eb4",
+            "reportedN": 0,
+            "invalidData": false
+        },
+        "leaderboardType": "LOWEST_AIRQ",
+        "location": "PdF",
+        "position": 1
+    },
+    {
+        "id": 175,
+        "airDataId": {
+            "id": 14,
+            "arduinoTime": "04.11.2022",
+            "receivedDataDateTime": "2022-11-04T19:44:00",
+            "airQuality": 1.74,
+            "location": "FF",
+            "temperature": 172.00,
+            "humidity": 404.55,
+            "rndHash": "7308f215-5dfd-46c3-800c-062f07e2e427",
+            "reportedN": 0,
+            "invalidData": false
+        },
+        "leaderboardType": "HIGHEST_HUM",
+        "location": "FF",
+        "position": 1
+    },
+    {
+        "id": 176,
+        "airDataId": {
+            "id": 13,
+            "arduinoTime": "04.11.2022",
+            "receivedDataDateTime": "2022-11-04T19:39:27",
+            "airQuality": -13.74,
+            "location": "FF",
+            "temperature": 182.00,
+            "humidity": 400.55,
+            "rndHash": "5f0965d0-bcf5-4df2-afdf-493450dcd32c",
+            "reportedN": 0,
+            "invalidData": false
+        },
+        "leaderboardType": "HIGHEST_HUM",
+        "location": "FF",
+        "position": 2
+    },
+    {
+        "id": 177,
+        "airDataId": {
+            "id": 15,
+            "arduinoTime": "04.11.2022",
+            "receivedDataDateTime": "2022-11-04T19:56:29",
+            "airQuality": 10.00,
+            "location": "PdF",
+            "temperature": 13.95,
+            "humidity": 99.00,
+            "rndHash": "169f7101-7313-4a3e-af20-a924127a1eb4",
+            "reportedN": 0,
+            "invalidData": false
+        },
+        "leaderboardType": "HIGHEST_TEMP",
+        "location": "PdF",
+        "position": 1
+    },
+    {
+        "id": 178,
+        "airDataId": {
+            "id": 15,
+            "arduinoTime": "04.11.2022",
+            "receivedDataDateTime": "2022-11-04T19:56:29",
+            "airQuality": 10.00,
+            "location": "PdF",
+            "temperature": 13.95,
+            "humidity": 99.00,
+            "rndHash": "169f7101-7313-4a3e-af20-a924127a1eb4",
+            "reportedN": 0,
+            "invalidData": false
+        },
+        "leaderboardType": "LOWEST_TEMP",
+        "location": "PdF",
+        "position": 1
+    },
+    {
+        "id": 179,
+        "airDataId": {
+            "id": 15,
+            "arduinoTime": "04.11.2022",
+            "receivedDataDateTime": "2022-11-04T19:56:29",
+            "airQuality": 10.00,
+            "location": "PdF",
+            "temperature": 13.95,
+            "humidity": 99.00,
+            "rndHash": "169f7101-7313-4a3e-af20-a924127a1eb4",
+            "reportedN": 0,
+            "invalidData": false
+        },
+        "leaderboardType": "HIGHEST_AIRQ",
+        "location": "PdF",
+        "position": 1
+    },
+    {
+        "id": 180,
+        "airDataId": {
+            "id": 15,
+            "arduinoTime": "04.11.2022",
+            "receivedDataDateTime": "2022-11-04T19:56:29",
+            "airQuality": 10.00,
+            "location": "PdF",
+            "temperature": 13.95,
+            "humidity": 99.00,
+            "rndHash": "169f7101-7313-4a3e-af20-a924127a1eb4",
+            "reportedN": 0,
+            "invalidData": false
+        },
+        "leaderboardType": "HIGHEST_HUM",
+        "location": "PdF",
+        "position": 1
+    },
+    {
+        "id": 181,
+        "airDataId": {
+            "id": 14,
+            "arduinoTime": "04.11.2022",
+            "receivedDataDateTime": "2022-11-04T19:44:00",
+            "airQuality": 1.74,
+            "location": "FF",
+            "temperature": 172.00,
+            "humidity": 404.55,
+            "rndHash": "7308f215-5dfd-46c3-800c-062f07e2e427",
+            "reportedN": 0,
+            "invalidData": false
+        },
+        "leaderboardType": "HIGHEST_AIRQ",
+        "location": "FF",
+        "position": 1
+    },
+    {
+        "id": 182,
+        "airDataId": {
+            "id": 13,
+            "arduinoTime": "04.11.2022",
+            "receivedDataDateTime": "2022-11-04T19:39:27",
+            "airQuality": -13.74,
+            "location": "FF",
+            "temperature": 182.00,
+            "humidity": 400.55,
+            "rndHash": "5f0965d0-bcf5-4df2-afdf-493450dcd32c",
+            "reportedN": 0,
+            "invalidData": false
+        },
+        "leaderboardType": "HIGHEST_AIRQ",
+        "location": "FF",
+        "position": 2
+    },
+    {
+        "id": 183,
+        "airDataId": {
+            "id": 15,
+            "arduinoTime": "04.11.2022",
+            "receivedDataDateTime": "2022-11-04T19:56:29",
+            "airQuality": 10.00,
+            "location": "PdF",
+            "temperature": 13.95,
+            "humidity": 99.00,
+            "rndHash": "169f7101-7313-4a3e-af20-a924127a1eb4",
+            "reportedN": 0,
+            "invalidData": false
+        },
+        "leaderboardType": "LOWEST_HUM",
+        "location": "PdF",
+        "position": 1
+    },
+    {
+        "id": 184,
+        "airDataId": {
+            "id": 14,
+            "arduinoTime": "04.11.2022",
+            "receivedDataDateTime": "2022-11-04T19:44:00",
+            "airQuality": 1.74,
+            "location": "FF",
+            "temperature": 172.00,
+            "humidity": 404.55,
+            "rndHash": "7308f215-5dfd-46c3-800c-062f07e2e427",
+            "reportedN": 0,
+            "invalidData": false
+        },
+        "leaderboardType": "LOWEST_TEMP",
+        "location": "FF",
+        "position": 1
+    },
+    {
+        "id": 185,
+        "airDataId": {
+            "id": 13,
+            "arduinoTime": "04.11.2022",
+            "receivedDataDateTime": "2022-11-04T19:39:27",
+            "airQuality": -13.74,
+            "location": "FF",
+            "temperature": 182.00,
+            "humidity": 400.55,
+            "rndHash": "5f0965d0-bcf5-4df2-afdf-493450dcd32c",
+            "reportedN": 0,
+            "invalidData": false
+        },
+        "leaderboardType": "LOWEST_TEMP",
+        "location": "FF",
+        "position": 2
+    },
+    {
+        "id": 186,
+        "airDataId": {
+            "id": 13,
+            "arduinoTime": "04.11.2022",
+            "receivedDataDateTime": "2022-11-04T19:39:27",
+            "airQuality": -13.74,
+            "location": "FF",
+            "temperature": 182.00,
+            "humidity": 400.55,
+            "rndHash": "5f0965d0-bcf5-4df2-afdf-493450dcd32c",
+            "reportedN": 0,
+            "invalidData": false
+        },
+        "leaderboardType": "LOWEST_AIRQ",
+        "location": "FF",
+        "position": 1
+    },
+    {
+        "id": 187,
+        "airDataId": {
+            "id": 14,
+            "arduinoTime": "04.11.2022",
+            "receivedDataDateTime": "2022-11-04T19:44:00",
+            "airQuality": 1.74,
+            "location": "FF",
+            "temperature": 172.00,
+            "humidity": 404.55,
+            "rndHash": "7308f215-5dfd-46c3-800c-062f07e2e427",
+            "reportedN": 0,
+            "invalidData": false
+        },
+        "leaderboardType": "LOWEST_AIRQ",
+        "location": "FF",
+        "position": 2
+    }
+]
  */
 export interface LeaderboardData {
-    //java syntax -> Map<Map<Location(enum), LeaderboarType(enum)>, List<AirData>>
-    allData: Record<string, AirData[]>;
+    id: number,
+    airDataId: AirData,
+    leaderboardType: string,
+    location: string,
+    position: number;
 }   

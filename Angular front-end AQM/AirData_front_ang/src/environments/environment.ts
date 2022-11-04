@@ -7,7 +7,7 @@ export const environment = {
   baseUrl: 'http://localhost:8080',
   baseUrlAPI: 'http://localhost:8080/airdata/api',
   APP_INITIALIZER_URL: 'http://localhost:8080/airdata/APP_INITIALIZER',
-  Locations:[""]
+  leaderboard: 'http://localhost:8080/airdata/leaderboard',
 };
 
 /*

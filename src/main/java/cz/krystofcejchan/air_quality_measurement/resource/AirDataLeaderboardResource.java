@@ -44,4 +44,10 @@ public class AirDataLeaderboardResource {
                 new ResponseEntity<>(false, HttpStatus.BAD_REQUEST)
                 : new ResponseEntity<>(airDataLeaderboards.get(), HttpStatus.OK);
     }
+
+    @GetMapping("/getAllDataFromLeaderboard")
+    public ResponseEntity<?> getAll() {
+        return service.getAllDataFromLeaderboard().isEmpty() ? new ResponseEntity<>(false, HttpStatus.BAD_REQUEST)
+                : new ResponseEntity<>(service.getAllDataFromLeaderboard().get(), HttpStatus.OK);
+    }
 }
