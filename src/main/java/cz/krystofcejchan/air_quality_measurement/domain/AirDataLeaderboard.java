@@ -3,6 +3,7 @@ package cz.krystofcejchan.air_quality_measurement.domain;
 import cz.krystofcejchan.air_quality_measurement.enums.LeaderboardType;
 import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import jakarta.persistence.*;
+import org.jetbrains.annotations.Contract;
 
 import java.io.Serializable;
 
@@ -10,7 +11,6 @@ import java.io.Serializable;
  * The type Air data leaderboard.
  */
 @Entity
-@Table(name = "leaderboard")
 public class AirDataLeaderboard implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,9 +28,11 @@ public class AirDataLeaderboard implements Serializable {
     /**
      * Instantiates a new Air data leaderboard.
      */
+    @Contract(pure = true)
     public AirDataLeaderboard() {
     }
 
+    @Contract(pure = true)
     public AirDataLeaderboard(Long id, AirData airDataId, LeaderboardType leaderboardType, Location location,
                               Integer position) {
         this.id = id;

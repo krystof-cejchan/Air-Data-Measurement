@@ -4,6 +4,7 @@ import cz.krystofcejchan.air_quality_measurement.domain.AirDataLeaderboard;
 import cz.krystofcejchan.air_quality_measurement.enums.LeaderboardType;
 import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import cz.krystofcejchan.air_quality_measurement.service.AirDataLeaderboardService;
+import org.jetbrains.annotations.Contract;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import java.util.Optional;
 public class AirDataLeaderboardResource {
     private final AirDataLeaderboardService service;
 
+    @Contract(pure = true)
     public AirDataLeaderboardResource(AirDataLeaderboardService service) {
         this.service = service;
     }

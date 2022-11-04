@@ -4,6 +4,7 @@ import cz.krystofcejchan.air_quality_measurement.domain.AirDataAverageOfDay;
 import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import cz.krystofcejchan.air_quality_measurement.service.AirDataAverageOfDayService;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,8 +42,9 @@ public final class AirDataAverageForDayResource {
      *
      * @return the response entity
      */
+    @Contract(" -> new")
     @GetMapping("/calc")
-    public ResponseEntity<?> calcAverage() {
+    public @NotNull ResponseEntity<?> calcAverage() {
 
         Optional<HashMap<Location, AirDataAverageOfDay>> optionalAirDataAverageOfDay
                 = service.getAverageAirDataForOneSpecificDay(LocalDate.now(ZoneId.of("Europe/Prague")));
@@ -59,8 +61,9 @@ public final class AirDataAverageForDayResource {
      *
      * @return the all data
      */
+    @Contract(" -> new")
     @GetMapping("/all")
-    public ResponseEntity<List<AirDataAverageOfDay>> getAllData() {
+    public @NotNull ResponseEntity<List<AirDataAverageOfDay>> getAllData() {
         return new ResponseEntity<>(service.getAllAvgAirData(), HttpStatus.OK);
     }
 }
