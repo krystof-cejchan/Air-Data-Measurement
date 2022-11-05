@@ -1,6 +1,18 @@
+html{
+    font: inherit;
+    margin-top: 20px;
+}
+
+
 .spinner-border {
     width: 4rem;
     height: 4rem;
     color: #3caeff !important;
     margin-top: calc(30vw / 2);
+}
+
+.pb-2{
+    width: 100% !important;
+    float: left;
+    margin-top: 10vh;
 }

@@ -13,47 +13,32 @@
         <div *ngIf="showLoading" class="spinner-border" role="status">
             <span class="sr-only">Loading...</span>
         </div>
-        <div class="container px-4 py-5" id="custom-cards">
-            <h2 class="pb-2 border-bottom">Žebříčky</h2>
-            <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
-                <div *ngFor="let leaderboard of leaderboard_datas" class="col">
-                    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style=" background:
-                              linear-gradient(to bottom, rgba(96, 95, 179, 0.6), rgba(182, 245, 122, 0.61));
-                              background-size:cover;">
-                        <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                            <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">
-                                <span id="airQualityT" mat-raised-button matTooltip="Kvalita vzduchu"
-                                    matTooltipPosition="after">
-                                    {{leaderboard.id}}</span>
-                                <br>
-                                <span id="temperatureT" mat-raised-button matTooltip="Teplota"
-                                    matTooltipPosition="after">
-                                    {{leaderboard.airDataId.id}}°C</span>
-                                <br>
-                                <span id="humidityT" mat-raised-button matTooltip="Vlhkost"
-                                    matTooltipPosition="after">{{leaderboard.airDataId.airQuality}}% </span>
-                            </h3>
-                            <ul class="d-flex list-unstyled mt-auto">
+        <h2 class="pb-2 border-bottom">Žebříčky</h2>
+        <div *ngFor="let leaderboard_data of leaderboard_data_prepared">
+            <div style="font-size: large;">{{leaderboard_data.type}}</div>
 
-                                <li class="d-flex align-items-center me-3">
-                                    <svg class="bi me-2" height="1em" width="1em">
-                                        <use xlink:href="#geo-fill" />
-                                    </svg>
-                                    <small>{{leaderboard.location}}</small>
-                                </li>
-                                <li class="d-flex align-items-center">
-                                    <svg class="bi me-2" height="1em" width="1em">
-                                        <use xlink:href="#calendar3" />
-                                    </svg>
-                                    <small class="airdata_receivedDataDateTime">{{leaderboard.leaderboardType}}</small>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Lokace</th>
+                            <th scope="col">Naměřená hodnota</th>
+                            <th scope="col">Datum naměření</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of leaderboard_data.leaderboardData">
+                            <th scope="row">{{data.position}}</th>
+                            <td>{{data.location}}</td>
+                            <td>{{data.airDataId.airQuality}}</td>
+                            <td>{{data.airDataId.receivedDataDateTime}}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-
         </div>
+
     </div>
 </body>
 
