@@ -9,36 +9,41 @@
 </head>
 
 <body>
-    <div class="d-flex justify-content-center">
-        <div *ngIf="showLoading" class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-        <h2 class="pb-2 border-bottom">Žebříčky</h2>
-        <div *ngFor="let leaderboard_data of leaderboard_data_prepared">
-            <div style="font-size: large;">{{leaderboard_data.type}}</div>
 
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Lokace</th>
-                            <th scope="col">Naměřená hodnota</th>
-                            <th scope="col">Datum naměření</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let data of leaderboard_data.leaderboardData">
-                            <th scope="row">{{data.position}}</th>
-                            <td>{{data.location}}</td>
-                            <td>{{data.airDataId.airQuality}}</td>
-                            <td>{{data.airDataId.receivedDataDateTime}}</td>
-                        </tr>
-                    </tbody>
-                </table>
+    <div *ngIf="showLoading" class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+    <div class="container px-4 py-5">
+        <h2 class="pb-2 border-bottom"><span id="bordertext">Žebříčky</span></h2>
+        <div class="container px-4 py-5" id="custom-cards">
+            <div *ngFor="let leaderboard_data of leaderboard_data_prepared">
+                <div style="font-size: large;">{{leaderboard_data.type}}</div>
+                <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
+                    <div class="table-responsive">
+                        <div class="mt-3 d-flex align-items-center flex-column">
+                            <table class="table table-striped w-auto text-center m-2">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Lokace</th>
+                                        <th scope="col">Naměřená hodnota</th>
+                                        <th scope="col">Datum naměření</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let data of leaderboard_data.leaderboardData">
+                                        <th scope="row">{{data.position}}</th>
+                                        <td>{{data.location}}</td>
+                                        <td>{{data.airDataId.airQuality}}</td>
+                                        <td>{{data.airDataId.receivedDataDateTime}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
     </div>
 </body>
 

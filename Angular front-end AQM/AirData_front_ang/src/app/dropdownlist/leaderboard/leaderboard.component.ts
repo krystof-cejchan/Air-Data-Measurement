@@ -30,7 +30,7 @@ export class LeaderboardComponent implements OnInit {
       this.leaderboard_datas!
         .map(data => data.leaderboardType)
         .filter((value: string, index: number, array: string[]) => array.indexOf(value) === index)
-        .sort()
+        .sort((t1, t2) => t1.substring(t1.indexOf('_')).localeCompare(t2.substring(t2.indexOf('_'))))
         .forEach(lType => {
           this.leaderboard_data_prepared
             .push({ type: lType, leaderboardData: this.leaderboard_datas?.filter(data => data.leaderboardType === lType) } as PrePreparedLeaderboardData);
