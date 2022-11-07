@@ -53,50 +53,44 @@ public interface AirDataRepository extends JpaRepository<AirData, Long> {
     /**
      * Find top 3 temperature distinct by location order by air quality asc optional.
      *
-     * @param location the location
      * @return the optional
      */
-    Optional<List<AirData>> findTop3TemperatureByLocationOrderByTemperatureAsc(Location location);
+    Optional<List<AirData>> findTop3TemperatureDistinctByOrderByTemperatureAsc();
 
     /**
      * Find top 3 temperature distinct by location order by air quality desc optional.
      *
-     * @param location the location
      * @return the optional
      */
-    Optional<List<AirData>> findTop3TemperatureByLocationOrderByTemperatureDesc(Location location);
+    Optional<List<AirData>> findTop3TemperatureByOrderByTemperatureDesc();
 
     /**
      * Find top 3 humidity distinct by location order by air quality desc optional.
      *
-     * @param location the location
      * @return the optional
      */
-    Optional<List<AirData>> findTop3HumidityByLocationOrderByHumidityDesc(Location location);
+    Optional<List<AirData>> findTop3HumidityByOrderByHumidityDesc();
 
     /**
      * Find top 3 humidity distinct by location order by air quality asc optional.
      *
-     * @param location the location
      * @return the optional
      */
-    Optional<List<AirData>> findTop3HumidityByLocationOrderByHumidityAsc(Location location);
+    Optional<List<AirData>> findTop3HumidityByOrderByHumidityAsc();
 
     /**
      * Find top 3 air quality distinct by location order by air quality asc optional.
      *
-     * @param location the location
      * @return the optional
      */
-    Optional<List<AirData>> findTop3AirQualityByLocationOrderByAirQualityAsc(Location location);
+    Optional<List<AirData>> findTop3AirQualityByOrderByAirQualityAsc();
 
     /**
      * Find top 3 air quality distinct by location order by air quality desc optional.
      *
-     * @param location the location
      * @return the optional
      */
-    Optional<List<AirData>> findTop3AirQualityByLocationOrderByAirQualityDesc(Location location);
+    Optional<List<AirData>> findTop3AirQualityByOrderByAirQualityDesc();
 
 
 }

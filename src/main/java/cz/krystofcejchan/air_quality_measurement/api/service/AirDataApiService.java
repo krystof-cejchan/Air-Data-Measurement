@@ -134,12 +134,12 @@ public record AirDataApiService(AirDataRepository airDataRepository) {
      */
     public Optional<List<AirData>> getLeaderBoardData(LeaderboardType leaderboardType, Location location) {
         return switch (leaderboardType) {
-            case HIGHEST_AIRQ -> airDataRepository.findTop3AirQualityByLocationOrderByAirQualityDesc(location);
-            case LOWEST_AIRQ -> airDataRepository.findTop3AirQualityByLocationOrderByAirQualityAsc(location);
-            case HIGHEST_TEMP -> airDataRepository.findTop3TemperatureByLocationOrderByTemperatureDesc(location);
-            case LOWEST_TEMP -> airDataRepository.findTop3TemperatureByLocationOrderByTemperatureAsc(location);
-            case HIGHEST_HUM -> airDataRepository.findTop3HumidityByLocationOrderByHumidityDesc(location);
-            case LOWEST_HUM -> airDataRepository.findTop3HumidityByLocationOrderByHumidityAsc(location);
+            case HIGHEST_AIRQ -> airDataRepository.findTop3AirQualityByOrderByAirQualityDesc();
+            case LOWEST_AIRQ -> airDataRepository.findTop3AirQualityByOrderByAirQualityAsc();
+            case HIGHEST_TEMP -> airDataRepository.findTop3TemperatureByOrderByTemperatureDesc();
+            case LOWEST_TEMP -> airDataRepository.findTop3TemperatureDistinctByOrderByTemperatureAsc();
+            case HIGHEST_HUM -> airDataRepository.findTop3HumidityByOrderByHumidityDesc();
+            case LOWEST_HUM -> airDataRepository.findTop3HumidityByOrderByHumidityAsc();
         };
     }
 }
