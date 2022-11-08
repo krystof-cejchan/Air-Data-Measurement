@@ -1,3 +1,4 @@
+import { formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { PrePreparedLeaderboardData } from 'src/app/objects/LeaderboardDataForHtml';
 import { LeaderboardData } from "../../objects/Leaderboard";
@@ -35,11 +36,18 @@ export class LeaderboardComponent implements OnInit {
           this.leaderboard_data_prepared
             .push({ type: lType, leaderboardData: this.leaderboard_datas?.filter(data => data.leaderboardType === lType) } as PrePreparedLeaderboardData);
         });
-
-      console.log(this.leaderboard_data_prepared);
     },
       () => {
         this.showLoading = false;
       });
+  }
+
+  /**
+   * 2022-11-08T13:18:55.01 to dd.MM.YYYY as string, not date
+   * @param longDate long date with day and time
+   * @returns short date as dd.MM.YYYY
+   */
+  public shortenDate(longDate: string): string {
+    return formatDate(longDate, 'dd.MM.YYYY', "en-US");
   }
 }

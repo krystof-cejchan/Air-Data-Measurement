@@ -17,7 +17,15 @@
         <h2 class="pb-2 border-bottom"><span id="bordertext">Žebříčky</span></h2>
         <div class="container px-4 py-5" id="custom-cards">
             <div *ngFor="let leaderboard_data of leaderboard_data_prepared">
-                <div style="font-size: large;">{{leaderboard_data.type}}</div>
+                <div style="font-size: large;" [ngSwitch]=leaderboard_data.type>
+                    <span *ngSwitchCase="'LOWEST_AIRQ'">Nejnižší kvalita vzduchu</span>
+                    <span *ngSwitchCase="'LOWEST_HUM'">Nejnižší vlhkost</span>
+                    <span *ngSwitchCase="'LOWEST_TEMP'">Nejnižší teplota</span>
+                    <span *ngSwitchCase="'HIGHEST_AIRQ'">Nejvyšší kvalita vzduchu</span>
+                    <span *ngSwitchCase="'HIGHEST_HUM'">Nejvyšší vlhkost</span>
+                    <span *ngSwitchCase="'HIGHEST_TEMP'">Nejvyšší teplota</span>
+                    <span *ngSwitchDefault><i>n / a</i></span>
+                </div>
                 <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
                     <div class="table-responsive">
                         <div class="mt-3 d-flex align-items-center flex-column">
@@ -30,12 +38,29 @@
                                         <th scope="col">Datum naměření</th>
                                     </tr>
                                 </thead>
+
+                                <!-- <div [ngSwitch]="selectedValue3">
+        <div *ngSwitchCase="'One'">One is Selected</div>
+        <div *ngSwitchDefault>This is Default 1</div>
+        <div *ngSwitchCase="'Two'">Two is Selected</div>
+        <div *ngSwitchDefault>This is Default 2</div>
+      </div> -->
+
+
                                 <tbody>
                                     <tr *ngFor="let data of leaderboard_data.leaderboardData">
                                         <th scope="row">{{data.position}}</th>
                                         <td>{{data.location}}</td>
-                                        <td>{{data.airDataId.airQuality}}</td>
-                                        <td>{{data.airDataId.receivedDataDateTime}}</td>
+                                        <td [ngSwitch]=leaderboard_data.type>
+                                            <span *ngSwitchCase="'LOWEST_AIRQ'">{{data.airDataId.airQuality}}</span>
+                                            <span *ngSwitchCase="'LOWEST_HUM'">{{data.airDataId.humidity}}</span>
+                                            <span *ngSwitchCase="'LOWEST_TEMP'">{{data.airDataId.temperature}}</span>
+                                            <span *ngSwitchCase="'HIGHEST_AIRQ'">{{data.airDataId.airQuality}}</span>
+                                            <span *ngSwitchCase="'HIGHEST_HUM'">{{data.airDataId.humidity}}</span>
+                                            <span *ngSwitchCase="'HIGHEST_TEMP'">{{data.airDataId.temperature}}</span>
+                                            <span *ngSwitchDefault><i>n / a</i></span>
+                                        </td>
+                                        <td>{{shortenDate(data.airDataId.receivedDataDateTime)}}</td>
                                     </tr>
                                 </tbody>
                             </table>
