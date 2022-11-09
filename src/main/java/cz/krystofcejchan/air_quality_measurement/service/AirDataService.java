@@ -23,10 +23,13 @@ import java.util.UUID;
  */
 @Service
 public record AirDataService(AirDataRepository airDataRepository) {
+    @Autowired
+    static AirDataLeaderboardService leaderboardService;
+
     /**
      * Instantiates a new Air data service.
      *
-     * @param airDataRepository the air data repository
+     * @param airDataRepository the air data airDataRepository
      */
     @Autowired
     @Contract(pure = true)
@@ -42,7 +45,10 @@ public record AirDataService(AirDataRepository airDataRepository) {
     public @NotNull AirData addAirData(@NotNull AirData airData) {
         airData.setReceivedDataDateTime(LocalDateTime.now(ZoneId.of("Europe/Prague")));
         airData.setRndHash(UUID.randomUUID().toString());
-        return airDataRepository.save(airData);
+
+        AirData a = airDataRepository.save(airData);
+        leaderboardService.updateLeaderboard();
+        return a;
     }
 
     /**

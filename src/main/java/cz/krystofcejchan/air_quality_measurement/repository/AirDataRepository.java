@@ -1,6 +1,7 @@
 package cz.krystofcejchan.air_quality_measurement.repository;
 
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
+import cz.krystofcejchan.air_quality_measurement.enums.LeaderboardType;
 import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -92,5 +93,6 @@ public interface AirDataRepository extends JpaRepository<AirData, Long> {
      */
     Optional<List<AirData>> findTop3AirQualityByOrderByAirQualityDesc();
 
+    Optional<List<AirData>> findTop3ByLeaderboardType(LeaderboardType leaderboardType);
 
 }

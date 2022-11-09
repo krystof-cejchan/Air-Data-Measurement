@@ -21,6 +21,8 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static java.lang.Thread.sleep;
+
 /**
  * Main Class
  */
@@ -57,10 +59,15 @@ public class AqmApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         List<AirData> existingAirData = airDataLeaderboardRepo.findAll().stream().map(AirDataLeaderboard::getAirDataId).toList();
-        Thread.sleep(2500);
+        sleep(2500);
         Map<LeaderBoardKey, List<AirData>> map = this.getFreshDataForLeaderboard();
-        Thread.sleep(5000);
+        sleep(5000);
 
+        saveChangedData(existingAirData, map);
+
+    }
+
+    private void saveChangedData(List<AirData> existingAirData, @NotNull Map<LeaderBoardKey, List<AirData>> map) {
         map.forEach((key, value) -> value.forEach(airData -> {
             if (existingAirData.stream().noneMatch(data -> Objects.equals(data.getId(), airData.getId()))) {
                 airDataLeaderboardRepo.save(new AirDataLeaderboard(airData,
