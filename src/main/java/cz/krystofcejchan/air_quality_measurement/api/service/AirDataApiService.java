@@ -129,10 +129,9 @@ public record AirDataApiService(AirDataRepository airDataRepository) {
      * Gets leader board data.
      *
      * @param leaderboardType the leaderboard type
-     * @param location        the location
      * @return the leader board data
      */
-    public Optional<List<AirData>> getLeaderBoardData(LeaderboardType leaderboardType, Location location) {
+    public Optional<List<AirData>> getLeaderBoardData(LeaderboardType leaderboardType) {
         return switch (leaderboardType) {
             case HIGHEST_AIRQ -> airDataRepository.findTop3AirQualityByOrderByAirQualityDesc();
             case LOWEST_AIRQ -> airDataRepository.findTop3AirQualityByOrderByAirQualityAsc();

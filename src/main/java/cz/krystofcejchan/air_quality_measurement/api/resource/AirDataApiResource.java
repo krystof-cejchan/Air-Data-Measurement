@@ -3,7 +3,6 @@ package cz.krystofcejchan.air_quality_measurement.api.resource;
 import cz.krystofcejchan.air_quality_measurement.api.service.AirDataApiService;
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
 import cz.krystofcejchan.air_quality_measurement.enums.LeaderboardType;
-import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import org.jetbrains.annotations.Contract;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -127,13 +126,11 @@ public class AirDataApiResource {
     @GetMapping("/getRawLeaderboardStats")
     public synchronized ResponseEntity<? extends Collection<AirData>> getLeaderBoardStats(@RequestParam() String location,
                                                                                           @RequestParam() String leaderboardType) {
-        Location location1;
         LeaderboardType leaderboardType1;
         try {
-            location1 = Location.valueOf(location);
             leaderboardType1 = LeaderboardType.valueOf(leaderboardType);
         } catch (IllegalArgumentException e) {
-            //location or leaderboardType is not a correct enum value
+            //leaderboardType is not a correct enum value
             return new ResponseEntity<>(Collections.emptyList(), HttpStatus.BAD_REQUEST);
         }
 
@@ -146,7 +143,7 @@ public class AirDataApiResource {
             service.submit(() -> {
 
                 try {
-                    top3 = airDataApiService.getLeaderBoardData(leaderboardType1, location1)
+                    top3 = airDataApiService.getLeaderBoardData(leaderboardType1)
                             .orElse(Collections.emptyList())
                             .stream()
                             .filter(airData -> airData.getId() > 0L)

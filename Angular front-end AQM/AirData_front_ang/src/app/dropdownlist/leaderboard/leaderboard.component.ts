@@ -1,7 +1,9 @@
 import { formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PrePreparedLeaderboardData } from 'src/app/objects/LeaderboardDataForHtml';
 import { LeaderboardData } from "../../objects/Leaderboard";
+import { LatestDataComponent } from '../latest-data/latest-data.component';
 import { LeaderboardService } from "./leaderboard.service";
 
 @Component({
@@ -14,7 +16,7 @@ export class LeaderboardComponent implements OnInit {
   public leaderboard_types?: string[] = undefined;
   public leaderboard_data_prepared: PrePreparedLeaderboardData[] = [];
   public showLoading: boolean = true;
-  constructor(private service: LeaderboardService) { }
+  constructor(private service: LeaderboardService, private router: Router,private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.service.getAllLeaderboardData().subscribe(async (response: LeaderboardData[]) => {
@@ -49,5 +51,9 @@ export class LeaderboardComponent implements OnInit {
    */
   public shortenDate(longDate: string): string {
     return formatDate(longDate, 'dd.MM.YYYY', "en-US");
+  }
+
+  public showDetails(airdataInfo: { id: number, hash: string }) {
+    this.router.navigate([`/data-detaily/${airdataInfo.id}/${airdataInfo.hash}`], { relativeTo: this.route });
   }
 }

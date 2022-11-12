@@ -22,18 +22,18 @@ import java.util.UUID;
  * The type Air data service.
  */
 @Service
-public record AirDataService(AirDataRepository airDataRepository) {
+public class AirDataService {
     @Autowired
-    static AirDataLeaderboardService leaderboardService;
+    AirDataLeaderboardService leaderboardService;
+    @Autowired
+    AirDataRepository airDataRepository;
 
     /**
      * Instantiates a new Air data service.
-     *
-     * @param airDataRepository the air data airDataRepository
      */
     @Autowired
     @Contract(pure = true)
-    public AirDataService {
+    public AirDataService() {
     }
 
     /**
@@ -46,9 +46,14 @@ public record AirDataService(AirDataRepository airDataRepository) {
         airData.setReceivedDataDateTime(LocalDateTime.now(ZoneId.of("Europe/Prague")));
         airData.setRndHash(UUID.randomUUID().toString());
 
-        AirData a = airDataRepository.save(airData);
+        AirData airDataSave = airDataRepository.save(airData);
+        try {
+            Thread.sleep(300);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         leaderboardService.updateLeaderboard();
-        return a;
+        return airDataSave;
     }
 
     /**

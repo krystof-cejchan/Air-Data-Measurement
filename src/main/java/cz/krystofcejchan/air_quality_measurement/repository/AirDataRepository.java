@@ -93,6 +93,6 @@ public interface AirDataRepository extends JpaRepository<AirData, Long> {
      */
     Optional<List<AirData>> findTop3AirQualityByOrderByAirQualityDesc();
 
-    Optional<List<AirData>> findTop3ByLeaderboardType(LeaderboardType leaderboardType);
+
 
 }

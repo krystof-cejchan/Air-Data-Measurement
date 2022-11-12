@@ -8,7 +8,9 @@ html {
     width: 4rem;
     height: 4rem;
     color: #3caeff !important;
-    margin-top: calc(30vw / 2);
+    //margin-top: calc(30vw / 2);
+    position: relative;
+    margin-left: 50%;
 }
 
 .pb-2 {

@@ -1,5 +1,6 @@
 package cz.krystofcejchan.air_quality_measurement.service;
 
+import cz.krystofcejchan.air_quality_measurement.api.service.AirDataApiService;
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
 import cz.krystofcejchan.air_quality_measurement.domain.AirDataLeaderboard;
 import cz.krystofcejchan.air_quality_measurement.enums.LeaderboardType;
@@ -14,14 +15,21 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-public record AirDataLeaderboardService(AirDataLeaderboardRepository airDataLeaderboardRepository) {
+public class AirDataLeaderboardService {
 
     @Autowired
-    static AirDataRepository airDataRepository;
+    AirDataLeaderboardRepository airDataLeaderboardRepository;
+    @Autowired
+    AirDataRepository airDataRepository;
 
     @Autowired
     @Contract(pure = true)
-    public AirDataLeaderboardService {
+    public AirDataLeaderboardService() {
+    }
+
+    @Contract(pure = true)
+    public AirDataLeaderboardService(AirDataLeaderboardRepository airDataLeaderboardRepository) {
+        this.airDataLeaderboardRepository = airDataLeaderboardRepository;
     }
 
     public Optional<List<AirDataLeaderboard>> getAirDataLeaderboardByLocationAndLeaderboardType(@NotNull Location location,
@@ -56,35 +64,38 @@ public record AirDataLeaderboardService(AirDataLeaderboardRepository airDataLead
         } catch (Exception e) {
             e.printStackTrace();
         }
-        getTop3AirDataLeaderboardForEachLeaderboardType().forEach((k, v) -> {
-            Optional<List<AirDataLeaderboard>> airDataLeaderboards = airDataLeaderboardRepository.findTop3ByLeaderboardType(k);
-            Optional<List<AirData>> airDataList = airDataRepository.findTop3ByLeaderboardType(k);
+        List<AirDataLeaderboard> a = new ArrayList<>();
+        getTop3AirDataLeaderboardForEachLeaderboardType().forEach((key, value) -> {
+            Optional<List<AirDataLeaderboard>> airDataLeaderboards = airDataLeaderboardRepository.findTop3ByLeaderboardType(key);
+            Optional<List<AirData>> airDataList = new AirDataApiService(airDataRepository).getLeaderBoardData(key);
             if (airDataLeaderboards.isEmpty() || airDataList.isEmpty()) return;
 
             if (!airDataLeaderboards.get()
                     .stream()
                     .map(AirDataLeaderboard::getAirDataId)
-                    .allMatch(m -> airDataList.get()
+                    .allMatch(airData -> airDataList.get()
                             .stream()
                             .map(AirData::getId)
-                            .allMatch(it -> it.equals(m.getId())))
+                            .allMatch(id -> id.equals(airData.getId())))
             ) {
                 airDataLeaderboardRepository.deleteAll(airDataLeaderboards.get());
-                List<AirDataLeaderboard> a = airDataList.get()
+                List<AirDataLeaderboard> airDataLeaderboardListToBeSavedToDatabase = airDataList.get()
                         .stream()
-                        .map(it -> airDataLeaderboards.get()
+                        .map(airData -> airDataLeaderboards.get()
                                 .stream()
-                                .map(t ->
-                                        new AirDataLeaderboard(it, t.getLeaderboardType(),
-                                                t.getLocation(), t.getPosition())).toList())
-                        .flatMap(List::stream)
+                                .map(airDataLeaderboard ->
+                                        new AirDataLeaderboard(airData, key,
+                                                airData.getLocation(),
+                                                airDataList.get().indexOf(airData) + 1)).toList())
+                        .flatMap(List::stream).distinct()
                         .toList();
-               // airDataLeaderboardRepository.
+                airDataLeaderboardListToBeSavedToDatabase.forEach(i -> System.out.println(i.toString()));
+                a.addAll(airDataLeaderboardListToBeSavedToDatabase);
 
-                // (musí se najít kde je to jiný aby se podle toho musely vytvořit parametry)
-                //   airDataLeaderboardRepository.saveAll(airDataList.get().stream().map(it -> new AirDataLeaderboard(it, it.)))
+                // TODO does not work!!!
             }
         });
+        a.stream().distinct().forEach(i -> System.out.println(i.toString()));
     }
 
 
