@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PrePreparedLeaderboardData } from 'src/app/objects/LeaderboardDataForHtml';
 import { LeaderboardData } from "../../objects/Leaderboard";
-import { LatestDataComponent } from '../latest-data/latest-data.component';
 import { LeaderboardService } from "./leaderboard.service";
 
 @Component({
@@ -38,6 +37,7 @@ export class LeaderboardComponent implements OnInit {
           this.leaderboard_data_prepared
             .push({ type: lType, leaderboardData: this.leaderboard_datas?.filter(data => data.leaderboardType === lType) } as PrePreparedLeaderboardData);
         });
+        // TODO make sure data are sorted by position!
     },
       () => {
         this.showLoading = false;

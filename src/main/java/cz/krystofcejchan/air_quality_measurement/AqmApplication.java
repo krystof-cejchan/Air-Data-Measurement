@@ -58,22 +58,41 @@ public class AqmApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        List<AirData> existingAirData = airDataLeaderboardRepo.findAll().stream().map(AirDataLeaderboard::getAirDataId).toList();
+        List<AirDataLeaderboard> existingAirData = airDataLeaderboardRepo.findAll();
         sleep(2500);
         Map<LeaderBoardKey, List<AirData>> map = this.getFreshDataForLeaderboard();
         sleep(5000);
 
-        saveChangedData(existingAirData, map);
+        saveChangedDataAndDeleteOldData(existingAirData, map);
 
     }
 
-    private void saveChangedData(List<AirData> existingAirData, @NotNull Map<LeaderBoardKey, List<AirData>> map) {
-        map.forEach((key, value) -> value.forEach(airData -> {
+    /**
+     * firstly, this method deletes all the data that already exist in the leaderboard table,
+     * yet they do not exist in the newly generated data stored in newLeaderboardDataMap.
+     * Secondly, all the data that are newly generated but cannot be found in the leaderboard table in the database, shall be saved there
+     *
+     * @param existingAirData       List of data that already exist in the leaderboard table
+     * @param newLeaderboardDataMap freshly generated data from AirData table and saved into a map which takes {@link LeaderBoardKey} as a key
+     *                              and {@link List} of {@link AirData} as a value
+     */
+    private void saveChangedDataAndDeleteOldData(@NotNull List<AirDataLeaderboard> existingAirData, @NotNull Map<LeaderBoardKey, List<AirData>> newLeaderboardDataMap) {
+        newLeaderboardDataMap.forEach((key, value) -> value.forEach(airData -> {
+
+           existingAirData.forEach(airDataLeaderboard ->
+            {
+                if (Objects.equals(airDataLeaderboard.getAirDataId().getId(), airData.getId())) {
+                    airDataLeaderboardRepo.delete(airDataLeaderboard);
+                }
+            });
+
+
             if (existingAirData.stream().noneMatch(data -> Objects.equals(data.getId(), airData.getId()))) {
                 airDataLeaderboardRepo.save(new AirDataLeaderboard(airData,
                         key.getT(), airData.getLocation(), value.indexOf(airData) + 1));
             }
         }));
+
     }
 
     /**
