@@ -2,12 +2,12 @@ package cz.krystofcejchan.air_quality_measurement;
 
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
 import cz.krystofcejchan.air_quality_measurement.domain.AirDataLeaderboard;
-import cz.krystofcejchan.air_quality_measurement.enums.LeaderboardType;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataLeaderboardRepository;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataRepository;
 import cz.krystofcejchan.air_quality_measurement.scheduled_tasks.ScheduledTaskRunnable;
 import cz.krystofcejchan.air_quality_measurement.scheduled_tasks.ScheduledTaskRunnableManager;
-import org.jetbrains.annotations.Contract;
+import cz.krystofcejchan.air_quality_measurement.utilities.leaderboard.table.LeaderBoardKey;
+import cz.krystofcejchan.air_quality_measurement.utilities.leaderboard.table.LeaderboardTable;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -18,8 +18,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static java.lang.Thread.sleep;
 
@@ -49,6 +51,7 @@ public class AqmApplication implements CommandLineRunner {
         new ScheduledTaskRunnableManager().getRunnableList().forEach(ScheduledTaskRunnable::runScheduledTask);
     }
 
+
     /**
      * implemented from {@link CommandLineRunner}
      *
@@ -60,88 +63,13 @@ public class AqmApplication implements CommandLineRunner {
 
         List<AirDataLeaderboard> existingAirData = airDataLeaderboardRepo.findAll();
         sleep(2500);
-        Map<LeaderBoardKey, List<AirData>> map = this.getFreshDataForLeaderboard();
+        Map<LeaderBoardKey, List<AirData>> map = LeaderboardTable.getFreshDataForLeaderboard(airDataRepo);
         sleep(5000);
 
-        saveChangedDataAndDeleteOldData(existingAirData, map);
+        LeaderboardTable.saveChangedDataAndDeleteOldData(airDataLeaderboardRepo, existingAirData, map);
 
     }
 
-    /**
-     * firstly, this method deletes all the data that already exist in the leaderboard table,
-     * yet they do not exist in the newly generated data stored in newLeaderboardDataMap.
-     * Secondly, all the data that are newly generated but cannot be found in the leaderboard table in the database, shall be saved there
-     *
-     * @param existingAirData       List of data that already exist in the leaderboard table
-     * @param newLeaderboardDataMap freshly generated data from AirData table and saved into a map which takes {@link LeaderBoardKey} as a key
-     *                              and {@link List} of {@link AirData} as a value
-     */
-    private void saveChangedDataAndDeleteOldData(@NotNull List<AirDataLeaderboard> existingAirData, @NotNull Map<LeaderBoardKey, List<AirData>> newLeaderboardDataMap) {
-        newLeaderboardDataMap.forEach((key, value) -> value.forEach(airData -> {
-
-           existingAirData.forEach(airDataLeaderboard ->
-            {
-                if (Objects.equals(airDataLeaderboard.getAirDataId().getId(), airData.getId())) {
-                    airDataLeaderboardRepo.delete(airDataLeaderboard);
-                }
-            });
-
-
-            if (existingAirData.stream().noneMatch(data -> Objects.equals(data.getId(), airData.getId()))) {
-                airDataLeaderboardRepo.save(new AirDataLeaderboard(airData,
-                        key.getT(), airData.getLocation(), value.indexOf(airData) + 1));
-            }
-        }));
-
-    }
-
-    /**
-     * Prepares data from AirData database to be inserted into the leaderboard database
-     *
-     * @return Map {@link LeaderBoardKey} to {@link List} of {@link AirData}
-     */
-    @Contract(pure = true)
-    public @NotNull Map<LeaderBoardKey, List<AirData>> getFreshDataForLeaderboard() {
-        Map<LeaderBoardKey, List<AirData>> map = new HashMap<>();
-
-
-        for (LeaderboardType leaderboardType : LeaderboardType.values()) {
-            switch (leaderboardType) {
-                case HIGHEST_HUM -> map.putIfAbsent(new LeaderBoardKey(leaderboardType),
-                        airDataRepo
-                                .findTop3HumidityByOrderByHumidityDesc()
-                                .orElse(Collections.singletonList(new AirData((byte) -1))));
-                case LOWEST_HUM -> map.putIfAbsent(new LeaderBoardKey(leaderboardType),
-                        airDataRepo
-                                .findTop3HumidityByOrderByHumidityAsc()
-                                .orElse(Collections.singletonList(new AirData((byte) -1))));
-                case HIGHEST_AIRQ -> map.putIfAbsent(new LeaderBoardKey(leaderboardType),
-                        airDataRepo
-                                .findTop3AirQualityByOrderByAirQualityDesc()
-                                .orElse(Collections.singletonList(new AirData((byte) -1))));
-                case LOWEST_AIRQ -> map.putIfAbsent(new LeaderBoardKey(leaderboardType),
-                        airDataRepo
-                                .findTop3AirQualityByOrderByAirQualityAsc()
-                                .orElse(Collections.singletonList(new AirData((byte) -1))));
-                case HIGHEST_TEMP -> map.putIfAbsent(new LeaderBoardKey(leaderboardType),
-                        airDataRepo
-                                .findTop3TemperatureByOrderByTemperatureDesc()
-                                .orElse(Collections.singletonList(new AirData((byte) -1))));
-                case LOWEST_TEMP -> map.putIfAbsent(new LeaderBoardKey(leaderboardType),
-                        airDataRepo
-                                .findTop3TemperatureDistinctByOrderByTemperatureAsc()
-                                .orElse(Collections.singletonList(new AirData((byte) -1))));
-            }
-
-        }
-
-        map.values().removeIf(values -> values.isEmpty() || values.stream().anyMatch(value -> value.getId() < 1));
-        Stream.iterate('*', i -> i)
-                .limit(2000)
-                .forEach(System.out::print);
-        map.forEach((k, v) -> System.out.println(k + " → " + v));
-        return map;
-    }
 
     /**
      * Cors filter
@@ -166,13 +94,3 @@ public class AqmApplication implements CommandLineRunner {
 
 }
 
-record LeaderBoardKey(LeaderboardType t) {
-    @Contract(pure = true)
-    LeaderBoardKey {
-    }
-
-    @Contract(pure = true)
-    public LeaderboardType getT() {
-        return t;
-    }
-}

@@ -1,12 +1,11 @@
 package cz.krystofcejchan.air_quality_measurement.service;
 
-import cz.krystofcejchan.air_quality_measurement.api.service.AirDataApiService;
-import cz.krystofcejchan.air_quality_measurement.domain.AirData;
 import cz.krystofcejchan.air_quality_measurement.domain.AirDataLeaderboard;
 import cz.krystofcejchan.air_quality_measurement.enums.LeaderboardType;
 import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataLeaderboardRepository;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataRepository;
+import cz.krystofcejchan.air_quality_measurement.utilities.leaderboard.table.LeaderboardTable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +55,11 @@ public class AirDataLeaderboardService {
         return leaderboardTypeOptionalMap;
     }
 
-
+    /**
+     * method called upon new record inserted into the AirData table in the db.
+     * <br> this method should verify whether newly inserted record should be included in the leaderboard table
+     * by any of its parameters
+     */
     @Contract(pure = true)
     public void updateLeaderboard() {
         try {
@@ -64,13 +67,33 @@ public class AirDataLeaderboardService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        List<AirDataLeaderboard> a = new ArrayList<>();
-        getTop3AirDataLeaderboardForEachLeaderboardType().forEach((key, value) -> {
-            Optional<List<AirDataLeaderboard>> airDataLeaderboards = airDataLeaderboardRepository.findTop3ByLeaderboardType(key);
-            Optional<List<AirData>> airDataList = new AirDataApiService(airDataRepository).getLeaderBoardData(key);
-            if (airDataLeaderboards.isEmpty() || airDataList.isEmpty()) return;
+        LeaderboardTable.saveChangedDataAndDeleteOldData(airDataLeaderboardRepository,
+                airDataLeaderboardRepository.findAll(), LeaderboardTable.getFreshDataForLeaderboard(airDataRepository));
 
-            if (!airDataLeaderboards.get()
+    }
+
+
+    @Contract(" -> new")
+    public @NotNull Optional<List<AirDataLeaderboard>> getAllDataFromLeaderboard() {
+        return airDataLeaderboardRepository.findAll().isEmpty() ? Optional.empty() :
+                Optional.of(airDataLeaderboardRepository.findAll());
+    }
+}
+
+
+
+
+/*
+        List<AirDataLeaderboard> a = new ArrayList<>();
+
+        getTop3AirDataLeaderboardForEachLeaderboardType().forEach((key, value) -> {
+            Optional<List<AirDataLeaderboard>> top3AirDataLeaderBoardListBySpecificLeaderboardType
+                    = airDataLeaderboardRepository.findTop3ByLeaderboardType(key);
+            Optional<List<AirData>> airDataList = new AirDataApiService(airDataRepository).getLeaderBoardData(key);
+
+            if (top3AirDataLeaderBoardListBySpecificLeaderboardType.isEmpty() || airDataList.isEmpty()) return;
+
+            if (!top3AirDataLeaderBoardListBySpecificLeaderboardType.get()
                     .stream()
                     .map(AirDataLeaderboard::getAirDataId)
                     .allMatch(airData -> airDataList.get()
@@ -78,10 +101,10 @@ public class AirDataLeaderboardService {
                             .map(AirData::getId)
                             .allMatch(id -> id.equals(airData.getId())))
             ) {
-                airDataLeaderboardRepository.deleteAll(airDataLeaderboards.get());
+                airDataLeaderboardRepository.deleteAll(top3AirDataLeaderBoardListBySpecificLeaderboardType.get());
                 List<AirDataLeaderboard> airDataLeaderboardListToBeSavedToDatabase = airDataList.get()
                         .stream()
-                        .map(airData -> airDataLeaderboards.get()
+                        .map(airData -> top3AirDataLeaderBoardListBySpecificLeaderboardType.get()
                                 .stream()
                                 .map(airDataLeaderboard ->
                                         new AirDataLeaderboard(airData, key,
@@ -95,13 +118,4 @@ public class AirDataLeaderboardService {
                 // TODO does not work!!!
             }
         });
-        a.stream().distinct().forEach(i -> System.out.println(i.toString()));
-    }
-
-
-    @Contract(" -> new")
-    public @NotNull Optional<List<AirDataLeaderboard>> getAllDataFromLeaderboard() {
-        return airDataLeaderboardRepository.findAll().isEmpty() ? Optional.empty() :
-                Optional.of(airDataLeaderboardRepository.findAll());
-    }
-}
+        a.stream().distinct().forEach(i -> System.out.println(i.toString()));*/
