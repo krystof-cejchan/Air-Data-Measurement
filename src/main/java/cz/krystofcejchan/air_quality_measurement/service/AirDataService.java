@@ -38,20 +38,23 @@ public class AirDataService {
 
     /**
      * Add air data air data.
+     * if airData are not valid(values are most likely to be incorrect), nothing will be saved
      *
      * @param airData the air data
      * @return the air data
      */
     public @NotNull AirData addAirData(@NotNull AirData airData) {
+        if (!areDataValid(airData)) return airData;
+
         airData.setReceivedDataDateTime(LocalDateTime.now(ZoneId.of("Europe/Prague")));
         airData.setRndHash(UUID.randomUUID().toString());
 
         AirData airDataSave = airDataRepository.save(airData);
-        try {
+      /*  try {
             Thread.sleep(300);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         leaderboardService.updateLeaderboard();
         return airDataSave;
     }
@@ -98,9 +101,9 @@ public class AirDataService {
 
             AirData previousAirData = optionalPreviousAirData.isEmpty() ? airData : optionalPreviousAirData.get(0);
 
-            if (!areDataValid(airData) || !compareAirDataObjects(airData, previousAirData))
+            if (!areDataValid(airData) || !compareAirDataObjects(airData, previousAirData)) {
                 airData.setInvalidData(true);
-
+            }
             return airDataRepository.save(airData);
         }
         return null;

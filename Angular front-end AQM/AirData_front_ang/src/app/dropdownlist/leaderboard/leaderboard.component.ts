@@ -35,9 +35,11 @@ export class LeaderboardComponent implements OnInit {
         .sort((t1, t2) => t1.substring(t1.indexOf('_')).localeCompare(t2.substring(t2.indexOf('_'))))
         .forEach(lType => {
           this.leaderboard_data_prepared
-            .push({ type: lType, leaderboardData: this.leaderboard_datas?.filter(data => data.leaderboardType === lType).sort((a,b)=>a.position-b.position) } as PrePreparedLeaderboardData);
+            .push({
+              type: lType, leaderboardData: this.leaderboard_datas?.filter(data => data.leaderboardType === lType)
+                .sort((a, b) => a.position - b.position)
+            } as PrePreparedLeaderboardData);
         });
-      // TODO make sure data are sorted by position!
     },
       () => {
         this.showLoading = false;
