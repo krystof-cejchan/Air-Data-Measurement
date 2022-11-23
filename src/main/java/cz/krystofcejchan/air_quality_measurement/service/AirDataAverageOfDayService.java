@@ -30,8 +30,8 @@ public record AirDataAverageOfDayService(
     /**
      * Instantiates a new Air data average of day service.
      *
-     * @param avgRepository     the avg repository
-     * @param airDataRepository the air data repository
+     * @param avgRepository     the avg airDataRepository
+     * @param airDataRepository the air data airDataRepository
      */
     @Autowired
     @Contract(pure = true)

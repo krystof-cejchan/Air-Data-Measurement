@@ -141,4 +141,15 @@ public class AirDataLeaderboard implements Serializable {
     public void setPosition(Integer position) {
         this.position = position;
     }
+
+    @Override
+    public String toString() {
+        return "AirDataLeaderboard{\n" +
+                "id=" + id +
+                "\n, airDataId=" + airDataId +
+                "\n, leaderboardType=" + leaderboardType +
+                "\n, location=" + location +
+                "\n, position=" + position +
+                '}';
+    }
 }

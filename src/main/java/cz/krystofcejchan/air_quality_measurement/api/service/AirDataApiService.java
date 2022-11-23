@@ -101,7 +101,9 @@ public record AirDataApiService(AirDataRepository airDataRepository) {
      */
     @Contract("_ -> new")
     public @NotNull ResponseEntity<?> gerAirDataForOneSpecificDay(java.time.LocalDate day) {
-        Optional<List<AirData>> receivedDate = airDataRepository.findByReceivedDataDateTimeBetween(LocalDateTime.of(day, LocalTime.MIN), LocalDateTime.of(day, LocalTime.MAX));
+        Optional<List<AirData>> receivedDate = airDataRepository
+                .findByReceivedDataDateTimeBetween(LocalDateTime.of(day, LocalTime.MIN),
+                        LocalDateTime.of(day, LocalTime.MAX));
 
         if (receivedDate.orElseThrow(DataNotFoundException::new).isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase(), HttpStatus.BAD_REQUEST);
@@ -129,10 +131,9 @@ public record AirDataApiService(AirDataRepository airDataRepository) {
      * Gets leader board data.
      *
      * @param leaderboardType the leaderboard type
-     * @param location        the location
      * @return the leader board data
      */
-    public Optional<List<AirData>> getLeaderBoardData(LeaderboardType leaderboardType, Location location) {
+    public Optional<List<AirData>> getLeaderBoardData(LeaderboardType leaderboardType) {
         return switch (leaderboardType) {
             case HIGHEST_AIRQ -> airDataRepository.findTop3AirQualityByOrderByAirQualityDesc();
             case LOWEST_AIRQ -> airDataRepository.findTop3AirQualityByOrderByAirQualityAsc();

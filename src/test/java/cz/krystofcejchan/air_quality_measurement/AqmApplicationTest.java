@@ -10,6 +10,6 @@ class AqmApplicationTest {
     @Test
     @Autowired
     void getFreshDataForLeaderboard() {
-        System.out.println(new AqmApplication().getFreshDataForLeaderboard());
+      //  System.out.println(new AqmApplication().getFreshDataForLeaderboard());
     }
 }

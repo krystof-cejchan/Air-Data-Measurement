@@ -22,27 +22,41 @@ import java.util.UUID;
  * The type Air data service.
  */
 @Service
-public record AirDataService(AirDataRepository airDataRepository) {
+public class AirDataService {
+    @Autowired
+    AirDataLeaderboardService leaderboardService;
+    @Autowired
+    AirDataRepository airDataRepository;
+
     /**
      * Instantiates a new Air data service.
-     *
-     * @param airDataRepository the air data repository
      */
     @Autowired
     @Contract(pure = true)
-    public AirDataService {
+    public AirDataService() {
     }
 
     /**
      * Add air data air data.
+     * if airData are not valid(values are most likely to be incorrect), nothing will be saved
      *
      * @param airData the air data
      * @return the air data
      */
     public @NotNull AirData addAirData(@NotNull AirData airData) {
+        if (!areDataValid(airData)) return airData;
+
         airData.setReceivedDataDateTime(LocalDateTime.now(ZoneId.of("Europe/Prague")));
         airData.setRndHash(UUID.randomUUID().toString());
-        return airDataRepository.save(airData);
+
+        AirData airDataSave = airDataRepository.save(airData);
+      /*  try {
+            Thread.sleep(300);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+        leaderboardService.updateLeaderboard();
+        return airDataSave;
     }
 
     /**
@@ -87,9 +101,11 @@ public record AirDataService(AirDataRepository airDataRepository) {
 
             AirData previousAirData = optionalPreviousAirData.isEmpty() ? airData : optionalPreviousAirData.get(0);
 
-            if (!areDataValid(airData) || !compareAirDataObjects(airData, previousAirData))
-                airData.setInvalidData(true);
-
+            if (!areDataValid(airData) || !compareAirDataObjects(airData, previousAirData)) {
+                airDataRepository.delete(airData);
+                return airData;
+                //airData.setInvalidData(true);
+            }
             return airDataRepository.save(airData);
         }
         return null;
