@@ -75,8 +75,9 @@ public class AirDataLeaderboardService {
 
     @Contract(" -> new")
     public @NotNull Optional<List<AirDataLeaderboard>> getAllDataFromLeaderboard() {
-        return airDataLeaderboardRepository.findAll().isEmpty() ? Optional.empty() :
-                Optional.of(airDataLeaderboardRepository.findAll());
+        List<AirDataLeaderboard> airDataLeaderboardRepositoryAll = airDataLeaderboardRepository.findAll();
+        return airDataLeaderboardRepositoryAll.isEmpty() ? Optional.empty() :
+                Optional.of(airDataLeaderboardRepositoryAll);
     }
 }
 

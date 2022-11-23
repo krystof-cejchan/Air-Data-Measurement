@@ -102,7 +102,9 @@ public class AirDataService {
             AirData previousAirData = optionalPreviousAirData.isEmpty() ? airData : optionalPreviousAirData.get(0);
 
             if (!areDataValid(airData) || !compareAirDataObjects(airData, previousAirData)) {
-                airData.setInvalidData(true);
+                airDataRepository.delete(airData);
+                return airData;
+                //airData.setInvalidData(true);
             }
             return airDataRepository.save(airData);
         }
