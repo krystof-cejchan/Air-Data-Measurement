@@ -1,20 +1,52 @@
 @import url('https://fonts.googleapis.com/css2?family=Monda&display=swap');
 
+$smokey-white-color :rgba(233, 233, 233, 0.88);
+
 html,
 body {
 	font-family: 'Monda', sans-serif;
-
 	scroll-behavior: auto;
 	margin: 0 0 0 0;
 	min-width: 0;
 }
 
+/*
+#overlay {
+	position: relative;
+	width: 100%;
+
+	&::after {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 1;
+		content: '';
+		background: rgb(0, 0, 0);
+		background: -moz-radial-gradient(circle, rgba(0, 0, 0, 0.437412465) 0%, rgba(0, 0, 0, 0.6082808123) 100%);
+		background: -webkit-radial-gradient(circle, rgba(0, 0, 0, 0.437412465) 0%, rgba(0, 0, 0, 0.6082808123) 100%);
+		background: radial-gradient(circle, rgba(0, 0, 0, 0.437412465) 0%, rgba(0, 0, 0, 0.6082808123) 100%);
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000000", endColorstr="#000000", GradientType=1);
+	}
+}*/
+
 #marginFromNav {
 	padding-top: 50px;
 }
 
+/*
 nav.navbar {
-	background-color: #3caeff !important;
+	//background-color: #3caeff !important;
+	background-color: transparent !important;
+}*/
+#navbarNavDropdown {
+	background-color: rgba(99, 99, 99, 0.459);
+	border-bottom: 1px solid rgba(233, 233, 233, 0.555);
+}
+
+.navbar-toggler-icon {
+	background-image: url("../assets/imgs/hamburger-white.svg") !important;
 }
 
 .navbar-nav>li {
@@ -23,10 +55,34 @@ nav.navbar {
 	padding-top: 5px;
 	padding-bottom: 5px;
 	font-size: large;
+	cursor: pointer;
+
+	&:hover {
+		background-color: #8a8a8a !important;
+		color: white !important;
+		border-radius: 10px;
+	}
 }
 
-.dropdown-item.active {
-	background-color: #3caeff !important;
+
+.dropdown-item {
+	color: rgb(252, 252, 252) !important;
+
+	&.active {
+		background-color: #8a8a8a !important;
+		color: white !important;
+	}
+
+	&:hover {
+		background-color: #ffffffce !important;
+		color: rgb(0, 0, 0) !important;
+	}
+
+}
+
+.dropdown-menu.show {
+	background-color: rgba(78, 78, 78, 0.541) !important;
+	border-color: $smokey-white-color !important;
 }
 
 .alldata {
@@ -34,15 +90,22 @@ nav.navbar {
 	text-align: center;
 }
 
-.main_background_photo {
-	height: 100vh;
-	background-color:
-		linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.85));
-	-webkit-background-size: cover;
-	-moz-background-size: cover;
-	-o-background-size: cover;
-	background-size: cover;
-	background-repeat: no-repeat;
+.navbar-light .navbar-nav {
+
+	.show>.nav-link,
+	.active>.nav-link {
+		color: white !important;
+	}
+
+	.nav-link {
+
+		&.show,
+		&.active {
+			color: white !important;
+		}
+
+		color: $smokey-white-color !important;
+	}
 }
 
 /*

@@ -22,19 +22,64 @@ public class LeaderboardTable {
      * @param newLeaderboardDataMap freshly generated data from AirData table and saved into a map which takes {@link LeaderBoardKey} as a key
      *                              and {@link List} of {@link AirData} as a value
      */
-    public static void saveChangedDataAndDeleteOldData(AirDataLeaderboardRepository airDataLeaderboardRepository,
+    public static void saveChangedDataAndDeleteOldData(@NotNull AirDataLeaderboardRepository airDataLeaderboardRepository,
                                                        @NotNull List<AirDataLeaderboard> existingAirData,
                                                        @NotNull Map<LeaderBoardKey, List<AirData>> newLeaderboardDataMap) {
 
-        List<AirDataLeaderboard> airDataLeaderboardToBeDeleted = new ArrayList<>();
         List<AirDataLeaderboard> airDataLeaderboardToBeInserted = new ArrayList<>();
 
-        newLeaderboardDataMap.forEach((key, value) -> value.forEach(airData -> {
+        Map<LeaderboardType, List<AirDataLeaderboard>> existingAirDataLeaderboardByType = new HashMap<>();
+        LeaderboardType.toList().forEach(leaderboardType ->
+                existingAirDataLeaderboardByType
+                        .putIfAbsent(leaderboardType, existingAirData
+                                .stream()
+                                .filter(data -> data.getLeaderboardType().equals(leaderboardType))
+                                .toList()));
+        List<LeaderboardType> mismatchingLeaderboardTypes = new ArrayList<>();
+        for (LeaderboardType leaderboardType : LeaderboardType.toList()) {
+            if (!existingAirDataLeaderboardByType
+                    .getOrDefault(leaderboardType, Collections.emptyList())
+                    .stream()
+                    .allMatch(existing ->
+                            newLeaderboardDataMap
+                                    .getOrDefault(new LeaderBoardKey(leaderboardType), Collections.emptyList())
+                                    .stream()
+                                    .map(AirData::getId)
+                                    .toList()
+                                    .contains(existing.getAirDataId().getId()))) {
+                mismatchingLeaderboardTypes.add(leaderboardType);
+            }
+        }
+
+        List<AirDataLeaderboard> airDataLeaderboardToBeDeleted = new ArrayList<>(existingAirData
+                .stream()
+                .filter(it -> mismatchingLeaderboardTypes.contains(it.getLeaderboardType()))
+                .toList());
+        mismatchingLeaderboardTypes.forEach(leaderboardType -> {
+            List<AirData> airData = newLeaderboardDataMap.getOrDefault(new LeaderBoardKey(leaderboardType),
+                    Collections.emptyList());
+            if (!airData.isEmpty()) {
+                airData.forEach(airData1 -> airDataLeaderboardToBeInserted.add(
+                        new AirDataLeaderboard(airData1,
+                                leaderboardType,
+                                airData1.getLocation(),
+                                airData.indexOf(airData1) + 1)));
+            }
+        });
+
+        airDataLeaderboardRepository.deleteAll(airDataLeaderboardToBeDeleted);
+        airDataLeaderboardRepository.saveAll(airDataLeaderboardToBeInserted);
+      /*  newLeaderboardDataMap.forEach((key, value) -> value.forEach(airData -> {
 
             existingAirData.forEach(airDataLeaderboard ->
             {
-                if (Objects.equals(airDataLeaderboard.getAirDataId().getId(), airData.getId())) {
+                if (airDataLeaderboard.getAirDataId() == null)//checks if AirData has been deleted
+                {
                     airDataLeaderboardToBeDeleted.add(airDataLeaderboard);
+                } else {
+                    if (Objects.equals(airDataLeaderboard.getAirDataId().getId(), airData.getId())) {
+                        airDataLeaderboardToBeDeleted.add(airDataLeaderboard);
+                    }
                 }
             });
 
@@ -45,7 +90,7 @@ public class LeaderboardTable {
             }
         }));
         airDataLeaderboardRepository.deleteAll(airDataLeaderboardToBeDeleted);
-        airDataLeaderboardRepository.saveAll(airDataLeaderboardToBeInserted);
+        airDataLeaderboardRepository.saveAll(airDataLeaderboardToBeInserted);*/
 
     }
 

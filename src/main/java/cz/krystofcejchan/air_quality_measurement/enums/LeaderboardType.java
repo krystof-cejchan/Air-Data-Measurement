@@ -1,5 +1,8 @@
 package cz.krystofcejchan.air_quality_measurement.enums;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * The enum Leaderboard type.
  */
@@ -27,5 +30,13 @@ public enum LeaderboardType {
     /**
      * Lowest hum leaderboard type.
      */
-    LOWEST_HUM
+    LOWEST_HUM;
+
+    public static List<LeaderboardType> toList() {
+        return Arrays.stream(LeaderboardType.values()).toList();
+    }
+
+    public static List<LeaderboardType> toListWithout(LeaderboardType exclude) {
+        return Arrays.stream(values()).filter(it -> !it.equals(exclude)).toList();
+    }
 }

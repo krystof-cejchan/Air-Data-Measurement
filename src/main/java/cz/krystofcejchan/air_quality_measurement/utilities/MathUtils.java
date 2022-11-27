@@ -18,11 +18,11 @@ public class MathUtils {
      */
     @Contract(pure = true)
     public static <T extends Number> boolean isInBetween(T number, T start, T end, boolean include) {
-        if (include) {
+        if (include)
             return number.floatValue() >= start.floatValue() && number.floatValue() <= end.floatValue();
 
-        } else {
+        else
             return number.floatValue() > start.floatValue() && number.floatValue() < end.floatValue();
-        }
+
     }
 }

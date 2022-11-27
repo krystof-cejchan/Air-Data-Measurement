@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Website menu 09</title>
+    <title>UPočasí</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -16,7 +16,59 @@
 <div class="main_background_photo">
 
     <body>
-        MAIN
+
+        <div id="overlay">
+            <video loop="loop" [muted]="'muted'" autoplay="autoplay"
+                poster="../../assets/imgs/thumbnail_for_bcgvideo.png" class="fullscreen-bg__video">
+                <source src="../../assets/videos/olomouc-drone-bcg-r.mp4" type="video/mp4">
+            </video>
+        </div>
+        <div class="px-4 py-5 my-5 text-center">
+            <div class="container">
+                <div class="row justify-content-md-center">
+                    <div class="content">
+                        <div class="logo_div col align-self-center">
+                            <img src="../../assets/imgs/logos/UP_logo_horizont_bila_cz.png"
+                                alt="Univerzita Palackého logo" id="logo">
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="row">
+                <div class="col-6">
+                Ahoj
+                </div>
+                <div class="col-6">
+                    Ahoj
+                    </div>  </div>-->
+                <div class="row justify-content-md-center">
+                    <div class="col align-self-center" id="upocasi_text">
+                        <b>UP</b>očasí
+                    </div>
+                </div>
+                <div class="row justify-content-md-center">
+                    <div class="col align-self-center" id="teplota_text">
+                        <span>Právě je </span>
+                        <b id="curr_temp">{{current_temperature}}°C</b>
+                        <span> v Olomouci</span>
+                    </div>
+                </div>
+                <!-- <div class="row row-cols-4">
+                <div class="col nabidka">
+                    Nejnovější
+                </div>
+                <div class="col nabidka" >
+                    Historie
+                </div>
+                <div class="col nabidka">
+                    Grafy
+                </div>
+                <div class="col nabidka">
+                    Žebříčky
+                </div>
+            </div>-->
+
+            </div>
+        </div>
     </body>
 </div>
 
