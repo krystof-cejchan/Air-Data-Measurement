@@ -69,29 +69,6 @@ public class LeaderboardTable {
 
         airDataLeaderboardRepository.deleteAll(airDataLeaderboardToBeDeleted);
         airDataLeaderboardRepository.saveAll(airDataLeaderboardToBeInserted);
-      /*  newLeaderboardDataMap.forEach((key, value) -> value.forEach(airData -> {
-
-            existingAirData.forEach(airDataLeaderboard ->
-            {
-                if (airDataLeaderboard.getAirDataId() == null)//checks if AirData has been deleted
-                {
-                    airDataLeaderboardToBeDeleted.add(airDataLeaderboard);
-                } else {
-                    if (Objects.equals(airDataLeaderboard.getAirDataId().getId(), airData.getId())) {
-                        airDataLeaderboardToBeDeleted.add(airDataLeaderboard);
-                    }
-                }
-            });
-
-
-            if (existingAirData.stream().noneMatch(data -> Objects.equals(data.getId(), airData.getId()))) {
-                airDataLeaderboardToBeInserted.add(new AirDataLeaderboard(airData,
-                        key.getLeaderboardType(), airData.getLocation(), value.indexOf(airData) + 1));
-            }
-        }));
-        airDataLeaderboardRepository.deleteAll(airDataLeaderboardToBeDeleted);
-        airDataLeaderboardRepository.saveAll(airDataLeaderboardToBeInserted);*/
-
     }
 
     /**
