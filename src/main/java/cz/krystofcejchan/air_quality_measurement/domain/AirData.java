@@ -3,6 +3,7 @@ package cz.krystofcejchan.air_quality_measurement.domain;
 import cz.krystofcejchan.air_quality_measurement.domain.location.LocationData;
 import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
 import org.jetbrains.annotations.Contract;
 
 import java.io.Serializable;
@@ -32,7 +33,7 @@ public class AirData implements Serializable {
     private Integer reportedN;
     @Column(columnDefinition = "boolean default '0'", insertable = false, nullable = false)
     private Boolean invalidData;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(referencedColumnName = "id")
     private LocationData locationId;
 
@@ -262,6 +263,14 @@ public class AirData implements Serializable {
      */
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public LocationData getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(LocationData locationId) {
+        this.locationId = locationId;
     }
 
     @Override
