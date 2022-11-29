@@ -1,8 +1,7 @@
 package cz.krystofcejchan.air_quality_measurement.repository;
 
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
-import cz.krystofcejchan.air_quality_measurement.enums.LeaderboardType;
-import cz.krystofcejchan.air_quality_measurement.enums.Location;
+import cz.krystofcejchan.air_quality_measurement.domain.location.LocationData;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,10 +18,10 @@ public interface AirDataRepository extends JpaRepository<AirData, Long> {
     /**
      * Find by location order by received data date time desc optional.
      *
-     * @param location the location
+     * @param locationId the location
      * @return the optional
      */
-    Optional<List<AirData>> findByLocationOrderByReceivedDataDateTimeDesc(Location location);
+    Optional<List<AirData>> findByLocationIdOrderByReceivedDataDateTimeDesc(LocationData locationId);
 
     /**
      * Find by received data date time between optional.
@@ -45,11 +44,11 @@ public interface AirDataRepository extends JpaRepository<AirData, Long> {
     /**
      * Find by location and received data date time before optional.
      *
-     * @param location    the location
+     * @param locationId    the location
      * @param endTimeLine the end time line
      * @return the optional
      */
-    Optional<List<AirData>> findByLocationAndReceivedDataDateTimeBefore(Location location, LocalDateTime endTimeLine);
+    Optional<List<AirData>> findByLocationIdAndReceivedDataDateTimeBefore(LocationData locationId, LocalDateTime endTimeLine);
 
     /**
      * Find top 3 temperature distinct by location order by air quality asc optional.

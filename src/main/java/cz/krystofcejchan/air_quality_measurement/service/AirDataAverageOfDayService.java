@@ -2,6 +2,7 @@ package cz.krystofcejchan.air_quality_measurement.service;
 
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
 import cz.krystofcejchan.air_quality_measurement.domain.AirDataAverageOfDay;
+import cz.krystofcejchan.air_quality_measurement.domain.location.LocationData;
 import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import cz.krystofcejchan.air_quality_measurement.exceptions.DataNotFoundException;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataAverageOfDayRepository;
@@ -53,7 +54,7 @@ public record AirDataAverageOfDayService(
      * @param day the day
      * @return the average air data for one specific day
      */
-    public Optional<HashMap<Location, AirDataAverageOfDay>> getAverageAirDataForOneSpecificDay(java.time.LocalDate day) {
+    public Optional<HashMap<LocationData, AirDataAverageOfDay>> getAverageAirDataForOneSpecificDay(java.time.LocalDate day) {
         Optional<List<AirData>> receivedData = airDataRepository
                 .findByReceivedDataDateTimeBetween(LocalDateTime.of(day, LocalTime.MIN),
                         LocalDateTime.of(day, LocalTime.MAX));
@@ -61,7 +62,7 @@ public record AirDataAverageOfDayService(
         if (receivedData.orElseThrow(DataNotFoundException::new).isEmpty())
             return Optional.empty();
 
-        List<Location> locationToBeExcluded = new ArrayList<>();
+        List<LocationData> locationToBeExcluded = new ArrayList<>();
         Location.toList().forEach(location -> avgRepository
                 .findByLocationAndReceivedDataDate(location, day)
                 .ifPresent(avgData -> locationToBeExcluded
@@ -69,20 +70,20 @@ public record AirDataAverageOfDayService(
                                 .map(AirDataAverageOfDay::getLocation)
                                 .toList())));
 
-        List<Location> locationList = receivedData.get().stream().map(AirData::getLocation)
-                .filter(location -> Location.toList()
-                        .stream().anyMatch(locationMatch -> locationMatch.equals(location)))
+        List<LocationData> locationList = receivedData.get().stream().map(AirData::getLocationId)
+                /*.filter(location -> Location.toList()
+                        .stream().anyMatch(locationMatch -> locationMatch.equals(location)))*/
                 .filter(l -> locationToBeExcluded.stream().noneMatch(lExcl -> lExcl.equals(l)))
                 .toList();
 
         List<AirData> validAirData = receivedData.get().stream().filter(location -> locationList
-                        .stream().anyMatch(locationMatch -> locationMatch.equals(location.getLocation())))
+                        .stream().anyMatch(locationMatch -> locationMatch.equals(location.getLocationId())))
                 .toList();
 
-        HashMap<Location, AirDataAverageOfDay> hashMapLocToAvgAirData = new HashMap<>();
-        for (Location location : locationList) {
+        HashMap<LocationData, AirDataAverageOfDay> hashMapLocToAvgAirData = new HashMap<>();
+        for (LocationData location : locationList) {
             List<AirData> validAirDataFilterToLocation = validAirData.stream()
-                    .filter(airData -> airData.getLocation().equals(location)).toList();
+                    .filter(airData -> airData.getLocationId().equals(location)).toList();
 
             BigDecimal airQualityAvg = BigDecimal.valueOf(validAirDataFilterToLocation.stream()
                     .map(AirData::getAirQuality)

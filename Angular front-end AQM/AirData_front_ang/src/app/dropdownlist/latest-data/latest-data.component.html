@@ -51,14 +51,14 @@
       <h2 class="pb-2 border-bottom">Nejnovější data</h2>
       <span *ngFor="let airdata of airdatas" class="col">
         <button type="button" class="btn btn-light btn-sm"
-          (click)="scrollToElement(airdata.location)">{{airdata.location}}</button>
+          (click)="scrollToElement(airdata.locationId.name)">{{airdata.locationId.name_short}}</button>
       </span>
       <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
         <div *ngFor="let airdata of airdatas" class="col">
           <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background:
                         linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.61)), url({{airdata.bcgPictureUrl}});
                         background-size:cover;">
-            <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1" id={{airdata.location}}>
+            <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1" id={{airdata.locationId}}>
               <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">
                 <span id="airQualityT" mat-raised-button matTooltip="Kvalita vzduchu" matTooltipPosition="after">
                   {{airdata.airQuality}}ppm</span>
@@ -79,7 +79,7 @@
                   <svg class="bi me-2" height="1em" width="1em">
                     <use xlink:href="#geo-fill" />
                   </svg>
-                  <small>{{airdata.location}}</small>
+                  <small>{{airdata.locationId.name_short}}</small>
                 </li>
                 <li class="d-flex align-items-center">
                   <svg class="bi me-2" height="1em" width="1em">

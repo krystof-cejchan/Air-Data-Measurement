@@ -1,6 +1,7 @@
 package cz.krystofcejchan.air_quality_measurement.scheduled_tasks;
 
 import cz.krystofcejchan.air_quality_measurement.scheduled_tasks.tasks.CalcAverageAtMidnight;
+import cz.krystofcejchan.air_quality_measurement.scheduled_tasks.tasks.InsertLocationData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ public class ScheduledTaskRunnableManager {
      */
     public ScheduledTaskRunnableManager() {
         addToList(new CalcAverageAtMidnight());
+        //addToList(new InsertLocationData());
     }
 
     private void addToList(ScheduledTaskRunnable taskRunnable) {
