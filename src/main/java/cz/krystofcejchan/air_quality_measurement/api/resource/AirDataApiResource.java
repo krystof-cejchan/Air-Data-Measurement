@@ -48,6 +48,11 @@ public class AirDataApiResource {
         return airDataApiService.getLatestAirData(locationId);
     }
 
+    @GetMapping("/average_temperature")
+    public ResponseEntity<? extends Number> getAverageTemperatureFromLatestData() {
+        return airDataApiService.getCurrentAverageTemperature();
+    }
+
     /**
      * Gets air data from period of time.
      *

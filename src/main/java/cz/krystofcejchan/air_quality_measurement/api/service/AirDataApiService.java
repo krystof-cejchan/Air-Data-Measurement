@@ -85,6 +85,18 @@ public class AirDataApiService {
     }
 
     /**
+     * @return latest average temperature from all locations
+     */
+    public @NotNull ResponseEntity<? extends Number> getCurrentAverageTemperature() {
+        return new ResponseEntity<>(locationDataRepository.findAll().stream()
+                .filter(location -> !airDataRepository.findByLocationIdOrderByReceivedDataDateTimeDesc(location)
+                        .orElseThrow(DataNotFoundException::new).isEmpty())
+                .map(existingLocation -> airDataRepository.findByLocationIdOrderByReceivedDataDateTimeDesc(existingLocation)
+                        .orElseThrow(DataNotFoundException::new).get(0))
+                .mapToDouble(it -> it.getTemperature().doubleValue()).average().orElse(Double.NaN), HttpStatus.OK);
+    }
+
+    /**
      * Gets average air data for one specific day.
      *
      * @param day the day
