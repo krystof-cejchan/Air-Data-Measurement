@@ -3,10 +3,10 @@ package cz.krystofcejchan.air_quality_measurement.service;
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
 import cz.krystofcejchan.air_quality_measurement.domain.AirDataAverageOfDay;
 import cz.krystofcejchan.air_quality_measurement.domain.location.LocationData;
-import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import cz.krystofcejchan.air_quality_measurement.exceptions.DataNotFoundException;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataAverageOfDayRepository;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataRepository;
+import cz.krystofcejchan.air_quality_measurement.repository.LocationDataRepository;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,8 @@ import java.util.Optional;
 @Service
 public record AirDataAverageOfDayService(
         AirDataAverageOfDayRepository avgRepository,
-        AirDataRepository airDataRepository) {
+        AirDataRepository airDataRepository,
+        LocationDataRepository locationDataRepository) {
     /**
      * Instantiates a new Air data average of day service.
      *
@@ -55,6 +56,7 @@ public record AirDataAverageOfDayService(
      * @return the average air data for one specific day
      */
     public Optional<HashMap<LocationData, AirDataAverageOfDay>> getAverageAirDataForOneSpecificDay(java.time.LocalDate day) {
+        List<LocationData> locationDataList = locationDataRepository.findAll();
         Optional<List<AirData>> receivedData = airDataRepository
                 .findByReceivedDataDateTimeBetween(LocalDateTime.of(day, LocalTime.MIN),
                         LocalDateTime.of(day, LocalTime.MAX));
@@ -63,17 +65,16 @@ public record AirDataAverageOfDayService(
             return Optional.empty();
 
         List<LocationData> locationToBeExcluded = new ArrayList<>();
-        Location.toList().forEach(location -> avgRepository
-                .findByLocationAndReceivedDataDate(location, day)
+        locationDataList.forEach(location -> avgRepository
+                .findByLocationIdAndReceivedDataDate(location, day)//TODO zde chyba ? něco s longem idk
                 .ifPresent(avgData -> locationToBeExcluded
                         .addAll(avgData.stream()
                                 .map(AirDataAverageOfDay::getLocation)
                                 .toList())));
 
         List<LocationData> locationList = receivedData.get().stream().map(AirData::getLocationId)
-                /*.filter(location -> Location.toList()
-                        .stream().anyMatch(locationMatch -> locationMatch.equals(location)))*/
-                .filter(l -> locationToBeExcluded.stream().noneMatch(lExcl -> lExcl.equals(l)))
+                .filter(airData_getLocationId -> locationToBeExcluded.stream()
+                        .noneMatch(locationExclusion -> locationExclusion.equals(airData_getLocationId)))
                 .toList();
 
         List<AirData> validAirData = receivedData.get().stream().filter(location -> locationList
@@ -104,7 +105,7 @@ public record AirDataAverageOfDayService(
                     .orElse(Double.NaN)).setScale(2, RoundingMode.HALF_UP);
 
             hashMapLocToAvgAirData.putIfAbsent(location, new AirDataAverageOfDay(
-                    0L,
+                    -0L,
                     location,
                     day,
                     airQualityAvg,
