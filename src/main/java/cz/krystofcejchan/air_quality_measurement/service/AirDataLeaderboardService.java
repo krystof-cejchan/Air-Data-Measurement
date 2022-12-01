@@ -1,8 +1,8 @@
 package cz.krystofcejchan.air_quality_measurement.service;
 
 import cz.krystofcejchan.air_quality_measurement.domain.AirDataLeaderboard;
+import cz.krystofcejchan.air_quality_measurement.domain.location.LocationData;
 import cz.krystofcejchan.air_quality_measurement.enums.LeaderboardType;
-import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataLeaderboardRepository;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataRepository;
 import cz.krystofcejchan.air_quality_measurement.utilities.leaderboard.table.LeaderboardTable;
@@ -31,9 +31,9 @@ public class AirDataLeaderboardService {
         this.airDataLeaderboardRepository = airDataLeaderboardRepository;
     }
 
-    public Optional<List<AirDataLeaderboard>> getAirDataLeaderboardByLocationAndLeaderboardType(@NotNull Location location,
+    public Optional<List<AirDataLeaderboard>> getAirDataLeaderboardByLocationAndLeaderboardType(@NotNull LocationData location,
                                                                                                 @NotNull LeaderboardType leaderboardType) {
-        return airDataLeaderboardRepository.findByLocationAndLeaderboardType(location, leaderboardType);
+        return airDataLeaderboardRepository.findByLocationIdAndLeaderboardType(location, leaderboardType);
     }
 
     public Optional<List<AirDataLeaderboard>> getTop3AirDataLeaderboardByLeaderboardType(@NotNull LeaderboardType leaderboardType) {
@@ -62,11 +62,11 @@ public class AirDataLeaderboardService {
      */
     @Contract(pure = true)
     public void updateLeaderboard() {
-        try {
+       /* try {
             Thread.sleep(700);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         LeaderboardTable.saveChangedDataAndDeleteOldData(airDataLeaderboardRepository,
                 airDataLeaderboardRepository.findAll(), LeaderboardTable.getFreshDataForLeaderboard(airDataRepository));
 
@@ -80,43 +80,3 @@ public class AirDataLeaderboardService {
                 Optional.of(airDataLeaderboardRepositoryAll);
     }
 }
-
-
-
-
-/*
-        List<AirDataLeaderboard> a = new ArrayList<>();
-
-        getTop3AirDataLeaderboardForEachLeaderboardType().forEach((key, value) -> {
-            Optional<List<AirDataLeaderboard>> top3AirDataLeaderBoardListBySpecificLeaderboardType
-                    = airDataLeaderboardRepository.findTop3ByLeaderboardType(key);
-            Optional<List<AirData>> airDataList = new AirDataApiService(airDataRepository).getLeaderBoardData(key);
-
-            if (top3AirDataLeaderBoardListBySpecificLeaderboardType.isEmpty() || airDataList.isEmpty()) return;
-
-            if (!top3AirDataLeaderBoardListBySpecificLeaderboardType.get()
-                    .stream()
-                    .map(AirDataLeaderboard::getAirDataId)
-                    .allMatch(airData -> airDataList.get()
-                            .stream()
-                            .map(AirData::getId)
-                            .allMatch(id -> id.equals(airData.getId())))
-            ) {
-                airDataLeaderboardRepository.deleteAll(top3AirDataLeaderBoardListBySpecificLeaderboardType.get());
-                List<AirDataLeaderboard> airDataLeaderboardListToBeSavedToDatabase = airDataList.get()
-                        .stream()
-                        .map(airData -> top3AirDataLeaderBoardListBySpecificLeaderboardType.get()
-                                .stream()
-                                .map(airDataLeaderboard ->
-                                        new AirDataLeaderboard(airData, key,
-                                                airData.getLocation(),
-                                                airDataList.get().indexOf(airData) + 1)).toList())
-                        .flatMap(List::stream).distinct()
-                        .toList();
-                airDataLeaderboardListToBeSavedToDatabase.forEach(i -> System.out.println(i.toString()));
-                a.addAll(airDataLeaderboardListToBeSavedToDatabase);
-
-                // TODO does not work!!!
-            }
-        });
-        a.stream().distinct().forEach(i -> System.out.println(i.toString()));*/

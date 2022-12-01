@@ -40,12 +40,12 @@ public class AirDataApiResource {
     /**
      * Gets air data by id.
      *
-     * @param location the location
+     * @param locationId the location
      * @return the air data by id
      */
     @GetMapping("/latest")
-    public ResponseEntity<?> getAirDataById(@RequestHeader(required = false) String location) {
-        return airDataApiService.getLatestAirData(location);
+    public ResponseEntity<?> getAirDataById(@RequestHeader(required = false) Long locationId) {
+        return airDataApiService.getLatestAirData(locationId);
     }
 
     /**

@@ -52,7 +52,7 @@
       <tbody>
         <tr *ngFor="let airdata of airDataForDay">
           <th scope="row">{{airdata.receivedDataDateTime}}</th>
-          <td>{{airdata.location}}</td>
+          <td>{{airdata.locationId.name_short}}</td>
           <td>{{airdata.temperature}}</td>
           <td>{{airdata.humidity}}</td>
           <td>{{airdata.airQuality}}</td>

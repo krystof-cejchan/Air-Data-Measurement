@@ -63,7 +63,7 @@ export class GraphsComponent implements OnInit {
     }
     let dates = [];
     let locations = [];
-    locations = this.uniqByFilter<string>(this.allDataFromDatabase.map(it => it.location));
+    locations = this.uniqByFilter<string>(this.allDataFromDatabase.map(it => it.location.name_short));
     dates = this.uniqByFilter(this.allDataFromDatabase.flatMap(it => it.receivedDataDate));
     let seriesNameToData: ApexAxisChartSeries = [];
 
@@ -71,7 +71,7 @@ export class GraphsComponent implements OnInit {
       .push({
         name: location,
         data: this.allDataFromDatabase
-          .filter(f => f.location === location)
+          .filter(f => f.location.name_short === location)
           .map(filteredData => filteredData.airQualityAvg)
       }));
 

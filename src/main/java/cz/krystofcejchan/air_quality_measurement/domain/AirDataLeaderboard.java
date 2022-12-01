@@ -1,7 +1,7 @@
 package cz.krystofcejchan.air_quality_measurement.domain;
 
+import cz.krystofcejchan.air_quality_measurement.domain.location.LocationData;
 import cz.krystofcejchan.air_quality_measurement.enums.LeaderboardType;
-import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import jakarta.persistence.*;
 import org.jetbrains.annotations.Contract;
 
@@ -14,15 +14,16 @@ import java.io.Serializable;
 public class AirDataLeaderboard implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "id")
     private Long id;
     @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(referencedColumnName = "id")
     private AirData airDataId;
     @Enumerated(EnumType.STRING)
     private LeaderboardType leaderboardType;
-    @Enumerated(EnumType.STRING)
-    private Location location;
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "id")
+    private LocationData locationId;
     private Integer position;
 
     /**
@@ -33,22 +34,22 @@ public class AirDataLeaderboard implements Serializable {
     }
 
     @Contract(pure = true)
-    public AirDataLeaderboard(Long id, AirData airDataId, LeaderboardType leaderboardType, Location location,
+    public AirDataLeaderboard(Long id, AirData airDataId, LeaderboardType leaderboardType, LocationData locationId,
                               Integer position) {
         this.id = id;
         this.airDataId = airDataId;
         this.leaderboardType = leaderboardType;
-        this.location = location;
+        this.locationId = locationId;
         this.position = position;
     }
 
     @Contract(pure = true)
-    public AirDataLeaderboard(AirData airDataId, LeaderboardType leaderboardType, Location location,
+    public AirDataLeaderboard(AirData airDataId, LeaderboardType leaderboardType, LocationData locationId,
                               Integer position) {
         this.id = -2L;
         this.airDataId = airDataId;
         this.leaderboardType = leaderboardType;
-        this.location = location;
+        this.locationId = locationId;
         this.position = position;
     }
 
@@ -106,22 +107,12 @@ public class AirDataLeaderboard implements Serializable {
         this.leaderboardType = leaderboardType;
     }
 
-    /**
-     * Gets location.
-     *
-     * @return the location
-     */
-    public Location getLocation() {
-        return location;
+    public LocationData getLocationId() {
+        return locationId;
     }
 
-    /**
-     * Sets location.
-     *
-     * @param location the location
-     */
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setLocationId(LocationData locationId) {
+        this.locationId = locationId;
     }
 
     /**
@@ -148,7 +139,7 @@ public class AirDataLeaderboard implements Serializable {
                 "id=" + id +
                 "\n, airDataId=" + airDataId +
                 "\n, leaderboardType=" + leaderboardType +
-                "\n, location=" + location +
+                "\n, locationId=" + locationId +
                 "\n, position=" + position +
                 '}';
     }

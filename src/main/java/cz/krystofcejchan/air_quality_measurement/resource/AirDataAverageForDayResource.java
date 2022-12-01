@@ -1,7 +1,7 @@
 package cz.krystofcejchan.air_quality_measurement.resource;
 
 import cz.krystofcejchan.air_quality_measurement.domain.AirDataAverageOfDay;
-import cz.krystofcejchan.air_quality_measurement.enums.Location;
+import cz.krystofcejchan.air_quality_measurement.domain.location.LocationData;
 import cz.krystofcejchan.air_quality_measurement.service.AirDataAverageOfDayService;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -46,7 +46,7 @@ public final class AirDataAverageForDayResource {
     @GetMapping("/calc")
     public @NotNull ResponseEntity<?> calcAverage() {
 
-        Optional<HashMap<Location, AirDataAverageOfDay>> optionalAirDataAverageOfDay
+        Optional<HashMap<LocationData, AirDataAverageOfDay>> optionalAirDataAverageOfDay
                 = service.getAverageAirDataForOneSpecificDay(LocalDate.now(ZoneId.of("Europe/Prague")));
 
         optionalAirDataAverageOfDay.ifPresentOrElse(

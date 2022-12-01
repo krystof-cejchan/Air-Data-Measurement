@@ -18,9 +18,10 @@ public class LeaderboardTable {
      * yet they do not exist in the newly generated data stored in newLeaderboardDataMap.
      * Secondly, all the data that are newly generated but cannot be found in the leaderboard table in the database, shall be saved there
      *
-     * @param existingAirData       List of data that already exist in the leaderboard table - {@link AirDataLeaderboardRepository}.findAll()
-     * @param newLeaderboardDataMap freshly generated data from AirData table and saved into a map which takes {@link LeaderBoardKey} as a key
-     *                              and {@link List} of {@link AirData} as a value
+     * @param airDataLeaderboardRepository Autowired repository instance
+     * @param existingAirData              List of data that already exist in the leaderboard table - {@link AirDataLeaderboardRepository}.findAll()
+     * @param newLeaderboardDataMap        freshly generated data from AirData table and saved into a map which takes {@link LeaderBoardKey} as a key
+     *                                     and {@link List} of {@link AirData} as a value
      */
     public static void saveChangedDataAndDeleteOldData(@NotNull AirDataLeaderboardRepository airDataLeaderboardRepository,
                                                        @NotNull List<AirDataLeaderboard> existingAirData,
@@ -31,13 +32,13 @@ public class LeaderboardTable {
         Map<LeaderboardType, List<AirDataLeaderboard>> existingAirDataLeaderboardByType = new HashMap<>();
         LeaderboardType.toList().forEach(leaderboardType ->
                 existingAirDataLeaderboardByType
-                        .putIfAbsent(leaderboardType, existingAirData
-                                .stream()
-                                .filter(data -> data.getLeaderboardType().equals(leaderboardType))
-                                .toList()));
+                        .putIfAbsent(leaderboardType,
+                                existingAirData.stream().filter(data -> data.getLeaderboardType().equals(leaderboardType))
+                                        .toList()));
         List<LeaderboardType> mismatchingLeaderboardTypes = new ArrayList<>();
         for (LeaderboardType leaderboardType : LeaderboardType.toList()) {
-            if (!existingAirDataLeaderboardByType
+            if (existingAirDataLeaderboardByType.getOrDefault(leaderboardType, Collections.emptyList()).isEmpty()
+                    || !existingAirDataLeaderboardByType
                     .getOrDefault(leaderboardType, Collections.emptyList())
                     .stream()
                     .allMatch(existing ->
@@ -46,7 +47,7 @@ public class LeaderboardTable {
                                     .stream()
                                     .map(AirData::getId)
                                     .toList()
-                                    .contains(existing.getAirDataId().getId()))) {
+                                    .stream().allMatch(id->id.equals(existing.getAirDataId().getId())))) {
                 mismatchingLeaderboardTypes.add(leaderboardType);
             }
         }
@@ -55,6 +56,7 @@ public class LeaderboardTable {
                 .stream()
                 .filter(it -> mismatchingLeaderboardTypes.contains(it.getLeaderboardType()))
                 .toList());
+
         mismatchingLeaderboardTypes.forEach(leaderboardType -> {
             List<AirData> airData = newLeaderboardDataMap.getOrDefault(new LeaderBoardKey(leaderboardType),
                     Collections.emptyList());
@@ -62,7 +64,7 @@ public class LeaderboardTable {
                 airData.forEach(airData1 -> airDataLeaderboardToBeInserted.add(
                         new AirDataLeaderboard(airData1,
                                 leaderboardType,
-                                airData1.getLocation(),
+                                airData1.getLocationId(),
                                 airData.indexOf(airData1) + 1)));
             }
         });
@@ -112,10 +114,7 @@ public class LeaderboardTable {
         }
 
         map.values().removeIf(values -> values.isEmpty() || values.stream().anyMatch(value -> value.getId() < 1));
-        Stream.iterate('*', i -> i)
-                .limit(2000)
-                .forEach(System.out::print);
-        map.forEach((k, v) -> System.out.println(k + " → " + v));
+
         return map;
     }
 }

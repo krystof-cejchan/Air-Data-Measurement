@@ -35,13 +35,14 @@ export class LatestDataComponent implements OnInit {
     this.latestDataService.getLatestData().subscribe(
       (response: AirData[]) => {
         this.formattedAirDatas = response;
+        console.log(response)
         try {
           this.formattedAirDatas.forEach(airdata => {
             let formattedAitDate = airdata;
             //formatting date to more humanly readable date
             formattedAitDate.receivedDataDateTime = this.formatDate(new Date(airdata.receivedDataDateTime));
             //background picture set to folder "assets/imgs/faculties/" where images are stored
-            formattedAitDate.bcgPictureUrl = "assets/imgs/faculties/" + airdata.location + "_cover.jpg";
+            formattedAitDate.bcgPictureUrl = "assets/imgs/faculties/" + airdata.locationId.name_short + "_cover.jpg";
             this.airdatas.push(formattedAitDate);
           })
         } catch (error) {

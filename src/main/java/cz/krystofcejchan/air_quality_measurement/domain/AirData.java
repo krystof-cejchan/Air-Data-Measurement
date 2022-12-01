@@ -1,9 +1,7 @@
 package cz.krystofcejchan.air_quality_measurement.domain;
 
 import cz.krystofcejchan.air_quality_measurement.domain.location.LocationData;
-import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import jakarta.persistence.*;
-import org.hibernate.annotations.Cascade;
 import org.jetbrains.annotations.Contract;
 
 import java.io.Serializable;
@@ -23,8 +21,6 @@ public class AirData implements Serializable {
     private String arduinoTime;
     private LocalDateTime receivedDataDateTime;
     private BigDecimal airQuality;
-    @Enumerated(EnumType.STRING)
-    private Location location;
     private BigDecimal temperature;
     private BigDecimal humidity;
     @Column(nullable = false, updatable = false)
@@ -33,7 +29,7 @@ public class AirData implements Serializable {
     private Integer reportedN;
     @Column(columnDefinition = "boolean default '0'", insertable = false, nullable = false)
     private Boolean invalidData;
-    @OneToOne(cascade = CascadeType.DETACH)
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(referencedColumnName = "id")
     private LocationData locationId;
 
@@ -71,18 +67,18 @@ public class AirData implements Serializable {
      */
     @Contract(pure = true)
     public AirData(Long id, String arduinoTime, LocalDateTime receivedDataDateTime, BigDecimal airQuality,
-                   Location location, BigDecimal temperature, BigDecimal humidity, String rndHash,
-                   Integer reportedN, Boolean invalidData) {
+                   BigDecimal temperature, BigDecimal humidity, String rndHash,
+                   Integer reportedN, Boolean invalidData, LocationData location) {
         this.id = id;
         this.arduinoTime = arduinoTime;
         this.receivedDataDateTime = receivedDataDateTime;
         this.airQuality = airQuality;
-        this.location = location;
         this.temperature = temperature;
         this.humidity = humidity;
         this.rndHash = rndHash;
         this.reportedN = reportedN;
         this.invalidData = invalidData;
+        this.locationId = location;
     }
 
     /**
@@ -247,24 +243,6 @@ public class AirData implements Serializable {
         this.invalidData = invalidData;
     }
 
-    /**
-     * Gets location.
-     *
-     * @return the location
-     */
-    public Location getLocation() {
-        return location;
-    }
-
-    /**
-     * Sets location.
-     *
-     * @param location the location
-     */
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
     public LocationData getLocationId() {
         return locationId;
     }
@@ -280,7 +258,7 @@ public class AirData implements Serializable {
                 ", arduinoTime='" + arduinoTime + '\'' +
                 ", receivedDataDateTime=" + receivedDataDateTime +
                 ", airQuality=" + airQuality +
-                ", location=" + location +
+                ", location=" + locationId +
                 ", temperature=" + temperature +
                 ", humidity=" + humidity +
                 ", rndHash='" + rndHash + '\'' +

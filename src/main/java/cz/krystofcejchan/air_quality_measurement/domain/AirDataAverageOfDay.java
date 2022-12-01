@@ -1,6 +1,6 @@
 package cz.krystofcejchan.air_quality_measurement.domain;
 
-import cz.krystofcejchan.air_quality_measurement.enums.Location;
+import cz.krystofcejchan.air_quality_measurement.domain.location.LocationData;
 import jakarta.persistence.*;
 import org.jetbrains.annotations.Contract;
 
@@ -15,9 +15,11 @@ import java.time.LocalDate;
 public class AirDataAverageOfDay implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "id")
     private Long id;
-    private Location location;
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "id")
+    private LocationData location;
     private LocalDate receivedDataDate;
     private BigDecimal airQualityAvg;
     private BigDecimal temperatureAvg;
@@ -42,7 +44,7 @@ public class AirDataAverageOfDay implements Serializable {
      * @param humidityAvg      the humidity avg
      */
     @Contract(pure = true)
-    public AirDataAverageOfDay(Long id, Location location, LocalDate receivedDataDate, BigDecimal airQualityAvg,
+    public AirDataAverageOfDay(Long id, LocationData location, LocalDate receivedDataDate, BigDecimal airQualityAvg,
                                BigDecimal temperatureAvg, BigDecimal humidityAvg) {
         this.id = id;
         this.location = location;
@@ -75,16 +77,12 @@ public class AirDataAverageOfDay implements Serializable {
      *
      * @return the location
      */
-    public Location getLocation() {
+    public LocationData getLocation() {
         return location;
     }
 
-    /**
-     * Sets location.
-     *
-     * @param location the location
-     */
-    public void setLocation(Location location) {
+
+    public void setLocation(LocationData location) {
         this.location = location;
     }
 

@@ -4,6 +4,7 @@ import { AirDataDetailsService } from './air-data-details.service';
 import { AirData } from "../airdata";
 import { formatDate } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
+import { LocationData } from '../objects/LocationData';
 
 @Component({
   selector: 'app-air-data-details',
@@ -48,8 +49,8 @@ export class AirDataDetailsComponent implements OnInit {
           airQuality: -1,
           temperature: -1,
           humidity: -1,
-          location: "n / a",
-            arduinoTime: "nikdy",
+          locationId: { id: -1, outofservice: true } as LocationData,
+          arduinoTime: "nikdy",
           receivedDataDateTime: "nikdy"
         } as AirData;
         this.airdatas.push(errorAirData);

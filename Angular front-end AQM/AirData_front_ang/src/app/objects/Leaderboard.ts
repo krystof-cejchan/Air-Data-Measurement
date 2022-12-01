@@ -1,4 +1,5 @@
 import { AirData } from "../airdata";
+import { LocationData } from "./LocationData";
 /**
  * class for creating its objects
  * java syntax -> Map<Map<Location, LeaderboarType>, List<AirData>>
@@ -336,6 +337,6 @@ export interface LeaderboardData {
     id: number,
     airDataId: AirData,
     leaderboardType: string,
-    location: string,
+    location: LocationData,
     position: number;
 }   

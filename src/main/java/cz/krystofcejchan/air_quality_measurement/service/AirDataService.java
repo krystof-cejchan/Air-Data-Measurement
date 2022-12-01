@@ -44,7 +44,7 @@ public class AirDataService {
      * @return the air data
      */
     public @NotNull AirData addAirData(@NotNull AirData airData) {
-        if (!areDataValid(airData)) return airData;
+        if (areDataNotValid(airData)) return airData;
 
         airData.setReceivedDataDateTime(LocalDateTime.now(ZoneId.of("Europe/Prague")));
         airData.setRndHash(UUID.randomUUID().toString());
@@ -95,13 +95,13 @@ public class AirDataService {
                     .orElse(Collections.singletonList(airData))
                     .get(0);*/
 
-            List<AirData> optionalPreviousAirData = airDataRepository.findByLocationAndReceivedDataDateTimeBefore(airData.getLocation(),
+            List<AirData> optionalPreviousAirData = airDataRepository.findByLocationIdAndReceivedDataDateTimeBefore(airData.getLocationId(),
                             airData.getReceivedDataDateTime())
                     .orElse(Collections.emptyList());
 
             AirData previousAirData = optionalPreviousAirData.isEmpty() ? airData : optionalPreviousAirData.get(0);
 
-            if (!areDataValid(airData) || !compareAirDataObjects(airData, previousAirData)) {
+            if (areDataNotValid(airData) || !compareAirDataObjects(airData, previousAirData)) {
                 airDataRepository.delete(airData);
                 return airData;
                 //airData.setInvalidData(true);
@@ -163,14 +163,14 @@ public class AirDataService {
     }
 
     @Contract(pure = true)
-    private boolean areDataValid(@NotNull AirData airData1) throws AlreadyInvalidData {
+    private boolean areDataNotValid(@NotNull AirData airData1) throws AlreadyInvalidData {
         ArrayList<Boolean> airQ_temp_hum = new ArrayList<>();
 
         airQ_temp_hum.add(MathUtils.isInBetween(airData1.getAirQuality(), 0, 200, false));
         airQ_temp_hum.add(MathUtils.isInBetween(airData1.getTemperature(), -20, 45, true));
         airQ_temp_hum.add(MathUtils.isInBetween(airData1.getHumidity(), 0, 100, true));
 
-        return airQ_temp_hum.stream().allMatch(Boolean::booleanValue);
+        return !airQ_temp_hum.stream().allMatch(Boolean::booleanValue);
     }
 
 }

@@ -1,6 +1,8 @@
+import { LocationData } from "./objects/LocationData";
+
 export interface AirData {
     id: number;
-    location: string;
+    locationId: LocationData;
     arduinoTime: string;
     receivedDataDateTime: string;
     airQuality: number;

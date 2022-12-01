@@ -40,7 +40,7 @@
                                 <tbody>
                                     <tr *ngFor="let data of leaderboard_data.leaderboardData">
                                         <th scope="row">{{data.position}}</th>
-                                        <td>{{data.location}}</td>
+                                        <td>{{data.airDataId.locationId.name_short}}</td>
                                         <td [ngSwitch]=leaderboard_data.type>
                                             <span *ngSwitchCase="'LOWEST_AIRQ'">{{data.airDataId.airQuality}}</span>
                                             <span *ngSwitchCase="'LOWEST_HUM'">{{data.airDataId.humidity}}</span>

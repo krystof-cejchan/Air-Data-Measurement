@@ -4,8 +4,10 @@ import cz.krystofcejchan.air_quality_measurement.domain.AirData;
 import cz.krystofcejchan.air_quality_measurement.domain.AirDataLeaderboard;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataLeaderboardRepository;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataRepository;
+import cz.krystofcejchan.air_quality_measurement.repository.LocationDataRepository;
 import cz.krystofcejchan.air_quality_measurement.scheduled_tasks.ScheduledTaskRunnable;
 import cz.krystofcejchan.air_quality_measurement.scheduled_tasks.ScheduledTaskRunnableManager;
+import cz.krystofcejchan.air_quality_measurement.scheduled_tasks.tasks.InsertLocationData;
 import cz.krystofcejchan.air_quality_measurement.utilities.leaderboard.table.LeaderBoardKey;
 import cz.krystofcejchan.air_quality_measurement.utilities.leaderboard.table.LeaderboardTable;
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +41,8 @@ public class AqmApplication implements CommandLineRunner {
     private AirDataLeaderboardRepository airDataLeaderboardRepo;
     @Autowired
     private AirDataRepository airDataRepo;
+    @Autowired
+    private LocationDataRepository locationDataRepository;
 
     /**
      * Main.
@@ -67,7 +71,7 @@ public class AqmApplication implements CommandLineRunner {
         sleep(5000);
 
         LeaderboardTable.saveChangedDataAndDeleteOldData(airDataLeaderboardRepo, existingAirData, map);
-
+        new InsertLocationData().runScheduledTask(locationDataRepository);
     }
 
 

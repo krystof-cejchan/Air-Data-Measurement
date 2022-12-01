@@ -1,11 +1,12 @@
 package cz.krystofcejchan.air_quality_measurement.api.service;
 
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
+import cz.krystofcejchan.air_quality_measurement.domain.location.LocationData;
 import cz.krystofcejchan.air_quality_measurement.domain.nondatabase_objects.AirDataAverage;
 import cz.krystofcejchan.air_quality_measurement.enums.LeaderboardType;
-import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import cz.krystofcejchan.air_quality_measurement.exceptions.DataNotFoundException;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataRepository;
+import cz.krystofcejchan.air_quality_measurement.repository.LocationDataRepository;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,35 +25,50 @@ import java.util.Optional;
  * The type Air data api service.
  */
 @Service
-public record AirDataApiService(AirDataRepository airDataRepository) {
+public class AirDataApiService {
+    @Autowired
+    LocationDataRepository locationDataRepository;
+    @Autowired
+    private AirDataRepository airDataRepository;
+
     /**
      * Instantiates a new Air data api service.
-     *
-     * @param airDataRepository the air data repository
      */
     @Contract(pure = true)
     @Autowired
-    public AirDataApiService {
+    public AirDataApiService() {
+    }
+
+    public AirDataApiService(AirDataRepository airDataRepository) {
+        this.airDataRepository = airDataRepository;
     }
 
     /**
      * Gets latest air data.
      *
-     * @param paramLocation the param location
+     * @param paramLocationId the param location
      * @return the latest air data
      */
-    @Contract("null -> new")
-    public @NotNull ResponseEntity<?> getLatestAirData(String paramLocation) {
-        if (paramLocation != null && Location.toList().stream().map(Enum::toString).anyMatch(location -> location.equals(paramLocation))) {
-            //paramLocation is set and its value matches at least one LocationData
+    public @NotNull ResponseEntity<?> getLatestAirData(Long paramLocationId) {
+        List<LocationData> locationData = locationDataRepository.findAll();
+        if (paramLocationId != null) {
+            //paramLocationId is set and its value matches at least one LocationData
             try {
-                AirData airData = airDataRepository.findByLocationOrderByReceivedDataDateTimeDesc(Location.of(paramLocation)).orElseThrow(DataNotFoundException::new).get(0);
+                AirData airData = airDataRepository.findByLocationIdOrderByReceivedDataDateTimeDesc(locationDataRepository
+                                .findById(paramLocationId).orElseThrow(DataNotFoundException::new))
+                        .orElseThrow(DataNotFoundException::new).get(0);
                 return new ResponseEntity<>(airData, HttpStatus.OK);
             } catch (DataNotFoundException dataNotFoundException) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase(), HttpStatus.BAD_REQUEST);
             }
         } else {
-            return new ResponseEntity<>(Location.toList().stream().filter(location -> !airDataRepository.findByLocationOrderByReceivedDataDateTimeDesc(location).orElseThrow(DataNotFoundException::new).isEmpty()).map(existingLocation -> airDataRepository.findByLocationOrderByReceivedDataDateTimeDesc(existingLocation).orElseThrow(DataNotFoundException::new).get(0)).toList(), HttpStatus.OK);
+            return new ResponseEntity<>(locationData.stream()
+                    .filter(location -> !airDataRepository.findByLocationIdOrderByReceivedDataDateTimeDesc(location)
+                            .orElseThrow(DataNotFoundException::new).isEmpty())
+                    .map(existingLocation -> airDataRepository.findByLocationIdOrderByReceivedDataDateTimeDesc(existingLocation)
+                            .orElseThrow(DataNotFoundException::new).get(0))
+                    .toList(),
+                    HttpStatus.OK);
         }
     }
 
