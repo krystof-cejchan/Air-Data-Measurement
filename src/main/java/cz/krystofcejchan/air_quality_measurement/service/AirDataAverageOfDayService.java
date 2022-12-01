@@ -66,7 +66,7 @@ public record AirDataAverageOfDayService(
 
         List<LocationData> locationToBeExcluded = new ArrayList<>();
         locationDataList.forEach(location -> avgRepository
-                .findByLocationIdAndReceivedDataDate(location, day)//TODO zde chyba ? něco s longem idk
+                .findByLocationAndReceivedDataDate(location, day)
                 .ifPresent(avgData -> locationToBeExcluded
                         .addAll(avgData.stream()
                                 .map(AirDataAverageOfDay::getLocation)

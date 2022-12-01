@@ -2,7 +2,6 @@ package cz.krystofcejchan.air_quality_measurement.repository;
 
 import cz.krystofcejchan.air_quality_measurement.domain.AirDataAverageOfDay;
 import cz.krystofcejchan.air_quality_measurement.domain.location.LocationData;
-import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -22,5 +21,5 @@ public interface AirDataAverageOfDayRepository extends JpaRepository<AirDataAver
      * @param receivedDataDate the received data date
      * @return the optional
      */
-    Optional<List<AirDataAverageOfDay>> findByLocationIdAndReceivedDataDate(LocationData location, LocalDate receivedDataDate);
+    Optional<List<AirDataAverageOfDay>> findByLocationAndReceivedDataDate(LocationData location, LocalDate receivedDataDate);
 }
