@@ -46,6 +46,7 @@ public class AirDataApiResource {
     @GetMapping("/latest")
     public ResponseEntity<?> getAirDataById(@RequestHeader(required = false) Long locationId) {
         return airDataApiService.getLatestAirData(locationId);
+
     }
 
     @GetMapping("/average_temperature")
