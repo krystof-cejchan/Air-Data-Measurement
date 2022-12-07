@@ -9,14 +9,14 @@ import { MainPageService } from './main-page.service';
   styleUrls: ['./main-page.component.scss']
 })
 export class MainPageComponent implements OnInit {
-  public current_temperature: number = -Infinity;
-  constructor(private mainPageService: MainPageService) { }
+  public current_temperature: number = NaN;
+  constructor(private latestDataService: LatestDataService) { }
 
   ngOnInit(): void {
     this.getAirDatas();
   }
   public getAirDatas(): void {
-    /*this.latestDataService.getLatestData().subscribe(
+    this.latestDataService.getLatestData().subscribe(
       async (response: AirData[]) => {
         console.log(response)
         var counter = 0;
@@ -29,8 +29,8 @@ export class MainPageComponent implements OnInit {
       }, () => {
         this.current_temperature = this.round(this.current_temperature, 1);
       }
-    );*/
-    this.mainPageService.getAverageTemperatureFromLatestData().subscribe(
+    );
+   /* this.mainPageService.getAverageTemperatureFromLatestData().subscribe(
       async (response: Number) => {
 
         var counter = 0;
@@ -43,7 +43,7 @@ export class MainPageComponent implements OnInit {
       }, () => {
         this.current_temperature = this.round(this.current_temperature, 1);
       }
-    );
+    );*/
   }
   private round(value: number, precision: number) {
     var multiplier = Math.pow(10, precision || 0);
