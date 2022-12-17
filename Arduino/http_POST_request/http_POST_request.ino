@@ -1,22 +1,20 @@
 #include <MQ135.h>
-#include <Adafruit_Sensor.h>
 #include <DHT.h>
-#include <DHT_U.h>
+
 
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 
-#define DHTPIN D2
+#define DHTPIN 7
 #define DHTTYPE DHT22
-DHT_Unified dht(DHTPIN, DHTTYPE);
-
+DHT dht(DHTPIN, DHTTYPE);
 
 #define SERVER_IP "http://krystofcejchan.cz/arduino_aiq_quality/measurement.php"
 
 
 #ifndef STASSID
-#define STASSID "STRNADOVA 51"
-#define STAPSK  "stofiadam51"
+#define STASSID "x"
+#define STAPSK  "y"
 #endif
 
 #define MQ135_PIN A0
@@ -24,40 +22,18 @@ MQ135 mq135_sensor = MQ135(MQ135_PIN);
 
 unsigned long lastMillis = 0;
 boolean first = true;
-float hum = 55;
-float temp = 20;
-float correctedPPM;
-#define delayValue 10000
+float hum;
+float temp;
+#define delayValue 60000
 
 
 void setup() {
 
   Serial.begin(115200);
 
-  dht.begin();
-  Serial.println(F("DHTxx Unified Sensor Example"));
-  // Print temperature sensor details.
-  sensor_t sensor;
-  dht.temperature().getSensor(&sensor);
-  Serial.println(F("------------------------------------"));
-  Serial.println(F("Temperature Sensor"));
-  Serial.print  (F("Sensor Type: ")); Serial.println(sensor.name);
-  Serial.print  (F("Driver Ver:  ")); Serial.println(sensor.version);
-  Serial.print  (F("Unique ID:   ")); Serial.println(sensor.sensor_id);
-  Serial.print  (F("Max Value:   ")); Serial.print(sensor.max_value); Serial.println(F("°C"));
-  Serial.print  (F("Min Value:   ")); Serial.print(sensor.min_value); Serial.println(F("°C"));
-  Serial.print  (F("Resolution:  ")); Serial.print(sensor.resolution); Serial.println(F("°C"));
-  Serial.println(F("------------------------------------"));
-  // Print humidity sensor details.
-  dht.humidity().getSensor(&sensor);
-  Serial.println(F("Humidity Sensor"));
-  Serial.print  (F("Sensor Type: ")); Serial.println(sensor.name);
-  Serial.print  (F("Driver Ver:  ")); Serial.println(sensor.version);
-  Serial.print  (F("Unique ID:   ")); Serial.println(sensor.sensor_id);
-  Serial.print  (F("Max Value:   ")); Serial.print(sensor.max_value); Serial.println(F("%"));
-  Serial.print  (F("Min Value:   ")); Serial.print(sensor.min_value); Serial.println(F("%"));
-  Serial.print  (F("Resolution:  ")); Serial.print(sensor.resolution); Serial.println(F("%"));
-  Serial.println(F("------------------------------------"));
+  Serial.println();
+  Serial.println();
+  Serial.println();
 
   WiFi.begin(STASSID, STAPSK);
 
@@ -71,28 +47,15 @@ void setup() {
 }
 
 void loop() {
-  //correctedPPM = mq135_sensor.getCorrectedPPM(-10, 80);
   // wait for WiFi connection
   if (first || millis() - lastMillis > delayValue) {
     first = false;
     if ((WiFi.status() == WL_CONNECTED)) {
 
-      sensors_event_t event;
-      dht.temperature().getEvent(&event);
-      if (not isnan(event.temperature)) {
-        temp = event.temperature;
-      }
-
-      // Get humidity event and print its value.
-      dht.humidity().getEvent(&event);
-      if (not isnan(event.relative_humidity)) {
-        hum = event.relative_humidity;
-      }
-
-      Serial.println(String(temp) + "°C;\t" + String(hum) + "%");
-
-      correctedPPM = mq135_sensor.getCorrectedPPM(temp, hum);
-
+     /* hum = dht.readHumidity();
+      temp = dht.readTemperature();*/
+      float correctedPPM = mq135_sensor.getCorrectedPPM(20, 70);
+      Serial.println(correctedPPM);
       WiFiClient client;
       HTTPClient http;
 
