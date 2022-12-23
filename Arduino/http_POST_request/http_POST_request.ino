@@ -77,17 +77,7 @@ void loop() {
     first = false;
     if ((WiFi.status() == WL_CONNECTED)) {
 
-      sensors_event_t event;
-      dht.temperature().getEvent(&event);
-      if (not isnan(event.temperature)) {
-        temp = event.temperature;
-      }
-
-      // Get humidity event and print its value.
-      dht.humidity().getEvent(&event);
-      if (not isnan(event.relative_humidity)) {
-        hum = event.relative_humidity;
-      }
+      calcTempAndHum();
 
       Serial.println(String(temp) + "°C;\t" + String(hum) + "%");
 
@@ -103,7 +93,7 @@ void loop() {
 
       Serial.print("[HTTP] POST...\n");
       // start connection and send HTTP header and body
-      int httpCode = http.POST("value=" + String(correctedPPM));
+      int httpCode = http.POST("air_q=" + String(correctedPPM) + "&hum=" + String(hum) + "&temp=" + String(temp));
 
 
       // httpCode will be negative on error
@@ -125,5 +115,20 @@ void loop() {
       http.end();
     } lastMillis = millis();
   }
+  else {
+    calcTempAndHum();
+  }
 
+}
+
+void calcTempAndHum() {
+  sensors_event_t event;
+  dht.temperature().getEvent(&event);
+  if (not isnan(event.temperature)) {
+    temp = event.temperature;
+  }
+  dht.humidity().getEvent(&event);
+  if (not isnan(event.relative_humidity)) {
+    hum = event.relative_humidity;
+  }
 }

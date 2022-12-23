@@ -2,6 +2,32 @@
 
 $smokey-white-color :rgba(233, 233, 233, 0.88);
 
+$phone-width: 767px;
+$tablet-width: 768px;
+$desktop-width: 1024px;
+
+@mixin phone {
+	@media (max-width: #{$phone-width}) {
+		@content;
+	}
+}
+
+@mixin tablet {
+	@media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
+		@content;
+	}
+}
+
+@mixin desktop {
+	@media (min-width: #{$desktop-width}) {
+		@content;
+	}
+}
+
+router-outlet{
+	background-color: aqua !important;
+}
+
 html,
 body {
 	font-family: 'Monda', sans-serif;
@@ -43,10 +69,16 @@ nav.navbar {
 #navbarNavDropdown {
 	background-color: rgba(99, 99, 99, 0.459);
 	border-bottom: 1px solid rgba(233, 233, 233, 0.555);
+
+	@include phone {
+		background-color: rgba(0, 0, 0, 0.459);
+	}
 }
+
 
 .navbar-toggler-icon {
 	background-image: url("../assets/imgs/hamburger-white.svg") !important;
+	color: rgb(255, 0, 0);
 }
 
 .navbar-nav>li {
@@ -114,20 +146,24 @@ footer {
 	z-index: 9999999999999999999999999999999999;
 	width: 100vw;
 	height: 3vh;
-/*	background-color: rgb(121, 121, 121);
+	/*	background-color: rgb(121, 121, 121);
 	background: -moz-radial-gradient(circle, rgba(121, 121, 121, 0.6617997540813201) 0%, rgba(219, 219, 219, 0.4629202022605917) 100%);
 	background: -webkit-radial-gradient(circle, rgba(121, 121, 121, 0.6617997540813201) 0%, rgba(219, 219, 219, 0.4629202022605917) 100%);
 	background: radial-gradient(circle, rgba(121, 121, 121, 0.6617997540813201) 0%, rgba(219, 219, 219, 0.4629202022605917) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#797979", endColorstr="#dbdbdb", GradientType=1);
-*/	color: rgba(255, 255, 255, 0.407);
+*/
+	color: rgba(255, 255, 255, 0.407);
 	text-align: center;
 }
+
 #Copyright {
 	cursor: crosshair;
+
 	&:hover {
 		color: white;
 	}
 }
+
 
 /*
 * {
