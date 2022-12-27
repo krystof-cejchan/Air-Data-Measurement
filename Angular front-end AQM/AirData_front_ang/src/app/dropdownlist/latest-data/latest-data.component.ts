@@ -35,7 +35,7 @@ export class LatestDataComponent implements OnInit {
     this.latestDataService.getLatestData().subscribe(
       (response: AirData[]) => {
         this.formattedAirDatas = response;
-        console.log(response)
+        // console.log(response)
         try {
           this.formattedAirDatas.forEach(airdata => {
             let formattedAitDate = airdata;

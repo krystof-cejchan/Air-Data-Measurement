@@ -90,7 +90,7 @@ nav.navbar {
 	cursor: pointer;
 
 	&:hover {
-		background-color: #8a8a8a !important;
+		background-color: #8a8a8a98 !important;
 		color: white !important;
 		border-radius: 10px;
 	}
@@ -157,7 +157,7 @@ footer {
 }
 
 #Copyright {
-	cursor: crosshair;
+	cursor: pointer;
 
 	&:hover {
 		color: white;

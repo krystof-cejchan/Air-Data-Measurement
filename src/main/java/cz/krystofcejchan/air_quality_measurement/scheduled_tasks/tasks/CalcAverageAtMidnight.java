@@ -57,7 +57,7 @@ public class CalcAverageAtMidnight implements ScheduledTaskRunnable {
         service.scheduleAtFixedRate(calcAverageDataAndAddToDatabase,
                 LocalDateTime.now()
                         .until(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.MIN),
-                                ///   LocalDateTime.of(LocalDate.now(), LocalTime.now().plusSeconds(15)),
+                                //LocalDateTime.of(LocalDate.now(), LocalTime.now().plusSeconds(15)),
                                 ChronoUnit.MINUTES),
                 TimeUnit.DAYS.toMinutes(1),
                 TimeUnit.MINUTES);

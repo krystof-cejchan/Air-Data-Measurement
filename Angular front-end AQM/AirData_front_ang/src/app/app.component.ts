@@ -41,4 +41,8 @@ export class AppComponent implements OnInit {
     // console.log(this.localStore.getData('locations'));
 
   }
+
+  public openLink(url: string) {
+    window.open(url)
+  }
 }

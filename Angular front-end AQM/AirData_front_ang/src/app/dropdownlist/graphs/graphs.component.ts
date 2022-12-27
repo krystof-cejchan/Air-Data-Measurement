@@ -75,9 +75,8 @@ export class GraphsComponent implements OnInit {
           .map(filteredData => filteredData.airQualityAvg)
       }));
 
-    console.log(seriesNameToData
-    )
-    console.log(dates)
+    // console.log(seriesNameToData)
+    // console.log(dates)
     this.setNewDataToGraph(seriesNameToData, dates);
 
   }

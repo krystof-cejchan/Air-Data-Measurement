@@ -18,7 +18,7 @@ export class MainPageComponent implements OnInit {
   public getAirDatas(): void {
     this.latestDataService.getLatestData().subscribe(
       async (response: AirData[]) => {
-        console.log(response)
+        //console.log(response)
         var counter = 0;
         const msToWait = 400, msMaxToWait = 5000;
         while (response.length === 0 && counter < (msMaxToWait / msToWait)) {
@@ -30,20 +30,20 @@ export class MainPageComponent implements OnInit {
         this.current_temperature = this.round(this.current_temperature, 1);
       }
     );
-   /* this.mainPageService.getAverageTemperatureFromLatestData().subscribe(
-      async (response: Number) => {
-
-        var counter = 0;
-        const msToWait = 400, msMaxToWait = 5000;
-        while (!response && counter < (msMaxToWait / msToWait)) {
-          await new Promise(f => setTimeout(f, msToWait));
-          counter++;
-        }
-        this.current_temperature = this.round(response.valueOf(), 1);
-      }, () => {
-        this.current_temperature = this.round(this.current_temperature, 1);
-      }
-    );*/
+    /* this.mainPageService.getAverageTemperatureFromLatestData().subscribe(
+       async (response: Number) => {
+ 
+         var counter = 0;
+         const msToWait = 400, msMaxToWait = 5000;
+         while (!response && counter < (msMaxToWait / msToWait)) {
+           await new Promise(f => setTimeout(f, msToWait));
+           counter++;
+         }
+         this.current_temperature = this.round(response.valueOf(), 1);
+       }, () => {
+         this.current_temperature = this.round(this.current_temperature, 1);
+       }
+     );*/
   }
   private round(value: number, precision: number) {
     var multiplier = Math.pow(10, precision || 0);
