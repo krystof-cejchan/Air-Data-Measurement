@@ -17,7 +17,7 @@ public class AirDataAverageOfDay implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false, name = "id")
     private Long id;
-    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(referencedColumnName = "id")
     private LocationData location;
     private LocalDate receivedDataDate;

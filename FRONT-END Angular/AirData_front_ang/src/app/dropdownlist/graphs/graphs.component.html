@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+  <meta charset="UTF-8">
+  <meta content="IE=edge" http-equiv="X-UA-Compatible">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>{{getTitle()}}</title>
+</head>
+
+<body>
+  <div class="container px-0 py-5">
+    <div class="container px-0 py-5">
+      <h2 class="pb-2 border-bottom"><span id="bordertext">{{getTitle()}}</span></h2>
+      <div class="chart">
+        <apx-chart [annotations]="chartOptionsAirQ.annotations" [chart]="chartOptionsAirQ.chart_airQ"
+          [dataLabels]="chartOptionsAirQ.dataLabels" [series]="chartOptionsAirQ.series"
+          [stroke]="chartOptionsAirQ.stroke" [title]="chartOptionsAirQ.title" [tooltip]="chartOptionsAirQ.tooltip"
+          [xaxis]="chartOptionsAirQ.xaxis">
+        </apx-chart>
+      </div>
+      <div class="chart" *ngIf="chartOptionsTemp">
+        <apx-chart [annotations]="chartOptionsTemp!.annotations" [chart]="chartOptionsTemp!.chart_airQ"
+          [dataLabels]="chartOptionsTemp!.dataLabels" [series]="chartOptionsTemp!.series"
+          [stroke]="chartOptionsTemp!.stroke" [title]="chartOptionsTemp!.title" [tooltip]="chartOptionsTemp!.tooltip"
+          [xaxis]="chartOptionsTemp!.xaxis">
+        </apx-chart>
+      </div>
+      <div class="chart" *ngIf="chartOptionsHum">
+        <apx-chart [annotations]="chartOptionsHum!.annotations" [chart]="chartOptionsHum!.chart_airQ"
+          [dataLabels]="chartOptionsHum!.dataLabels" [series]="chartOptionsHum!.series"
+          [stroke]="chartOptionsHum!.stroke" [title]="chartOptionsHum!.title" [tooltip]="chartOptionsHum!.tooltip"
+          [xaxis]="chartOptionsHum!.xaxis">
+        </apx-chart>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

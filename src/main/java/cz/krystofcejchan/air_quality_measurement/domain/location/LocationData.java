@@ -27,16 +27,16 @@ public final class LocationData implements Serializable {
     private BigDecimal longitude;
     @Column(nullable = true)
     private Double metersAboveTheGroundApprox;
+    @Column(nullable = false)
+    private String imgUrl;
 
-    /**
-     * Instantiates a new Location data.
-     */
     @Contract(pure = true)
     public LocationData() {
     }
 
+    @Contract(pure = true)
     public LocationData(Long id, Boolean outOfService, String city, String name, String name_short,
-                        BigDecimal latitude, BigDecimal longitude, Double metersAboveTheGroundApprox) {
+                        BigDecimal latitude, BigDecimal longitude, Double metersAboveTheGroundApprox, String imgUrl) {
         this.id = id;
         this.outOfService = outOfService;
         this.city = city;
@@ -45,8 +45,10 @@ public final class LocationData implements Serializable {
         this.latitude = latitude;
         this.longitude = longitude;
         this.metersAboveTheGroundApprox = metersAboveTheGroundApprox;
+        this.imgUrl = imgUrl;
     }
 
+    @Contract(pure = true)
     public Long getId() {
         return id;
     }
@@ -55,6 +57,7 @@ public final class LocationData implements Serializable {
         this.id = id;
     }
 
+    @Contract(pure = true)
     public Boolean getOutOfService() {
         return outOfService;
     }
@@ -63,6 +66,7 @@ public final class LocationData implements Serializable {
         this.outOfService = outOfService;
     }
 
+    @Contract(pure = true)
     public String getCity() {
         return city;
     }
@@ -71,6 +75,7 @@ public final class LocationData implements Serializable {
         this.city = city;
     }
 
+    @Contract(pure = true)
     public String getName() {
         return name;
     }
@@ -79,6 +84,7 @@ public final class LocationData implements Serializable {
         this.name = name;
     }
 
+    @Contract(pure = true)
     public BigDecimal getLatitude() {
         return latitude;
     }
@@ -87,6 +93,7 @@ public final class LocationData implements Serializable {
         this.latitude = latitude;
     }
 
+    @Contract(pure = true)
     public BigDecimal getLongitude() {
         return longitude;
     }
@@ -95,6 +102,7 @@ public final class LocationData implements Serializable {
         this.longitude = longitude;
     }
 
+    @Contract(pure = true)
     public Double getMetersAboveTheGroundApprox() {
         return metersAboveTheGroundApprox;
     }
@@ -103,6 +111,7 @@ public final class LocationData implements Serializable {
         this.metersAboveTheGroundApprox = metersAboveTheGroundApprox;
     }
 
+    @Contract(pure = true)
     public String getName_short() {
         return name_short;
     }
@@ -110,4 +119,14 @@ public final class LocationData implements Serializable {
     public void setName_short(String name_short) {
         this.name_short = name_short;
     }
+
+    @Contract(pure = true)
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
 }
+

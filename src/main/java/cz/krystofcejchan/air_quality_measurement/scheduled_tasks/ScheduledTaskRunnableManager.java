@@ -1,7 +1,10 @@
 package cz.krystofcejchan.air_quality_measurement.scheduled_tasks;
 
-import cz.krystofcejchan.air_quality_measurement.scheduled_tasks.tasks.CalcAverageAtMidnight;
-import cz.krystofcejchan.air_quality_measurement.scheduled_tasks.tasks.InsertLocationData;
+import cz.krystofcejchan.air_quality_measurement.repository.AirDataAverageOfDayRepository;
+import cz.krystofcejchan.air_quality_measurement.repository.AirDataRepository;
+import cz.krystofcejchan.air_quality_measurement.repository.LocationDataRepository;
+import cz.krystofcejchan.air_quality_measurement.scheduled_tasks.tasks.UpdateForecast;
+import cz.krystofcejchan.air_quality_measurement.scheduled_tasks.tasks.calc_avg.CalcAverageAtMidnight;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +15,18 @@ import java.util.List;
 public class ScheduledTaskRunnableManager {
     private final List<ScheduledTaskRunnable> runnables = new ArrayList<>();
 
+
     /**
      * Instantiates a new Scheduled task runnable manager.
      */
+    public ScheduledTaskRunnableManager(AirDataAverageOfDayRepository avgRepository, AirDataRepository airDataRepository,
+                                        LocationDataRepository locationDataRepository) {
+        this();
+        addToList(new CalcAverageAtMidnight(avgRepository, airDataRepository, locationDataRepository));
+    }
+
     public ScheduledTaskRunnableManager() {
-        addToList(new CalcAverageAtMidnight());
-        //addToList(new InsertLocationData());
+        addToList(new UpdateForecast());
     }
 
     private void addToList(ScheduledTaskRunnable taskRunnable) {

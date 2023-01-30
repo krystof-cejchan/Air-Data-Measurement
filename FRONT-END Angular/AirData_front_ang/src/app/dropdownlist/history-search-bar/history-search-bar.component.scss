@@ -1,0 +1,106 @@
+$primary-color: #3caeff;
+$table-color: rgba(11, 11, 11, 0.895);
+$even-row-color: rgba(99, 99, 99, 0.459);
+$no-color: rgba(11, 11, 11, 0.5);
+$th-color: rgb(164, 164, 164);
+$border-color: black;
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+}
+
+.btn {
+    background-color: white;
+    color: $primary-color;
+    border-color: $primary-color;
+
+    &:hover {
+        background-color: $primary-color;
+        color: white;
+    }
+}
+
+table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 100%;
+    height: 100%;
+    border-spacing: 20px 0;
+    color: $table-color;
+    margin-top: 10px;
+
+    th {
+        color: black;
+        letter-spacing: normal;
+        border-bottom: 1px dashed $border-color;
+    }
+
+    th.column {
+        cursor: pointer;
+        background-color: $th-color;
+    }
+
+    tr {
+
+        &:nth-child(even) {
+            background-color: $even-row-color;
+        }
+
+        td#no {
+            color: $no-color;
+            font-style: italic;
+        }
+    }
+
+    &.mat-sort-header-container {
+        align-items: center;
+    }
+}
+
+#err {
+    text-align: center;
+}
+
+.mat-chip.mat-standard-chip::after {
+    background: #0000 !important;
+}
+
+#datepicker {
+    margin-top: 20px;
+    border-top: $primary-color solid 1px;
+    padding-bottom: 5px;
+}
+
+#tableDivCol {
+    padding: 0 0 0 0 !important;
+    word-wrap: break-word;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.col-lg-6 {
+    text-align: center;
+}
+
+.spinner-border {
+    width: 4rem;
+    height: 4rem;
+    color: $primary-color !important;
+    position: relative;
+    margin-left: 50%;
+}
+
+#flex_chips {
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+mat-label>#cal-label {
+    font-family: 'Courier New', Courier, monospace !important;
+    letter-spacing: 1px;
+}

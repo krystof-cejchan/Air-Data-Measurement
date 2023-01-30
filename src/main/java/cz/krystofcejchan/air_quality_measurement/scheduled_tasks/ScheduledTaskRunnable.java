@@ -8,5 +8,5 @@ public interface ScheduledTaskRunnable {
     /**
      * Run scheduled task.
      */
-    abstract public void runScheduledTask();
+    void runScheduledTask();
 }

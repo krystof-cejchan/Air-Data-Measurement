@@ -1,40 +1,31 @@
 package cz.krystofcejchan.air_quality_measurement.resource;
 
 import cz.krystofcejchan.air_quality_measurement.domain.AirDataAverageOfDay;
-import cz.krystofcejchan.air_quality_measurement.domain.location.LocationData;
+import cz.krystofcejchan.air_quality_measurement.scheduled_tasks.tasks.calc_avg.CalcAvgFactory;
 import cz.krystofcejchan.air_quality_measurement.service.AirDataAverageOfDayService;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * The type Air data average for day resource.
  */
 @RestController
 @RequestMapping("/airdata/avg")
-public final class AirDataAverageForDayResource {
-    private final AirDataAverageOfDayService service;
-
-    private HttpStatus resultCode = HttpStatus.OK;
-
+@CrossOrigin(origins = {"https://krystofcejchan.cz","http://localhost:4200"}, methods = {RequestMethod.GET, RequestMethod.PUT},
+        maxAge = 60, allowedHeaders = "*", exposedHeaders = "*")
+public record AirDataAverageForDayResource(AirDataAverageOfDayService service) {
     /**
      * Instantiates a new Air data average for day resource.
      *
      * @param service the service
      */
     @Contract(pure = true)
-    public AirDataAverageForDayResource(AirDataAverageOfDayService service) {
-        this.service = service;
+    public AirDataAverageForDayResource {
     }
 
     /**
@@ -43,17 +34,10 @@ public final class AirDataAverageForDayResource {
      * @return the response entity
      */
     @Contract(" -> new")
-    @GetMapping("/calc")
-    public @NotNull ResponseEntity<?> calcAverage() {
-
-        Optional<HashMap<LocationData, AirDataAverageOfDay>> optionalAirDataAverageOfDay
-                = service.getAverageAirDataForOneSpecificDay(LocalDate.now(ZoneId.of("Europe/Prague")));
-
-        optionalAirDataAverageOfDay.ifPresentOrElse(
-                (map) -> map.keySet().forEach(key -> service.addAirDataAverageOfDay(map.get(key))),
-                () -> this.resultCode = HttpStatus.BAD_REQUEST);
-
-        return new ResponseEntity<>(resultCode.getReasonPhrase(), resultCode);
+    @PutMapping("/calc")
+    public @NotNull
+    ResponseEntity<?> calcAverage() {
+        return CalcAvgFactory.calc(service);
     }
 
     /**
@@ -63,7 +47,8 @@ public final class AirDataAverageForDayResource {
      */
     @Contract(" -> new")
     @GetMapping("/all")
-    public @NotNull ResponseEntity<List<AirDataAverageOfDay>> getAllData() {
+    public @NotNull
+    ResponseEntity<List<AirDataAverageOfDay>> getAllData() {
         return new ResponseEntity<>(service.getAllAvgAirData(), HttpStatus.OK);
     }
 }

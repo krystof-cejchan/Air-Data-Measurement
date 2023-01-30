@@ -73,8 +73,8 @@ public record AirDataAverageOfDayService(
                                 .toList())));
 
         List<LocationData> locationList = receivedData.get().stream().map(AirData::getLocationId)
-                .filter(airData_getLocationId -> locationToBeExcluded.stream()
-                        .noneMatch(locationExclusion -> locationExclusion.equals(airData_getLocationId)))
+                .filter(airData_getLocationId -> locationToBeExcluded.stream().map(LocationData::getId)
+                        .noneMatch(locationExclusion -> locationExclusion.equals(airData_getLocationId.getId())))
                 .toList();
 
         List<AirData> validAirData = receivedData.get().stream().filter(location -> locationList
@@ -120,7 +120,7 @@ public record AirDataAverageOfDayService(
      *
      * @return the all avg air data
      */
-    public List<AirDataAverageOfDay> getAllAvgAirData() {
+    public @NotNull List<AirDataAverageOfDay> getAllAvgAirData() {
         return avgRepository.findAll();
     }
 }

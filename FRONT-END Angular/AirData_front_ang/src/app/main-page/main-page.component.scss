@@ -1,0 +1,219 @@
+body,
+html {
+	height: 100%;
+	width: 100%;
+	margin: 0;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+	background: rgba(62, 67, 71, 0.644);
+}
+
+.fullscreen-bg__video {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 0;
+	overflow: hidden;
+	min-width: 100%;
+	min-height: 100%;
+}
+
+
+#list {
+	list-style-type: none;
+	margin-top: 4px;
+}
+
+#overlay {
+	position: relative;
+	width: 100%;
+
+	&::after {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 1;
+		content: '';
+		background: rgb(0, 0, 0);
+		background: -moz-radial-gradient(circle, rgba(0, 0, 0, 0.4374124649859944) 0%, rgba(0, 0, 0, 0.6082808123249299) 100%);
+		background: -webkit-radial-gradient(circle, rgba(0, 0, 0, 0.4374124649859944) 0%, rgba(0, 0, 0, 0.6082808123249299) 100%);
+		background: radial-gradient(circle, rgba(0, 0, 0, 0.4374124649859944) 0%, rgba(0, 0, 0, 0.6082808123249299) 100%);
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000000", endColorstr="#000000", GradientType=1);
+	}
+}
+
+#logo {
+	position: relative;
+	image-resolution: 916 / 390;
+	width: 20vw;
+	z-index: 2;
+}
+
+#upocasi_text {
+	font-size: 5vw;
+	color: white;
+	z-index: 2;
+
+	>#beta {
+		font-size: 1vw !important;
+		font-style: italic;
+	}
+}
+
+.nabidka {
+	font-size: 40px;
+	color: white;
+	z-index: 2;
+}
+
+#teplota_text {
+	font-size: 4vw;
+	color: white;
+	z-index: 2;
+}
+
+$break-point-for-phones: 764px;
+
+//screen width lower than 764px
+@media (max-width: $break-point-for-phones) {
+	#teplota_text {
+		font-size: 4vh;
+
+	}
+
+	#upocasi_text {
+		font-size: 5vh;
+	}
+
+	#logo {
+		width: 22vh;
+	}
+}
+
+
+
+#curr_temp {
+	// default color; however, it is changed in the ts file depending on current temperature!
+	color: aqua;
+}
+
+nav {
+	background-color: rgba(0, 0, 0, 0) !important;
+}
+
+
+footer {
+	position: fixed;
+	bottom: 1px;
+	z-index: 9999999999999999999999999999999999;
+	width: 100vw;
+	height: 3vh;
+	color: rgba(255, 255, 255, 0.407);
+	text-align: center;
+}
+
+#Copyright {
+	cursor: pointer;
+
+	&:hover {
+		color: white;
+	}
+}
+
+.btn {
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	color: #FFF;
+	transition: all 0.3s;
+	position: relative;
+	line-height: 50px;
+	height: fit-content;
+	padding: 2px 2% 2px 2%;
+	width: auto;
+	cursor: pointer;
+	margin-top: 1%;
+	z-index: 2;
+	border-left: 3px solid white;
+}
+
+.btn span {
+	transition: all 0.3s;
+	letter-spacing: 2px;
+}
+
+.btn::before {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	transition: all 0.3s;
+	border-top-width: 1px;
+	border-bottom-width: 1px;
+	border-top-style: solid;
+	border-bottom-style: solid;
+	border-top-color: rgba(255, 255, 255, 0.5);
+	border-bottom-color: rgba(255, 255, 255, 0.5);
+	transform: scale(0.1, 1);
+}
+
+.btn:hover span {
+	letter-spacing: 3.5px;
+	color: rgba(216, 216, 216, 0.8);
+}
+
+.btn:hover::before {
+	opacity: 1;
+	transform: scale(1, 1);
+}
+
+.btn::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	transition: all 0.3s;
+	background-color: rgba(255, 255, 255, 0.04);
+}
+
+.btn:hover::after {
+	opacity: 0;
+	transform: scale(0.1, 1);
+}
+
+.open_animation {
+	&.true {
+		animation: openingAnim 1s 0s 1 linear normal;
+	}
+}
+
+@keyframes openingAnim {
+	from {
+		opacity: .01;
+		transform: translateX(-100px);
+	}
+
+	to {
+		opacity: .9;
+		transform: translateX(0);
+	}
+}

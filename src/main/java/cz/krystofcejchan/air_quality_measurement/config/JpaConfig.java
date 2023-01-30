@@ -10,17 +10,7 @@ import javax.sql.DataSource;
 @Configuration
 public class JpaConfig {
 
-    /* @Bean
-     @Primary
-     public DataSource getPrimaryDataSource() {
-         DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
-         dataSourceBuilder.url("jdbc:mysql://sql11.freemysqlhosting.net/sql11521723");
-         dataSourceBuilder.username("sql11521723");
-         dataSourceBuilder.password(AqmApplication.dbpsd);
-         return dataSourceBuilder.build();
-     }*/
-
-    @Primary
+   @Primary
     @Bean
     public DataSource getSecondaryDataSource() {
         DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
@@ -29,14 +19,14 @@ public class JpaConfig {
         dataSourceBuilder.password("jetotereza");
         return dataSourceBuilder.build();
     }
-
-    /*@Primary
+/*
+    @Primary
     @Bean
     public DataSource getPrimaryDataSource() {
         DataSourceBuilder<? extends DataSource> dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.url("jdbc:mysql://sql11.freemysqlhosting.net/sql11521723");
-        dataSourceBuilder.username("sql11521723");
-        dataSourceBuilder.password(AqmApplication.dbpsd);
+        dataSourceBuilder.url("jdbc:mysql://doadmin:AVNS_MrIOZIhEXx3CUdn6f0k@db-mysql-fra1-97613-do-user-13223853-0.b.db.ondigitalocean.com:25060/airdatameasurement?ssl-mode=REQUIRED");
+        dataSourceBuilder.username("doadmin");
+        dataSourceBuilder.password(cz.krystofcejchan.air_quality_measurement.AqmApplication.dbpsd);
         return dataSourceBuilder.build();
     }*/
 }

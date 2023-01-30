@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>{{getTitle()}}</title>
+  <!--<link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" rel="stylesheet">
+  <script crossorigin="anonymous" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+  <link crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css"
+    rel="stylesheet">-->
+</head>
+
+<body>
+  <div class="container px-0 py-5">
+    <div class="container px-0 py-5">
+      <h2 class="pb-2 border-bottom"><span id="bordertext">{{getTitle()}}</span></h2>
+      <div class="row">
+        <div class="col-lg-3 mx-auto">
+          <!--<mat-form-field appearance="fill" id="datepicker" required>
+          <mat-label>Vyberte den</mat-label>
+          <input (dateChange)="updateDOB($event)" [matDatepicker]="picker" [max]="maxDate" [min]="minDate" disabled
+            matInput>
+          <mat-hint>DD / MM / YYYY</mat-hint>
+          <mat-datepicker-toggle [for]="picker" matSuffix></mat-datepicker-toggle>
+          <mat-datepicker #picker [touchUi]="true" disabled="false"></mat-datepicker>
+        </mat-form-field>-->
+
+          <mat-form-field appearance="fill">
+            <mat-label><span id="cal-label">Vyberte 1 až 7 dní</span></mat-label>
+            <mat-date-range-input [formGroup]="range" [rangePicker]="picker" [min]="minDate" [max]="maxDate" disabled>
+              <input matStartDate formControlName="start" placeholder="Start" (dateChange)="updateDOB(range.value)">
+              <input matEndDate formControlName="end" placeholder="Konec" (dateChange)="updateDOB(range.value)">
+            </mat-date-range-input>
+            <mat-hint><small>DD/MM/YYYY – DD/MM/YYYY</small></mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker [touchUi]="true" maxRange disabled="false"></mat-date-range-picker>
+            <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">chybné začáteční datum</mat-error>
+            <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">chybné konečné datum</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-3 mx-auto" *ngIf="showIfAnyLocations()">
+          <!--<form>
+          <mat-form-field class="example-chip-list" appearance="fill">
+            <mat-label>Zahrnutá místa</mat-label>
+            <mat-chip-grid #chipGrid aria-label="Všechna místa" matChipInput>
+              <mat-chip-row *ngFor="let location of activeLocations" (removed)="remove(location)">
+                {{location}}
+                <button matChipRemove [attr.aria-label]="'odstranit ' + location">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </mat-chip-row>
+            </mat-chip-grid>
+            <input placeholder="Přidat lokaci" #locationInput [formControl]="locationCtrl" [matChipInputFor]="chipGrid"
+              [matAutocomplete]="auto" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              (matChipInputTokenEnd)="add($event)" />
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+              <mat-option *ngFor="let location of activeLocations" [value]="location">
+                {{location}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </form>-->
+          <mat-chip-set aria-label="Filtrace lokací">
+            <div id="flex_chips" *ngFor="let location of allLocations">
+              <mat-chip-option role="listitem" color="accent" (selectionChange)="onChipClick(location)"
+                selected>{{location}}</mat-chip-option>
+            </div>
+          </mat-chip-set>
+        </div>
+      </div>
+      <div class="col-lg-6 mx-auto">
+        <button (click)="showData()" class="btn btn-outline-primary btn-lg">Potvrdit</button>
+      </div>
+      <div class="col-lg-6 mx-auto">
+        <div [innerHtml]="choosenDate.start +' ↹ '+choosenDate.end" class="one"></div>
+      </div>
+      <table matSort (matSortChange)="sortData($event)" id="tableDivCol">
+        <tr>
+          <th mat-sort-header="no">#</th>
+          <th mat-sort-header="time">Datum a čas</th>
+          <th mat-sort-header="place">Místo</th>
+          <th mat-sort-header="temperature">Teplota (°C)</th>
+          <th mat-sort-header="humidity">Vlhkost (%)</th>
+          <th mat-sort-header="airQuality">Kvalita vzduchu (ppm)</th>
+        </tr>
+
+        <tr *ngFor="let tblData of sortedData">
+          <td id="no">{{tblData.no}}</td>
+          <td>{{tblData.time}}</td>
+          <td>{{tblData.place}}</td>
+          <td>{{tblData.temperature}}</td>
+          <td>{{tblData.humidity}}</td>
+          <td>{{tblData.airQuality}}</td>
+        </tr>
+      </table>
+      <div *ngIf="showIfTableEmpty()" class="err">
+        <div class="errMsg">Pro toto období neexistují žádná data</div>
+      </div>
+      <div *ngIf="showLoading" class="spinner-border" role="status">
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

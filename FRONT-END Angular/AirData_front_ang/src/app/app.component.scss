@@ -1,0 +1,207 @@
+@import url('https://fonts.googleapis.com/css2?family=Monda&display=swap');
+
+$smokey-white-color :rgba(233, 233, 233, 0.88);
+
+$phone-width: 767px;
+$tablet-width: 768px;
+$desktop-width: 1024px;
+
+@mixin phone {
+	@media (max-width: #{$phone-width}) {
+		@content;
+	}
+}
+
+@mixin tablet {
+	@media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
+		@content;
+	}
+}
+
+@mixin desktop {
+	@media (min-width: #{$desktop-width}) {
+		@content;
+	}
+}
+
+router-outlet {
+	background-color: aqua !important;
+}
+
+html,
+body {
+	font-family: 'Monda', sans-serif;
+	scroll-behavior: auto;
+	margin: 0 0 0 0;
+	min-width: 0;
+}
+
+/*
+#overlay {
+	position: relative;
+	width: 100%;
+
+	&::after {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 1;
+		content: '';
+		background: rgb(0, 0, 0);
+		background: -moz-radial-gradient(circle, rgba(0, 0, 0, 0.437412465) 0%, rgba(0, 0, 0, 0.6082808123) 100%);
+		background: -webkit-radial-gradient(circle, rgba(0, 0, 0, 0.437412465) 0%, rgba(0, 0, 0, 0.6082808123) 100%);
+		background: radial-gradient(circle, rgba(0, 0, 0, 0.437412465) 0%, rgba(0, 0, 0, 0.6082808123) 100%);
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000000", endColorstr="#000000", GradientType=1);
+	}
+}*/
+
+#marginFromNav {
+	padding-top: 50px;
+}
+
+/*
+nav.navbar {
+	//background-color: #3caeff !important;
+	background-color: transparent !important;
+}*/
+#navbarNavDropdown {
+	background-color: rgba(99, 99, 99, 0.459);
+	border-bottom: 1px solid rgba(233, 233, 233, 0.555);
+
+	@include phone {
+		background-color: rgba(0, 0, 0, 0.459);
+	}
+}
+
+
+
+.navbar-toggler-icon {
+	&.hamburger_white {
+		background-image: url("https://krystofcejchan.cz/files&documents/arduino/assets/imgs/hamburger-white.svg");
+	}
+
+	&.hamburger_black {
+		background-image: url("https://krystofcejchan.cz/files&documents/arduino/assets/imgs/hamburger-black.svg");
+	}
+}
+
+.navbar-nav>li {
+	padding-left: 50px;
+	padding-right: 50px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	font-size: large;
+	cursor: pointer;
+
+	&:hover {
+		background-color: #8a8a8a98 !important;
+		color: white !important;
+		border-radius: 10px;
+	}
+}
+
+
+.dropdown-item {
+	color: rgb(252, 252, 252) !important;
+
+	&.active {
+		background-color: #8a8a8a !important;
+		color: white !important;
+	}
+
+	&:hover {
+		background-color: #ffffffce !important;
+		color: rgb(0, 0, 0) !important;
+	}
+
+}
+
+.dropdown-menu.show {
+	background-color: rgba(78, 78, 78, 0.541) !important;
+	border-color: $smokey-white-color !important;
+}
+
+.alldata {
+	font-family: 'Monda', sans-serif;
+	text-align: center;
+}
+
+.navbar-light .navbar-nav {
+
+	.show>.nav-link,
+	.active>.nav-link {
+		color: white !important;
+	}
+
+	.nav-link {
+
+		&.show,
+		&.active {
+			color: white !important;
+		}
+
+		color: $smokey-white-color !important;
+	}
+
+}
+
+/*
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	min-height: 100vh;
+	background-color: #fff;
+}
+
+.side-navbar {
+	width: 180px;
+	height: 100%;
+	position: fixed;
+	margin-left: -300px;
+	background-color: whitesmoke;
+	transition: 0.5s;
+}
+
+.nav-link:active,
+.nav-link:focus,
+.nav-link:hover {
+	background-color: #ffffff26;
+}
+
+.my-container {
+	transition: 0.4s;
+}
+
+.active-nav {
+	margin-left: 0;
+}
+
+
+.active-cont {
+	margin-left: 180px;
+}
+
+#menu-btn {
+	background-color: #100901;
+	color: #fff;
+	margin-left: -62px;
+}
+
+.my-container input {
+	border-radius: 2rem;
+	padding: 2px 20px;
+}
+
+.title_nav {
+	color: cornflowerblue !important;
+	padding-bottom: 4vh;
+	padding-top: 3vh;
+}
+
+*/

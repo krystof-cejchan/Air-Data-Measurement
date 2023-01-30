@@ -21,7 +21,7 @@ public class AirDataLeaderboard implements Serializable {
     private AirData airDataId;
     @Enumerated(EnumType.STRING)
     private LeaderboardType leaderboardType;
-    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(referencedColumnName = "id")
     private LocationData locationId;
     private Integer position;

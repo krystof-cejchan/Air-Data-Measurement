@@ -62,11 +62,6 @@ public class AirDataLeaderboardService {
      */
     @Contract(pure = true)
     public void updateLeaderboard() {
-       /* try {
-            Thread.sleep(700);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
         LeaderboardTable.saveChangedDataAndDeleteOldData(airDataLeaderboardRepository,
                 airDataLeaderboardRepository.findAll(), LeaderboardTable.getFreshDataForLeaderboard(airDataRepository));
 

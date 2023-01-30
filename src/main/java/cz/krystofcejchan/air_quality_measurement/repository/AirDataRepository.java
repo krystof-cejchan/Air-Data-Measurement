@@ -44,7 +44,7 @@ public interface AirDataRepository extends JpaRepository<AirData, Long> {
     /**
      * Find by location and received data date time before optional.
      *
-     * @param locationId    the location
+     * @param locationId  the location
      * @param endTimeLine the end time line
      * @return the optional
      */
@@ -91,7 +91,6 @@ public interface AirDataRepository extends JpaRepository<AirData, Long> {
      * @return the optional
      */
     Optional<List<AirData>> findTop3AirQualityByOrderByAirQualityDesc();
-
 
 
 }

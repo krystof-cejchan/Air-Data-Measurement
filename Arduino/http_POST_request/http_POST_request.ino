@@ -15,8 +15,8 @@ DHT_Unified dht(DHTPIN, DHTTYPE);
 
 
 #ifndef STASSID
-#define STASSID "x"
-#define STAPSK  "y"
+#define STASSID "STRNADOVA 51"
+#define STAPSK  "stofiadam51"
 #endif
 
 #define MQ135_PIN A0
@@ -90,6 +90,17 @@ void loop() {
       // configure traged server and url
       http.begin(client, SERVER_IP); //HTTP
       http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+      http.addHeader("Accept-Charset", "utf-8");
+      http.addHeader("Content-Length", /*String(json_post_data.length())*/"200");
+      http.addHeader("Host", "krystofcejchan.cz");
+      http.addHeader("User-Agent", "ESP8266HTTPClient"/*String("Arduino " + location_Id)*/);
+           http.addHeader("Accept", "*/*");
+
+      http.addHeader("Accept-Encoding", "identity;q=1,chunked;q=0.1,*;q=0");
+
+      http.addHeader("Connection", "keep-alive");
+      http.addHeader("Authorization", "password");
+
 
       Serial.print("[HTTP] POST...\n");
       // start connection and send HTTP header and body

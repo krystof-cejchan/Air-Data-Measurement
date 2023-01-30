@@ -1,0 +1,113 @@
+body {
+    color: #fff;
+    overflow-x: hidden;
+    height: 100%;
+    width: 100%;
+}
+
+.whole {
+    width: 90%;
+}
+
+.full-screen-bcg {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 0;
+    overflow: hidden;
+    min-width: 100%;
+    min-height: 100%;
+    background: rgb(129, 212, 250);
+    background: -moz-linear-gradient(0deg, rgba(129, 212, 250, 1) 0%, rgba(33, 150, 243, 1) 100%);
+    background: -webkit-linear-gradient(0deg, rgba(129, 212, 250, 1) 0%, rgba(33, 150, 243, 1) 100%);
+    background: linear-gradient(0deg, rgba(129, 212, 250, 1) 0%, rgba(33, 150, 243, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#81d4fa", endColorstr="#2196f3", GradientType=1);
+}
+
+.card1 {
+    background-color: transparent;
+    padding: 10px 20px 30px 50px;
+    width: 100%;
+    height: max-content;
+}
+
+.image {
+    width: 300px;
+    height: 300px;
+}
+
+.large-font {
+    font-size: 70px;
+    font-family: Arial;
+}
+
+.card2 {
+    background-color: rgba(85, 85, 85, 0.308);
+    width: 100%;
+    padding: 25px 30px 0px 25px;
+}
+
+.light-text {
+    color: #B0BEC5;
+}
+
+.suggestion:hover {
+    color: #fff;
+    cursor: pointer;
+}
+
+.line {
+    height: 1px;
+    background-color: #B0BEC5;
+}
+
+@media screen and (max-width: 500px) {
+    .card1 {
+        padding-left: 26px;
+    }
+}
+
+.day {
+    color: white;
+    text-align: center;
+
+    &:hover {
+        background-color: #41454765;
+    }
+}
+
+.days {
+    background-color: #b0bec583;
+    cursor: pointer;
+    margin-right: 2px;
+    margin-top: 2px;
+    padding: 0 !important;
+}
+
+.days:hover {
+    background-color: #8d999e77;
+}
+
+.timeSlider {
+    width: 100%;
+}
+
+.label-text {
+    color: rgb(214, 214, 214);
+}
+
+#date_display {
+    font-size: 0.93rem;
+    color: #e6e6e6;
+}
+
+#dayTemp_display {
+    font-size: 1rem;
+}
+
+#nightTemp_display {
+    font-size: 0.89rem;
+    color: #e6e6e6;
+}

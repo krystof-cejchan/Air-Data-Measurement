@@ -14,5 +14,4 @@ public interface AirDataLeaderboardRepository extends JpaRepository<AirDataLeade
     Optional<List<AirDataLeaderboard>> findByLocationIdAndLeaderboardType(LocationData locationId, LeaderboardType leaderboardType);
 
     Optional<List<AirDataLeaderboard>> findTop3ByLeaderboardType(LeaderboardType leaderboardType);
-
 }

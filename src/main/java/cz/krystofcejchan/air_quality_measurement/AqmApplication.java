@@ -2,6 +2,7 @@ package cz.krystofcejchan.air_quality_measurement;
 
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
 import cz.krystofcejchan.air_quality_measurement.domain.AirDataLeaderboard;
+import cz.krystofcejchan.air_quality_measurement.repository.AirDataAverageOfDayRepository;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataLeaderboardRepository;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataRepository;
 import cz.krystofcejchan.air_quality_measurement.repository.LocationDataRepository;
@@ -15,15 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import static java.lang.Thread.sleep;
 
@@ -35,7 +32,7 @@ public class AqmApplication implements CommandLineRunner {
     /**
      * a secret passed to the database
      */
-    public static String dbpsd = "";
+    public static String dbpsd = "", ardtkn = "";
 
     @Autowired
     private AirDataLeaderboardRepository airDataLeaderboardRepo;
@@ -43,16 +40,25 @@ public class AqmApplication implements CommandLineRunner {
     private AirDataRepository airDataRepo;
     @Autowired
     private LocationDataRepository locationDataRepository;
+    @Autowired
+    private AirDataAverageOfDayRepository avgRepository;
+    @Autowired
+    private AirDataRepository airDataRepository;
 
     /**
      * Main.
      *
      * @param args the args
      */
-    public static void main(String @NotNull [] args) {
+    public static void main(String @NotNull ... args) {
+        long startTime = System.currentTimeMillis();
         dbpsd = args[0];
+        ardtkn = args[1];
+
         SpringApplication.run(AqmApplication.class, args);
-        new ScheduledTaskRunnableManager().getRunnableList().forEach(ScheduledTaskRunnable::runScheduledTask);
+
+        Stream.iterate("*", i -> i + "*").limit(15).forEach(System.out::print);
+        System.out.println("\nFully ready after: " + (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - startTime)) + 's');
     }
 
 
@@ -72,29 +78,42 @@ public class AqmApplication implements CommandLineRunner {
 
         LeaderboardTable.saveChangedDataAndDeleteOldData(airDataLeaderboardRepo, existingAirData, map);
         new InsertLocationData().runScheduledTask(locationDataRepository);
+
+        new ScheduledTaskRunnableManager(avgRepository, airDataRepository, locationDataRepository)
+                .getRunnableList().forEach(ScheduledTaskRunnable::runScheduledTask);
     }
 
 
-    /**
-     * Cors filter
-     *
-     * @return the cors filter
-     */
-    @Bean
-    public CorsFilter corsFilter() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-        corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-Origin", "Content-Type",
-                "Accept", "Authorization", "Origin, Accept", "X-Requested-With",
-                "Access-Control-Request-Method", "Access-Control-Request-Headers"));
-        corsConfiguration.setExposedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization",
-                "Access-Control-Allow-Origin", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
-        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
-        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
-        return new CorsFilter(urlBasedCorsConfigurationSource);
-    }
+//    /**
+//     * Cors filter
+//     *
+//     * @return the cors filter
+//     */
+//    @Bean
+//    public CorsFilter corsFilter() {
+//        CorsConfiguration corsConfiguration = new CorsConfiguration();
+//        corsConfiguration.setAllowCredentials(true);
+//        corsConfiguration.setAllowedOrigins(List.of("https://krystofcejchan.cz/"/*, "http://localhost:4200", "http://uwu.clanweb.eu/","http://localhost:4200", "31.30.115.190"*/));
+//        corsConfiguration.setAllowedHeaders(Arrays.asList("*", "Origin", "Access-Control-Allow-Origin", "Content-Type",
+//                "Accept", "Authorization", "Origin, Accept", "X-Requested-With",
+//                "Access-Control-Request-Method", "Access-Control-Request-Headers"));
+//        corsConfiguration.setExposedHeaders(Arrays.asList("*","Origin", "Content-Type", "Accept", "Authorization",
+//                "Access-Control-Allow-Origin", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
+//        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT"));
+//        corsConfiguration.setMaxAge(Duration.of(1, ChronoUnit.MINUTES));
+//        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+//        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+//        return new CorsFilter(urlBasedCorsConfigurationSource);
+//    }
+    /*@Bean
+	public WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/greeting-javaconfig").allowedOrigins("http://localhost:8080");
+			}
+		};
+	}*/
 
 }
 

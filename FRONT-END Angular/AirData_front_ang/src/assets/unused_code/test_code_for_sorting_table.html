@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        /* Style the leaderboard table */
+        .leaderboard {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        /* Style the table cells */
+        .leaderboard td,
+        .leaderboard th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        /* Style the table headers */
+        .leaderboard th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* Style the even rows */
+        .leaderboard tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Style the hover effect for the table rows */
+        .leaderboard tr:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Create the leaderboard table -->
+    <table class="leaderboard">
+        <!-- Create the table headers -->
+        <tr>
+            <th onclick="sortTable(0)">Rank</th>
+            <th onclick="sortTable(1)">Username</th>
+            <th onclick="sortTable(2)">Score</th>
+        </tr>
+        <!-- Create the table rows -->
+        <tr>
+            <td>1</td>
+            <td>player1</td>
+            <td>1000</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>player2</td>
+            <td>900</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>player3</td>
+            <td>800</td>
+        </tr>
+    </table>
+
+    <script src="./sorting_table.js" defer></script>
+
+</body>
+
+</html>

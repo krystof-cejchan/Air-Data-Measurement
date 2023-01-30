@@ -1,0 +1,234 @@
+import { formatDate } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { PrePreparedLeaderboardData } from 'src/app/objects/LeaderboardDataForHtml';
+import { LeaderboardData } from "../../objects/Leaderboard";
+import { LeaderboardService } from "./leaderboard.service";
+
+export interface leaderboardType {
+  type: string;
+}
+
+@Component({
+  selector: 'app-leaderboard',
+  templateUrl: './leaderboard.component.html',
+  styleUrls: ['./leaderboard.component.scss']
+})
+
+export class LeaderboardComponent implements OnInit, IComponent {
+
+  public leaderboard_datas?: LeaderboardData[] = undefined;
+  public leaderboard_data_prepared: PrePreparedLeaderboardData[] = [];
+  public showLoading: boolean = true;
+  public mapTypeToLeaderboardData: Map<leaderboardType, LeaderboardData[]> = new Map();
+
+  constructor(private service: LeaderboardService, private router: Router, private route: ActivatedRoute) { }
+
+  getTitle(): string {
+    return "Žebříčky";
+  }
+
+  ngOnInit(): void {
+    this.service.getAllLeaderboardData().subscribe(async (response: LeaderboardData[]) => {
+
+      this.leaderboard_datas = response;
+      var counter = 0;
+      const msToWait = 400, msMaxToWait = 5000;
+      while (this.leaderboard_datas?.length === 0 && counter < (msMaxToWait / msToWait)) {
+        await new Promise(f => setTimeout(f, msToWait));
+        counter++;
+      }
+      this.showLoading = false;
+
+      this.leaderboard_datas!
+        .map(data => data.leaderboardType)
+        .filter((value: string, index: number, array: string[]) => array.indexOf(value) === index)
+        .sort((t1, t2) => t1.substring(t1.indexOf('_')).localeCompare(t2.substring(t2.indexOf('_'))))
+        .forEach(lType => {
+          this.mapTypeToLeaderboardData?.set(
+            { type: lType } as leaderboardType, this.leaderboard_datas!.filter(data => data.leaderboardType === lType).sort((a, b) => a.position - b.position))
+        });
+    },
+      () => {
+        this.showLoading = false;
+      });
+  }
+
+  /**
+   * 2022-11-08T13:18:55.01 to dd.MM.YYYY as string, not date
+   * @param longDate long date with day and time
+   * @returns short date as dd.MM.YYYY
+   */
+  public shortenDate(longDate: string): string {
+    return formatDate(longDate, 'dd.MM.YYYY', "en-US");
+  }
+
+  /**
+   * navigates a user to a new route showing detailed info about airdataInfo
+   * @param airdataInfo aid data consisting of id and hash code - these data are used to get a record from database matching the id and hash
+   */
+  public showDetails(airdataInfo: { id: number, hash: string }) {
+    this.router.navigate([`/data-detaily/${airdataInfo.id}/${airdataInfo.hash}`], { relativeTo: this.route });
+  }
+
+  getKeys(map: Map<leaderboardType, LeaderboardData[]>): leaderboardType[] {
+    return Array.from(map.keys());
+  }
+
+  getValues(key: leaderboardType): LeaderboardData[] {
+    const value = this.mapTypeToLeaderboardData.get(key);
+    return (value ? value : []);
+  }
+}
+
+
+
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{getTitle()}}</title>
+</head>
+
+<body>
+    <div class="container px-4 py-5">
+        <h2 class="pb-2 border-bottom"><span id="bordertext">{{getTitle()}}</span></h2>
+        <div *ngIf="showLoading" class="spinner-border" role="status">
+        </div>
+        <!--<div class="container px-4 py-5" id="custom-cards">-->
+     <!-- <mat-grid-list cols="2" rowHeight="2:1" *ngFor="let leaderboardMap_keys of getKeys(mapTypeToLeaderboardData)">
+            <mat-grid-tile *ngFor="let key of getKeys(mapTypeToLeaderboardData)">
+                <mat-list>
+                    <mat-list-item>
+                        <table class="table table-striped w-auto text-center m-2">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Lokace</th>
+                                    <th scope="col">Naměřená hodnota</th>
+                                    <th scope="col">Datum naměření</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let value of getValues(key)">
+                                    <th scope="row">{{value.position}}</th>
+                                    <td>{{value.airDataId.locationId.name_short}}</td>
+                                    <td [ngSwitch]=key.type>
+                                        <span *ngSwitchCase="'LOWEST_AIRQ'">{{value.airDataId.airQuality}}</span>
+                                        <span *ngSwitchCase="'LOWEST_HUM'">{{value.airDataId.humidity}}</span>
+                                        <span *ngSwitchCase="'LOWEST_TEMP'">{{value.airDataId.temperature}}</span>
+                                        <span *ngSwitchCase="'HIGHEST_AIRQ'">{{value.airDataId.airQuality}}</span>
+                                        <span *ngSwitchCase="'HIGHEST_HUM'">{{value.airDataId.humidity}}</span>
+                                        <span *ngSwitchCase="'HIGHEST_TEMP'">{{value.airDataId.temperature}}</span>
+                                        <span *ngSwitchDefault><i>n / a</i></span>
+                                    </td>
+                                    <td>{{shortenDate(value.airDataId.receivedDataDateTime)}}</td>
+                                    <td class="info"
+                                        (click)="showDetails({id:value.airDataId.id, hash:value.airDataId.rndHash})">
+                                        <svg height="24px" id="Capa_1"
+                                            style="enable-background:new 0 0 111.577 111.577;" version="1.1"
+                                            viewBox="0 0 111.577 111.577" width="24px" x="0px" xml:space="preserve"
+                                            xmlns="http://www.w3.org/2000/svg" y="0px">
+                                            <g>
+                                                <path
+                                                    d="M78.962,99.536l-1.559,6.373c-4.677,1.846-8.413,3.251-11.195,4.217c-2.785,0.969-6.021,1.451-9.708,1.451   c-5.662,0-10.066-1.387-13.207-4.142c-3.141-2.766-4.712-6.271-4.712-10.523c0-1.646,0.114-3.339,0.351-5.064   c0.239-1.727,0.619-3.672,1.139-5.846l5.845-20.688c0.52-1.981,0.962-3.858,1.316-5.633c0.359-1.764,0.532-3.387,0.532-4.848   c0-2.642-0.547-4.49-1.636-5.529c-1.089-1.036-3.167-1.562-6.252-1.562c-1.511,0-3.064,0.242-4.647,0.71   c-1.59,0.47-2.949,0.924-4.09,1.346l1.563-6.378c3.829-1.559,7.489-2.894,10.99-4.002c3.501-1.111,6.809-1.667,9.938-1.667   c5.623,0,9.962,1.359,13.009,4.077c3.047,2.72,4.57,6.246,4.57,10.591c0,0.899-0.1,2.483-0.315,4.747   c-0.21,2.269-0.601,4.348-1.171,6.239l-5.82,20.605c-0.477,1.655-0.906,3.547-1.279,5.676c-0.385,2.115-0.569,3.731-0.569,4.815   c0,2.736,0.61,4.604,1.833,5.597c1.232,0.993,3.354,1.487,6.368,1.487c1.415,0,3.025-0.251,4.814-0.744   C76.854,100.348,78.155,99.915,78.962,99.536z M80.438,13.03c0,3.59-1.353,6.656-4.072,9.177c-2.712,2.53-5.98,3.796-9.803,3.796   c-3.835,0-7.111-1.266-9.854-3.796c-2.738-2.522-4.11-5.587-4.11-9.177c0-3.583,1.372-6.654,4.11-9.207   C59.447,1.274,62.729,0,66.563,0c3.822,0,7.091,1.277,9.803,3.823C79.087,6.376,80.438,9.448,80.438,13.03z" />
+                                            </g>
+                                        </svg>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </mat-list-item>
+                </mat-list>
+            </mat-grid-tile>-->  
+
+            <!-- <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
+                    <div class="table-responsive">
+                        <div class="mt-3 d-flex align-items-center flex-column">-->
+            <!--    <mat-grid-tile colspan="1" rowspan="1" wrapText="true" matLine>{{i}}
+
+
+                <table class="table table-striped w-auto text-center m-2" >
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Lokace</th>
+                            <th scope="col">Naměřená hodnota</th>
+                            <th scope="col">Datum naměření</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of leaderboard_data.leaderboardData">
+                            <th scope="row">{{data.position}}</th>
+                            <td>{{data.airDataId.locationId.name_short}}</td>
+                            <td [ngSwitch]=leaderboard_data.type>
+                                <span *ngSwitchCase="'LOWEST_AIRQ'">{{data.airDataId.airQuality}}</span>
+                                <span *ngSwitchCase="'LOWEST_HUM'">{{data.airDataId.humidity}}</span>
+                                <span *ngSwitchCase="'LOWEST_TEMP'">{{data.airDataId.temperature}}</span>
+                                <span *ngSwitchCase="'HIGHEST_AIRQ'">{{data.airDataId.airQuality}}</span>
+                                <span *ngSwitchCase="'HIGHEST_HUM'">{{data.airDataId.humidity}}</span>
+                                <span *ngSwitchCase="'HIGHEST_TEMP'">{{data.airDataId.temperature}}</span>
+                                <span *ngSwitchDefault><i>n / a</i></span>
+                            </td>
+                            <td>{{shortenDate(data.airDataId.receivedDataDateTime)}}</td>
+                            <td class="info" (click)="showDetails({id:data.airDataId.id, hash:data.airDataId.rndHash})">
+                                <svg height="24px" id="Capa_1" style="enable-background:new 0 0 111.577 111.577;"
+                                    version="1.1" viewBox="0 0 111.577 111.577" width="24px" x="0px"
+                                    xml:space="preserve" xmlns="http://www.w3.org/2000/svg" y="0px">
+                                    <g>
+                                        <path
+                                            d="M78.962,99.536l-1.559,6.373c-4.677,1.846-8.413,3.251-11.195,4.217c-2.785,0.969-6.021,1.451-9.708,1.451   c-5.662,0-10.066-1.387-13.207-4.142c-3.141-2.766-4.712-6.271-4.712-10.523c0-1.646,0.114-3.339,0.351-5.064   c0.239-1.727,0.619-3.672,1.139-5.846l5.845-20.688c0.52-1.981,0.962-3.858,1.316-5.633c0.359-1.764,0.532-3.387,0.532-4.848   c0-2.642-0.547-4.49-1.636-5.529c-1.089-1.036-3.167-1.562-6.252-1.562c-1.511,0-3.064,0.242-4.647,0.71   c-1.59,0.47-2.949,0.924-4.09,1.346l1.563-6.378c3.829-1.559,7.489-2.894,10.99-4.002c3.501-1.111,6.809-1.667,9.938-1.667   c5.623,0,9.962,1.359,13.009,4.077c3.047,2.72,4.57,6.246,4.57,10.591c0,0.899-0.1,2.483-0.315,4.747   c-0.21,2.269-0.601,4.348-1.171,6.239l-5.82,20.605c-0.477,1.655-0.906,3.547-1.279,5.676c-0.385,2.115-0.569,3.731-0.569,4.815   c0,2.736,0.61,4.604,1.833,5.597c1.232,0.993,3.354,1.487,6.368,1.487c1.415,0,3.025-0.251,4.814-0.744   C76.854,100.348,78.155,99.915,78.962,99.536z M80.438,13.03c0,3.59-1.353,6.656-4.072,9.177c-2.712,2.53-5.98,3.796-9.803,3.796   c-3.835,0-7.111-1.266-9.854-3.796c-2.738-2.522-4.11-5.587-4.11-9.177c0-3.583,1.372-6.654,4.11-9.207   C59.447,1.274,62.729,0,66.563,0c3.822,0,7.091,1.277,9.803,3.823C79.087,6.376,80.438,9.448,80.438,13.03z" />
+                                    </g>
+                                </svg>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </mat-grid-tile>-->
+
+
+            <table class="table table-striped w-auto text-center m-2" *ngFor="let keys of getKeys(mapTypeToLeaderboardData)">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Lokace</th>
+                        <th scope="col">Naměřená hodnota</th>
+                        <th scope="col">Datum naměření</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of getValues(keys)">
+                        <th scope="row">{{data.position}}</th>
+                        <td>{{data.airDataId.locationId.name_short}}</td>
+                        <td [ngSwitch]=data.leaderboardType>
+                            <span *ngSwitchCase="'LOWEST_AIRQ'">{{data.airDataId.airQuality}}</span>
+                            <span *ngSwitchCase="'LOWEST_HUM'">{{data.airDataId.humidity}}</span>
+                            <span *ngSwitchCase="'LOWEST_TEMP'">{{data.airDataId.temperature}}</span>
+                            <span *ngSwitchCase="'HIGHEST_AIRQ'">{{data.airDataId.airQuality}}</span>
+                            <span *ngSwitchCase="'HIGHEST_HUM'">{{data.airDataId.humidity}}</span>
+                            <span *ngSwitchCase="'HIGHEST_TEMP'">{{data.airDataId.temperature}}</span>
+                            <span *ngSwitchDefault><i>n / a</i></span>
+                        </td>
+                        <td>{{shortenDate(data.airDataId.receivedDataDateTime)}}</td>
+                        <td class="info" (click)="showDetails({id:data.airDataId.id, hash:data.airDataId.rndHash})">
+                            <svg height="24px" id="Capa_1" style="enable-background:new 0 0 111.577 111.577;"
+                                version="1.1" viewBox="0 0 111.577 111.577" width="24px" x="0px"
+                                xml:space="preserve" xmlns="http://www.w3.org/2000/svg" y="0px">
+                                <g>
+                                    <path
+                                        d="M78.962,99.536l-1.559,6.373c-4.677,1.846-8.413,3.251-11.195,4.217c-2.785,0.969-6.021,1.451-9.708,1.451   c-5.662,0-10.066-1.387-13.207-4.142c-3.141-2.766-4.712-6.271-4.712-10.523c0-1.646,0.114-3.339,0.351-5.064   c0.239-1.727,0.619-3.672,1.139-5.846l5.845-20.688c0.52-1.981,0.962-3.858,1.316-5.633c0.359-1.764,0.532-3.387,0.532-4.848   c0-2.642-0.547-4.49-1.636-5.529c-1.089-1.036-3.167-1.562-6.252-1.562c-1.511,0-3.064,0.242-4.647,0.71   c-1.59,0.47-2.949,0.924-4.09,1.346l1.563-6.378c3.829-1.559,7.489-2.894,10.99-4.002c3.501-1.111,6.809-1.667,9.938-1.667   c5.623,0,9.962,1.359,13.009,4.077c3.047,2.72,4.57,6.246,4.57,10.591c0,0.899-0.1,2.483-0.315,4.747   c-0.21,2.269-0.601,4.348-1.171,6.239l-5.82,20.605c-0.477,1.655-0.906,3.547-1.279,5.676c-0.385,2.115-0.569,3.731-0.569,4.815   c0,2.736,0.61,4.604,1.833,5.597c1.232,0.993,3.354,1.487,6.368,1.487c1.415,0,3.025-0.251,4.814-0.744   C76.854,100.348,78.155,99.915,78.962,99.536z M80.438,13.03c0,3.59-1.353,6.656-4.072,9.177c-2.712,2.53-5.98,3.796-9.803,3.796   c-3.835,0-7.111-1.266-9.854-3.796c-2.738-2.522-4.11-5.587-4.11-9.177c0-3.583,1.372-6.654,4.11-9.207   C59.447,1.274,62.729,0,66.563,0c3.822,0,7.091,1.277,9.803,3.823C79.087,6.376,80.438,9.448,80.438,13.03z" />
+                                </g>
+                            </svg>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+    </div>
+
+</body>
+
+</html>

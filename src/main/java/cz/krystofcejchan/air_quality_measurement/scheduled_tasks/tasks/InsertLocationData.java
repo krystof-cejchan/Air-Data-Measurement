@@ -9,7 +9,6 @@ import java.util.List;
 
 public class InsertLocationData {
 
-
     public void runScheduledTask(LocationDataRepository locationDataRepository) {
         //  final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         Runnable insertNewDataToLocationTable = () -> {
@@ -19,14 +18,16 @@ public class InsertLocationData {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            locationDataList.forEach(it -> System.out.println(it.getName()));
+            //locationDataList.forEach(it -> System.out.println(it.getName()));
             List<LocationData> locationDataListToBeInserted = new ArrayList<>();
+            List<String> locationDataName = locationDataList.stream().map(LocationData::getName).toList();
             StaticLocationData.ALL_LOCATIONS_Pre.forEach(locationData -> {
-                if (locationDataList.stream().noneMatch(dbLocation -> dbLocation.getName().equals(locationData.getName()))) {
+                if (!locationDataName.contains(locationData.getName())) {
                     locationDataListToBeInserted.add(locationData);
                 }
             });
             locationDataRepository.saveAll(locationDataListToBeInserted);
+            // System.out.println(locationDataListToBeInserted.size() + "\slocations were inserted to the db.");
         };
         insertNewDataToLocationTable.run();
 

@@ -1,0 +1,187 @@
+$font-family_1: 'Monda', sans-serif;
+$background-color_1: rgba(0, 0, 0, .1);
+
+@import "https://fonts.googleapis.com/css2?family=Monda&display=swap";
+
+html {
+    font-family: $font-family_1 !important;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: $font-family_1 !important;
+}
+
+.bd-placeholder-img {
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+.b-example-divider {
+    height: 3rem;
+    background-color: $background-color_1;
+    border: solid rgba(0, 0, 0, .15);
+    border-width: 1px 0;
+    box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+}
+
+.b-example-vr {
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 100vh;
+}
+
+.bi {
+    vertical-align: -.125em;
+    fill: currentColor;
+}
+
+.highlight {
+    // works but border seems to be hidden or ignored by boostrap!
+    //  transform: scale(1.06);
+    animation: highlight_anim 0.5s 2;
+    //  border: 500px solid red !important;
+}
+
+@keyframes highlight_anim {
+    0% {
+        transform: scale(1.00);
+    }
+
+    25% {
+        transform: scale(1.01);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+
+    75% {
+        transform: scale(1.01);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.spinner-border {
+    width: 4rem;
+    height: 4rem;
+    color: #3caeff !important;
+    position: relative;
+    margin-left: 50%;
+}
+
+/*.nav-scroller {
+    position: relative;
+    z-index: 2;
+    height: 2.75rem;
+    overflow-y: hidden;
+
+    .nav {
+        display: flex;
+        flex-wrap: nowrap;
+        padding-bottom: 1rem;
+        overflow-x: auto;
+        text-align: center;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+*/
+.feature-icon {
+    width: 4rem;
+    height: 4rem;
+    border-radius: .75rem;
+}
+
+.icon-link {
+    >.bi {
+        fill: currentcolor;
+        transition: transform .25s ease-in-out;
+    }
+
+    &:hover {
+        >.bi {
+            transform: translate(.25rem);
+        }
+    }
+}
+
+.icon-square {
+    width: 3rem;
+    height: 3rem;
+    border-radius: .75rem;
+}
+
+.text-shadow-1 {
+    text-shadow: 0 .125rem .25rem rgba(0, 0, 0, .25);
+}
+
+.text-shadow-2 {
+    text-shadow: 0 .25rem .5rem rgba(0, 0, 0, .25);
+}
+
+.text-shadow-3 {
+    text-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .25);
+}
+
+.card {
+    border: 0 solid transparent !important;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    transition: transform .6s ease;
+
+    &:hover {
+        transform: scale(1.012);
+    }
+}
+
+.feature-icon-small {
+    width: 3rem;
+    height: 3rem;
+}
+
+span {
+    font-size: xx-large;
+    color: white !important;
+}
+
+.alldata {
+    font-family: $font-family_1;
+    text-align: center;
+}
+
+.display-6 {
+    font-family: $font-family_1 !important;
+}
+
+.pt-5 {
+    padding: 0rem !important;
+}
+
+.me-auto {
+    cursor: pointer;
+}
+
+@media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    .display-6 {
+        font-size: 2rem;
+    }
+}
+
+@media screen and (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}

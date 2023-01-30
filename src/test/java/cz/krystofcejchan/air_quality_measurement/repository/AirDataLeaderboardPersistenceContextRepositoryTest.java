@@ -4,7 +4,6 @@ import cz.krystofcejchan.air_quality_measurement.domain.AirData;
 import cz.krystofcejchan.air_quality_measurement.domain.AirDataLeaderboard;
 import cz.krystofcejchan.air_quality_measurement.domain.location.LocationData;
 import cz.krystofcejchan.air_quality_measurement.enums.LeaderboardType;
-import cz.krystofcejchan.air_quality_measurement.enums.Location;
 import jakarta.persistence.EntityExistsException;
 import org.junit.jupiter.api.Test;
 
