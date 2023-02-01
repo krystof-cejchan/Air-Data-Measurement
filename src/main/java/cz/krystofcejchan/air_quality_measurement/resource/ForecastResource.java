@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * {@link RestController} for forecast
+ *
+ * @param service {@link ForecastService}
+ */
 @RestController
 @RequestMapping("/airdata/forecast")
 @CrossOrigin(origins = {"https://krystofcejchan.cz", "http://localhost:4200"}, methods = {RequestMethod.GET},
@@ -19,6 +24,11 @@ public record ForecastResource(ForecastService service) {
     public ForecastResource {
     }
 
+    /**
+     * mapping to return all {@link cz.krystofcejchan.air_quality_measurement.forecast.ForecastMap} data
+     *
+     * @return response as {@link List} of {@link ForecastAtHour}
+     */
     @GetMapping("/all")
     @Contract(pure = true)
     public @NotNull ResponseEntity<List<ForecastAtHour>> getForecastForAllDaysAndTimes() {

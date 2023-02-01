@@ -11,12 +11,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 import static cz.krystofcejchan.air_quality_measurement.AqmApplication.ardtkn;
 
@@ -25,7 +27,8 @@ import static cz.krystofcejchan.air_quality_measurement.AqmApplication.ardtkn;
  */
 @RestController
 @RequestMapping("/airdata")
-@CrossOrigin(origins = {"https://krystofcejchan.cz", "http://localhost:4200"}, methods = {RequestMethod.GET, RequestMethod.POST},
+@CrossOrigin(origins = {"https://krystofcejchan.cz", "http://localhost:4200"},
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT},
         maxAge = 60, allowedHeaders = "*", exposedHeaders = "*")
 public record AirDataResource(AirDataService airDataService) {
 
@@ -52,7 +55,7 @@ public record AirDataResource(AirDataService airDataService) {
     @PostMapping("/add")
     @CrossOrigin(origins = {"*"}, methods = {RequestMethod.POST},
             maxAge = 60, allowedHeaders = "*", exposedHeaders = "*")
-    public @NotNull ResponseEntity<AirData> addAirData(@RequestBody(required = true) AirData airData,
+    public @NotNull ResponseEntity<AirData> addAirData(@RequestBody() AirData airData,
                                                        @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
                                                        @RequestHeader(HttpHeaders.USER_AGENT) String userAgent) {
         if (airData == null || userAgent.isEmpty() || token.isEmpty())
@@ -66,8 +69,7 @@ public record AirDataResource(AirDataService airDataService) {
         BooleanValidation<String, String[]> token_params2_validation = (str1, strArr) -> str1.equals(strArr[1]);
         BooleanValidation<String, String> user_agent_validation = String::contains;
 
-        validations.add(user_agent_validation.validPassed(Arrays.toString(userAgent.getBytes(StandardCharsets.UTF_8)),
-                (Arrays.toString("ESP8266HTTPClient".getBytes(StandardCharsets.UTF_8)))));
+        validations.add(user_agent_validation.validPassed(userAgent, "ESP8266HTTPClient"));
         validations.add(token_params1_validation.validPassed(airData, tokenParams));
         validations.add(token_params2_validation.validPassed(ardtkn, tokenParams));
 
@@ -90,9 +92,9 @@ public record AirDataResource(AirDataService airDataService) {
      */
     @Contract("_ -> new")
     @PutMapping("/update_reportN")
-    public @NotNull ResponseEntity<AirData> increaseReportNumberByOne(@RequestBody @NotNull Long id) {
+    public @NotNull ResponseEntity<AirData> increaseReportNumberByOne(@RequestHeader @NotNull Long id) {
         var reportingAirData = airDataService.updateNumberReportedById(id);
-        return new ResponseEntity<>(reportingAirData, reportingAirData == null ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
+        return new ResponseEntity<>(reportingAirData, reportingAirData == null ? HttpStatus.CONFLICT : HttpStatus.OK);
     }
 
     /**
@@ -106,6 +108,10 @@ public record AirDataResource(AirDataService airDataService) {
         return airDataService.getLatestAirData(locationId);
     }
 
+    /**
+     *
+     * @return average temperature from the latest data
+     */
     @GetMapping("/average_temperature")
     public @NotNull ResponseEntity<? extends Number> getAverageTemperatureFromLatestData() {
         return airDataService.getCurrentAverageTemperature();

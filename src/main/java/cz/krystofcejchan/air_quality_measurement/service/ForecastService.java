@@ -10,8 +10,6 @@ import java.util.List;
 
 @Service
 public class ForecastService {
-    final private String LOCATION = "Olomouc";
-
     @Autowired
     @Contract(pure = true)
     public ForecastService() {

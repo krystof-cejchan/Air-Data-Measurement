@@ -1,20 +1,26 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, OnDestroy } from "@angular/core";
 import { ActivatedRoute } from '@angular/router';
 import { AirDataDetailsService } from './air-data-details.service';
 import { AirData } from "../airdata";
 import { formatDate } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
 import { LocationData } from '../objects/LocationData';
-import { openSnackBar } from '../errors/custom in-page errors/snack-bar/custom-error-snackbar';
+import { openSnackBarCannotReport } from '../errors/custom in-page errors/snack-bar/cannot_report_airdata/custom-error-snackbar';
+import { openSnackBar } from '../errors/custom in-page errors/snack-bar/server_error/custom-error-snackbar';
+
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { HttpErrorResponse } from "@angular/common/http";
+import { SubSink } from "subsink";
+import { openCustomSnackBar } from "../errors/custom in-page errors/snack-bar/fullycustomizable_snackbar/custom-error-snackbar";
+import { popUpSnackBar } from "../utilities/utils";
 
 @Component({
   selector: 'app-air-data-details',
   templateUrl: './air-data-details.component.html',
   styleUrls: ['./air-data-details.component.scss']
 })
-export class AirDataDetailsComponent implements OnInit {
-
+export class AirDataDetailsComponent implements OnInit, OnDestroy {
+  private subs = new SubSink()
   public airdatas: AirData[] = [];
 
   public isDisabled = '';
@@ -27,10 +33,10 @@ export class AirDataDetailsComponent implements OnInit {
   constructor(private cookieService: CookieService, private route: ActivatedRoute,
     private service: AirDataDetailsService, private snackBar: MatSnackBar) { }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
     const ID_FROM_PARAMS: number = this.route.snapshot.params['id'];
-    this.service.getAirDataFromIdAndHash(ID_FROM_PARAMS, this.route.snapshot.params['hash']).subscribe(
-      (response: AirData) => {
+    this.subs.add(this.service.getAirDataFromIdAndHash(ID_FROM_PARAMS, this.route.snapshot.params['hash']).subscribe({
+      next: (response: AirData) => {
         response.receivedDataDateTime = this.formatDate(new Date(response.receivedDataDateTime))
         this.reportedNumber = response.reportedN;
         this.airdatas.push(response);
@@ -43,9 +49,8 @@ export class AirDataDetailsComponent implements OnInit {
           this.isDisabled = 'disabled';
           this.validity = "<b>Tyto data byly vyhodnoceny jako nesprávné!</b>";
         }
-
       },
-      () => {
+      error: () => {
         const errorAirData = {
           id: -1,
           rndHash: "n / a",
@@ -59,17 +64,15 @@ export class AirDataDetailsComponent implements OnInit {
         this.airdatas.push(errorAirData);
         this.validity = "<b>Tento záznam neexistuje!</b>";
         openSnackBar(this.snackBar)
-
       }
-    );
-    var counter = 0;
-    //400ms to wait | max wait for 5s
-    const msToWait = 400, msMaxToWait = 5000;
-    while (this.airdatas.length === 0 && counter < msMaxToWait / msToWait) {
-      await new Promise(f => setTimeout(f, msToWait!));
-      counter++;
     }
+    ));
   }
+  
+  ngOnDestroy(): void {
+    this.subs.unsubscribe()
+  }
+
 
 
   /**
@@ -81,30 +84,32 @@ export class AirDataDetailsComponent implements OnInit {
   }
 
   public reportAirData(id: number) {
-    if (this.existsCookie(id.toString()) === false) {
-      this.service.reportAirData(id).subscribe(
-        (/*success*/) => {
+    if (!this.existsCookie(id.toString())) {
+      this.subs.add(this.service.reportAirData(id).subscribe({
+        next: () => {
           this.isDisabled = 'disabled'
           this.setCookie(id.toString());
-          this.userReported = " Tvoje nahlášení jsme již obdrželi!";
+          popUpSnackBar(this.snackBar, "Nahlášení proběhlo úspěšně", 5, true)
           ++this.reportedNumber;
-        }
-        ,
-        (/*failure*/) => {
+        },
+        error: (e: HttpErrorResponse) => {
           this.isDisabled = ''
+          if (e.status === 400)
+            openSnackBarCannotReport(this.snackBar)
+          else
+            openSnackBar(this.snackBar)
         }
-      );
+      })
+      )
     }
     else {
-      alert('Tvoje nahlášení jsme již obdrželi!')
+      popUpSnackBar(this.snackBar, "Nelze nahlásit stejný záznam dvakrát!", 5, false)
     }
-  }
-
+  };
 
   setCookie(cookieName: string) {
     this.cookieService.set(cookieName, 'true');
   }
-
   getCookie(cookieName: string): string {
     return this.cookieService.get(cookieName);
   }
@@ -114,7 +119,6 @@ export class AirDataDetailsComponent implements OnInit {
   deleteCookie(cookieName: string) {
     this.cookieService.delete(cookieName);
   }
-
   deleteAll() {
     this.cookieService.deleteAll();
   }

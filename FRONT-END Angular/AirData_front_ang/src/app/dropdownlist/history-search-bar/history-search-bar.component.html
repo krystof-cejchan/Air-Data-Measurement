@@ -16,7 +16,7 @@
 
 <body>
   <div class="container px-0 py-5">
-    <div class="container px-0 py-5">
+    <div class="container px-2 px-md-0 py-5">
       <h2 class="pb-2 border-bottom"><span id="bordertext">{{getTitle()}}</span></h2>
       <div class="row">
         <div class="col-lg-3 mx-auto">
@@ -76,9 +76,9 @@
         <button (click)="showData()" class="btn btn-outline-primary btn-lg">Potvrdit</button>
       </div>
       <div class="col-lg-6 mx-auto">
-        <div [innerHtml]="choosenDate.start +' ↹ '+choosenDate.end" class="one"></div>
+        <div [innerHtml]="choosenDate.start +' ➟ '+choosenDate.end" class="one"></div>
       </div>
-      <table matSort (matSortChange)="sortData($event)" id="tableDivCol">
+      <table matSort (matSortChange)="sortData($event)" id="tableDivCol" class="d-table mx-auto">
         <tr>
           <th mat-sort-header="no">#</th>
           <th mat-sort-header="time">Datum a čas</th>
@@ -97,11 +97,11 @@
           <td>{{tblData.airQuality}}</td>
         </tr>
       </table>
-      <div *ngIf="showIfTableEmpty()" class="err">
-        <div class="errMsg">Pro toto období neexistují žádná data</div>
-      </div>
-      <div *ngIf="showLoading" class="spinner-border" role="status">
-      </div>
+    </div>
+    <div *ngIf="showIfTableEmpty()" class="err">
+      <div class="errMsg">Pro toto období neexistují žádná data</div>
+    </div>
+    <div *ngIf="showLoading" class="spinner-border" role="status">
     </div>
   </div>
 </body>

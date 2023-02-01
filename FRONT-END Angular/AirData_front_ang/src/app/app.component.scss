@@ -24,10 +24,6 @@ $desktop-width: 1024px;
 	}
 }
 
-router-outlet {
-	background-color: aqua !important;
-}
-
 html,
 body {
 	font-family: 'Monda', sans-serif;
@@ -36,36 +32,10 @@ body {
 	min-width: 0;
 }
 
-/*
-#overlay {
-	position: relative;
-	width: 100%;
-
-	&::after {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		z-index: 1;
-		content: '';
-		background: rgb(0, 0, 0);
-		background: -moz-radial-gradient(circle, rgba(0, 0, 0, 0.437412465) 0%, rgba(0, 0, 0, 0.6082808123) 100%);
-		background: -webkit-radial-gradient(circle, rgba(0, 0, 0, 0.437412465) 0%, rgba(0, 0, 0, 0.6082808123) 100%);
-		background: radial-gradient(circle, rgba(0, 0, 0, 0.437412465) 0%, rgba(0, 0, 0, 0.6082808123) 100%);
-		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000000", endColorstr="#000000", GradientType=1);
-	}
-}*/
-
 #marginFromNav {
 	padding-top: 50px;
 }
 
-/*
-nav.navbar {
-	//background-color: #3caeff !important;
-	background-color: transparent !important;
-}*/
 #navbarNavDropdown {
 	background-color: rgba(99, 99, 99, 0.459);
 	border-bottom: 1px solid rgba(233, 233, 233, 0.555);
@@ -74,8 +44,6 @@ nav.navbar {
 		background-color: rgba(0, 0, 0, 0.459);
 	}
 }
-
-
 
 .navbar-toggler-icon {
 	&.hamburger_white {
@@ -101,7 +69,6 @@ nav.navbar {
 		border-radius: 10px;
 	}
 }
-
 
 .dropdown-item {
 	color: rgb(252, 252, 252) !important;

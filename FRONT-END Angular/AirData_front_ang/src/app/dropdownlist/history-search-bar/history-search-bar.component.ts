@@ -1,6 +1,6 @@
 import { formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Directive, Inject, Injectable, Input, OnInit } from '@angular/core';
+import { Component, Directive, Inject, Injectable, Input, OnInit, OnDestroy } from "@angular/core";
 import { FormControl, FormGroup } from '@angular/forms';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
@@ -13,8 +13,9 @@ import { AirDataAverage } from 'src/app/airdata_average';
 import { HistorySearchBarService } from './history-search--bar.service';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatDateRangeSelectionStrategy, DateRange, MAT_DATE_RANGE_SELECTION_STRATEGY } from '@angular/material/datepicker';
-import { openSnackBar } from 'src/app/errors/custom in-page errors/snack-bar/custom-error-snackbar';
+import { openSnackBar } from 'src/app/errors/custom in-page errors/snack-bar/server_error/custom-error-snackbar';
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { SubSink } from "subsink";
 
 
 const moment = _rollupMoment || _moment;
@@ -120,8 +121,8 @@ export class MaxRangeDirective {
   ]
 })
 
-export class HistorySearchBarComponent implements OnInit, IComponent {
-  // private elementData: PeriodicElement[] = [];
+export class HistorySearchBarComponent implements OnInit, IComponent, OnDestroy {
+  private subs = new SubSink()
   displayedColumns: string[] = ['no', 'time', 'place', 'temperature', 'humidity', 'airQuality'];
   sortedData: PeriodicElement[] = [];
   sortedDataCopy: PeriodicElement[] = [];
@@ -155,6 +156,9 @@ export class HistorySearchBarComponent implements OnInit, IComponent {
   constructor(private route: ActivatedRoute, private router: Router, private service: HistorySearchBarService, private snackBar: MatSnackBar) {
     this.minDate = new Date(2023, 0, 1);
     this.maxDate = new Date();//new Date(date.getFullYear().toPrecision(1), date.getMonth(), date.getDay() - 1);
+  }
+  ngOnDestroy(): void {
+    this.subs.unsubscribe()
   }
 
   range = new FormGroup({
@@ -260,14 +264,13 @@ export class HistorySearchBarComponent implements OnInit, IComponent {
   //getting data from back-end
   public async getAirDataAvgForDate(date: string): Promise<void> {
     this.avgDatas = [];
-    this.service.getAverageData(date!).subscribe(
+    this.subs.add(this.service.getAverageData(date!).subscribe(
       (response: AirDataAverage) => {
         if (this.isNull(response) === false) {
           this.avgDatas.push(response);
-
         }
       }
-    );
+    ));
   }
 
   private isNull(airdata_average: AirDataAverage): boolean {
@@ -277,9 +280,9 @@ export class HistorySearchBarComponent implements OnInit, IComponent {
   public async getAirDataForDateRange(startDate: Date, endDate: Date): Promise<void> {
     this.sortedData = [];
     let airDataForDay: AirData[] = [];
-    this.service.getAllDataForDayRange(formatDate(startDate, "YYYY-MM-dd", "en-US").toString()!,
-      formatDate(endDate, "YYYY-MM-dd", "en-US").toString()!).subscribe(
-        async (response: AirData[]) => {
+    this.subs.add(this.service.getAllDataForDayRange(formatDate(startDate, "YYYY-MM-dd", "en-US").toString()!,
+      formatDate(endDate, "YYYY-MM-dd", "en-US").toString()!).subscribe({
+        next: async (response: AirData[]) => {
 
           let formattedAirDatas: AirData[] = response;
           try {
@@ -312,7 +315,6 @@ export class HistorySearchBarComponent implements OnInit, IComponent {
 
             this.sortedDataCopy = this.sortedData;
             this.tableShown = true;
-            this.showLoading = false;
           } catch (error) {
             response.forEach(data => {
               this.sortedData.push({
@@ -324,17 +326,16 @@ export class HistorySearchBarComponent implements OnInit, IComponent {
                 airQuality: data.airQuality
               });
             })
-            this.showLoading = false;
           }
         },
-        () => {
+        error: () => {
           this.sortedData = [], this.activeLocations = [], this.allLocations = [];
           this.tableShown = false;
-          this.showLoading = false;
           openSnackBar(this.snackBar)
-
-        }
-      );
+          this.showLoading = false
+        },
+        complete: () => this.showLoading = false
+      }));
   }
 
   showIfTableEmpty(): boolean {

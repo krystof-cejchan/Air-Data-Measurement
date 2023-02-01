@@ -26,7 +26,7 @@
             "allowedCommonJsDependencies": [
               "moment",
               "apexcharts"
-           ],
+            ],
             "assets": [
               "src/assets/ico/favicon.ico",
               "src/.htaccess",
@@ -34,11 +34,13 @@
             ],
             "styles": [
               "src/custom-theme.scss",
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/cookieconsent/build/cookieconsent.min.css"
             ],
             "scripts": [
               "src/assets/js/jquery.min.js",
-              "src/assets/js/main-page-main.js"
+              "src/assets/js/nav-bar-closeable.js",
+              "node_modules/cookieconsent/build/cookieconsent.min.js"
             ]
           },
           "configurations": {
@@ -109,7 +111,7 @@
             ],
             "scripts": [
               "src/assets/js/jquery.min.js",
-              "src/assets/js/main-page-main.js"
+              "src/assets/js/nav-bar-closeable.js"
             ]
           }
         }

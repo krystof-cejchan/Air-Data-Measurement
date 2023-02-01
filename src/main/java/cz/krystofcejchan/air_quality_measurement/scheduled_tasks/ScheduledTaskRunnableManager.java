@@ -13,7 +13,7 @@ import java.util.List;
  * The type Scheduled task runnable manager.
  */
 public class ScheduledTaskRunnableManager {
-    private final List<ScheduledTaskRunnable> runnables = new ArrayList<>();
+    private final List<ScheduledTaskRunnable> runnableList = new ArrayList<>();
 
 
     /**
@@ -30,8 +30,8 @@ public class ScheduledTaskRunnableManager {
     }
 
     private void addToList(ScheduledTaskRunnable taskRunnable) {
-        if (runnables.stream().noneMatch(task -> task.equals(taskRunnable)))
-            runnables.add(taskRunnable);
+        if (runnableList.stream().noneMatch(task -> task.equals(taskRunnable)))
+            runnableList.add(taskRunnable);
     }
 
     /**
@@ -40,6 +40,6 @@ public class ScheduledTaskRunnableManager {
      * @return the runnable list
      */
     public List<ScheduledTaskRunnable> getRunnableList() {
-        return runnables;
+        return runnableList;
     }
 }

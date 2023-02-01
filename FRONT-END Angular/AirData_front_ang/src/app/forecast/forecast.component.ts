@@ -1,13 +1,16 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, OnInit, Output, OnDestroy } from "@angular/core";
 import { ForecastData } from "./forecastobject";
 import { ForecastService } from "./forecast.service";
 import moment from "moment";
 import { round, uniqByFilter } from "../utilities/utils";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, EventType, NavigationEnd, Router } from "@angular/router";
 import { MatSliderDragEvent } from "@angular/material/slider";
 import { data } from "jquery";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { openSnackBar } from "../errors/custom in-page errors/snack-bar/custom-error-snackbar";
+import { openSnackBar } from "../errors/custom in-page errors/snack-bar/server_error/custom-error-snackbar";
+import { AppComponent } from "../app.component";
+import { filter } from "rxjs";
+import { SubSink } from "subsink";
 
 
 interface sliderParams {
@@ -25,13 +28,20 @@ interface sliderParams {
   templateUrl: './forecast.component.html',
   styleUrls: ['./forecast.component.scss']
 })
-export class ForecastComponent implements OnInit, IComponent {
+export class ForecastComponent implements OnInit, IComponent, OnDestroy {
 
-  //private timesWithPreffix: number[] = [3, 6, 9, 12, 15, 18, 21, 24]
+  private subs = new SubSink()
   colorBasedOnWeather: string = "transparent";
   times: string[] = ["AM_3", "AM_6", "AM_9", "AM_12", "PM_3", "PM_6", "PM_9", "PM_12"];
   weatherforecastDays: string[] = ['TODAY', 'TOMORROW', 'AFTER_TOMORROW'];
-  availableDates: string[] = [moment().add(0, 'days').format('D.M'), moment().add(1, 'days').format('D.M'), moment().add(2, 'days').format('D.M')]
+  weatherforecastDays_cs: string[] = ['Dnes', 'Zítra', 'Pozítří'];
+  private momentFormat: string = 'D_M';
+  filteredForecast: ForecastData[] = [];
+
+  availableDates: string[] = [moment().add(0, 'days').format(this.momentFormat),
+  moment().add(1, 'days').format(this.momentFormat),
+  moment().add(2, 'days').format(this.momentFormat)];
+
   days: string[] = [];
   forcastData: ForecastData[] = [];
   formattedTime: string = moment().format('D.M.y h:m:s');
@@ -55,6 +65,9 @@ export class ForecastComponent implements OnInit, IComponent {
   constructor(private service: ForecastService, private route: ActivatedRoute, private router: Router,
     private snackBar: MatSnackBar) {
   }
+  ngOnDestroy(): void {
+    this.subs.unsubscribe()
+  }
 
   getTitle(): string {
     return "Předpověď počasí";
@@ -65,7 +78,7 @@ export class ForecastComponent implements OnInit, IComponent {
     this.time_param = this.route.snapshot.params['time'];
     //console.log(this.day_param + "\t" + this.time_param);
 
-    const indexofDate = this.availableDates.indexOf(this.route.snapshot.params['day']) | -1;
+    const indexofDate = this.availableDates.indexOf(this.route.snapshot.params['day']);
 
     const isTimeOK = (this.route.snapshot.params['time'] != undefined && this.times.includes(this.time_param))
     const isDateOK = (this.route.snapshot.params['day'] != undefined && indexofDate >= 0)
@@ -82,8 +95,9 @@ export class ForecastComponent implements OnInit, IComponent {
 
     this.slider_params.value = this.getClosestNumberTime();
     this.day_param_formatted = indexofDate === 0 ? 'TODAY' : (indexofDate === 1 ? 'TOMORROW' : 'AFTER_TOMORROW')
-    this.service.getAllForecastData().subscribe(
-      async (response: ForecastData[]) => {
+
+    this.subs.add(this.service.getAllForecastData().subscribe({
+      next: async (response) => {
         this.forcastData = response;
 
         const msToWait = 400, msMaxToWait = 5000;
@@ -94,12 +108,18 @@ export class ForecastComponent implements OnInit, IComponent {
         }
 
         this.times = uniqByFilter<string>(this.forcastData.map(it => it.time));
-        //  this.weatherforecastDays = uniqByFilter<string>(this.forcastData.map(it => it.day));
-
-      }, () => {
-        openSnackBar(this.snackBar)
+        this.updateFilteredData();
+      },
+      error: () => openSnackBar(this.snackBar),
+      complete: () => {
+        this.subs.add(this.router.events
+          .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+          .subscribe(() => {
+            this.updateFilteredData();
+          }))
       }
-    );
+    }))
+
   }
 
   private getClosestTime(hour: number = this.currentHour): string {
@@ -130,10 +150,16 @@ export class ForecastComponent implements OnInit, IComponent {
     return this.forcastData.filter(it => it.day === day)
   }
 
-  getForecastDataFromDayAndTime() {
+  updateFilteredData(): void {
     const indexofDate = this.availableDates.indexOf(this.route.snapshot.params['day']);
     this.day_param_formatted = indexofDate === 0 ? 'TODAY' : (indexofDate === 1 ? 'TOMORROW' : 'AFTER_TOMORROW')
-    return this.forcastData.filter(data => data.time == this.route.snapshot.params['time'] && data.day == this.day_param_formatted)
+    const filteredData = this.forcastData.filter(data => data.time == this.route.snapshot.params['time'] && data.day == this.day_param_formatted);
+    this.filteredForecast = filteredData
+    //return filteredData;
+  }
+
+  getFilteredForecast(): ForecastData[] {
+    return this.filteredForecast
   }
 
   setTime(time: string): void {
@@ -213,54 +239,54 @@ export class ForecastComponent implements OnInit, IComponent {
 
   /**
    * WeatherCode	Condition	DayIcon	NightIcon
-395	Moderate or heavy snow in area with thunder	wsymbol_0012_heavy_snow_showers	wsymbol_0028_heavy_snow_showers_night
-392	Patchy light snow in area with thunder	wsymbol_0016_thundery_showers	wsymbol_0032_thundery_showers_night
-389	Moderate or heavy rain in area with thunder	wsymbol_0024_thunderstorms	wsymbol_0040_thunderstorms_night
-386	Patchy light rain in area with thunder	wsymbol_0016_thundery_showers	wsymbol_0032_thundery_showers_night
-377	Moderate or heavy showers of ice pellets	wsymbol_0021_cloudy_with_sleet	wsymbol_0037_cloudy_with_sleet_night
-374	Light showers of ice pellets	wsymbol_0013_sleet_showers	wsymbol_0029_sleet_showers_night
-371	Moderate or heavy snow showers	wsymbol_0012_heavy_snow_showers	wsymbol_0028_heavy_snow_showers_night
-368	Light snow showers	wsymbol_0011_light_snow_showers	wsymbol_0027_light_snow_showers_night
-365	Moderate or heavy sleet showers	wsymbol_0013_sleet_showers	wsymbol_0029_sleet_showers_night
-362	Light sleet showers	wsymbol_0013_sleet_showers	wsymbol_0029_sleet_showers_night
-359	Torrential rain shower	wsymbol_0018_cloudy_with_heavy_rain	wsymbol_0034_cloudy_with_heavy_rain_night
-356	Moderate or heavy rain shower	wsymbol_0010_heavy_rain_showers	wsymbol_0026_heavy_rain_showers_night
-353	Light rain shower	wsymbol_0009_light_rain_showers	wsymbol_0025_light_rain_showers_night
-350	Ice pellets	wsymbol_0021_cloudy_with_sleet	wsymbol_0037_cloudy_with_sleet_night
-338	Heavy snow	wsymbol_0020_cloudy_with_heavy_snow	wsymbol_0036_cloudy_with_heavy_snow_night
-335	Patchy heavy snow	wsymbol_0012_heavy_snow_showers	wsymbol_0028_heavy_snow_showers_night
-332	Moderate snow	wsymbol_0020_cloudy_with_heavy_snow	wsymbol_0036_cloudy_with_heavy_snow_night
-329	Patchy moderate snow	wsymbol_0020_cloudy_with_heavy_snow	wsymbol_0036_cloudy_with_heavy_snow_night
-326	Light snow	wsymbol_0011_light_snow_showers	wsymbol_0027_light_snow_showers_night
-323	Patchy light snow	wsymbol_0011_light_snow_showers	wsymbol_0027_light_snow_showers_night
-320	Moderate or heavy sleet	wsymbol_0019_cloudy_with_light_snow	wsymbol_0035_cloudy_with_light_snow_night
-317	Light sleet	wsymbol_0021_cloudy_with_sleet	wsymbol_0037_cloudy_with_sleet_night
-314	Moderate or Heavy freezing rain	wsymbol_0021_cloudy_with_sleet	wsymbol_0037_cloudy_with_sleet_night
-311	Light freezing rain	wsymbol_0021_cloudy_with_sleet	wsymbol_0037_cloudy_with_sleet_night
-308	Heavy rain	wsymbol_0018_cloudy_with_heavy_rain	wsymbol_0034_cloudy_with_heavy_rain_night
-305	Heavy rain at times	wsymbol_0010_heavy_rain_showers	wsymbol_0026_heavy_rain_showers_night
-302	Moderate rain	wsymbol_0018_cloudy_with_heavy_rain	wsymbol_0034_cloudy_with_heavy_rain_night
-299	Moderate rain at times	wsymbol_0010_heavy_rain_showers	wsymbol_0026_heavy_rain_showers_night
-296	Light rain	wsymbol_0017_cloudy_with_light_rain	wsymbol_0025_light_rain_showers_night
-293	Patchy light rain	wsymbol_0017_cloudy_with_light_rain	wsymbol_0033_cloudy_with_light_rain_night
-284	Heavy freezing drizzle	wsymbol_0021_cloudy_with_sleet	wsymbol_0037_cloudy_with_sleet_night
-281	Freezing drizzle	wsymbol_0021_cloudy_with_sleet	wsymbol_0037_cloudy_with_sleet_night
-266	Light drizzle	wsymbol_0017_cloudy_with_light_rain	wsymbol_0033_cloudy_with_light_rain_night
-263	Patchy light drizzle	wsymbol_0009_light_rain_showers	wsymbol_0025_light_rain_showers_night
-260	Freezing fog	wsymbol_0007_fog	wsymbol_0007_fog
-248	Fog	wsymbol_0007_fog	wsymbol_0007_fog
-230	Blizzard	wsymbol_0020_cloudy_with_heavy_snow	wsymbol_0036_cloudy_with_heavy_snow_night
-227	Blowing snow	wsymbol_0019_cloudy_with_light_snow	wsymbol_0035_cloudy_with_light_snow_night
-200	Thundery outbreaks in nearby	wsymbol_0016_thundery_showers	wsymbol_0032_thundery_showers_night
-185	Patchy freezing drizzle nearby	wsymbol_0021_cloudy_with_sleet	wsymbol_0037_cloudy_with_sleet_night
-182	Patchy sleet nearby	wsymbol_0021_cloudy_with_sleet	wsymbol_0037_cloudy_with_sleet_night
-179	Patchy snow nearby	wsymbol_0013_sleet_showers	wsymbol_0029_sleet_showers_night
-176	Patchy rain nearby	wsymbol_0009_light_rain_showers	wsymbol_0025_light_rain_showers_night
-143	Mist	wsymbol_0006_mist	wsymbol_0006_mist
-122	Overcast	wsymbol_0004_black_low_cloud	wsymbol_0004_black_low_cloud
-119	Cloudy	wsymbol_0003_white_cloud	wsymbol_0004_black_low_cloud
-116	Partly Cloudy	wsymbol_0002_sunny_intervals	wsymbol_0008_clear_sky_night
-113	Clear/Sunny	wsymbol_0001_sunny	wsymbol_0008_clear_sky_night
+395	Moderate or heavy snow in area with thunder
+392	Patchy light snow in area with thunder	
+389	Moderate or heavy rain in area with thunder
+386	Patchy light rain in area with thunder	
+377	Moderate or heavy showers of ice pellets	
+374	Light showers of ice pellets	
+371	Moderate or heavy snow showers
+368	Light snow showers
+365	Moderate or heavy sleet showers
+362	Light sleet showers	
+359	Torrential rain shower	
+356	Moderate or heavy rain shower
+353	Light rain shower	
+350	Ice pellets	
+338	Heavy snow	
+335	Patchy heavy snow	
+332	Moderate snow
+329	Patchy moderate snow	
+326	Light snow
+323	Patchy light snow
+320	Moderate or heavy sleet	
+317	Light sleet
+314	Moderate or Heavy freezing rain
+311	Light freezing rain
+308	Heavy rain
+305	Heavy rain at times
+302	Moderate rain
+299	Moderate rain at times
+296	Light rain	
+293	Patchy light rain
+284	Heavy freezing drizzle
+281	Freezing drizzle
+266	Light drizzle
+263	Patchy light drizzle
+260	Freezing fog
+248	Fog
+230	Blizzard	
+227	Blowing snow
+200	Thundery outbreaks in nearby
+185	Patchy freezing drizzle nearby
+182	Patchy sleet nearby
+179	Patchy snow nearby
+176	Patchy rain nearby
+143	Mist
+122	Overcast	
+119	Cloudy
+116	Partly Cloudy
+113	Clear/Sunny
    * @param code weather code
    * @returns weather condition based on the weather code
    */
@@ -366,5 +392,8 @@ export class ForecastComponent implements OnInit, IComponent {
         return "Chyba";
     }
 
+  }
+  translateDay(day: string): string {
+    return this.weatherforecastDays_cs[this.weatherforecastDays.indexOf(day)] || "";
   }
 }

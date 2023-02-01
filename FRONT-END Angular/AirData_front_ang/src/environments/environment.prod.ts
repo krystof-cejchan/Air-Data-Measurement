@@ -8,5 +8,6 @@ export const environment = {
   baseAirDataUrl: 'https://airq.krystofcejchan.online/airdata',
   baseUrlAPI: 'https://airq.krystofcejchan.online/airdata/api',
   leaderboard: 'https://airq.krystofcejchan.online/airdata/leaderboard',
-  forecastUrl: 'https://airq.krystofcejchan.online/airdata/forecast'
+  forecastUrl: 'https://airq.krystofcejchan.online/airdata/forecast',
+  domain: 'krystofcejchan.cz'
 };

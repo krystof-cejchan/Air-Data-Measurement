@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from "@angular/core";
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -14,8 +14,9 @@ import { AirDataAverageForDay } from 'src/app/objects/airDataAverageForDay';
 import { GraphsService } from './graphs.service';
 import "../../objects/abs_interfaces/IComponent"
 import { generateChartOptions } from "./graphs.generator"
-import { openSnackBar } from 'src/app/errors/custom in-page errors/snack-bar/custom-error-snackbar';
+import { openSnackBar } from 'src/app/errors/custom in-page errors/snack-bar/server_error/custom-error-snackbar';
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { SubSink } from "subsink";
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -34,12 +35,12 @@ export type ChartOptions = {
   styleUrls: ['./graphs.component.scss']
 })
 
-export class GraphsComponent implements OnInit, IComponent {
+export class GraphsComponent implements OnInit, IComponent, OnDestroy {
 
   @ViewChild("chart_temp", { static: false })
   chart_airQ!: ChartComponent;
 
-
+  private subs = new SubSink()
   public chartOptionsAirQ: ChartOptions;
   public chartOptionsHum?: ChartOptions = undefined;
   public chartOptionsTemp?: ChartOptions = undefined;
@@ -55,13 +56,14 @@ export class GraphsComponent implements OnInit, IComponent {
   private series: ApexAxisChartSeries = [];
 
   async ngOnInit(): Promise<void> {
-    this.service.getAllAirDataAverage().subscribe(
-      (response: AirDataAverageForDay[]) => {
+    this.subs.add(this.service.getAllAirDataAverage().subscribe({
+      next: (response: AirDataAverageForDay[]) => {
         response.forEach(respData => this.allDataFromDatabase.push(respData));
-      }, () => {
+      },
+      error: () => {
         openSnackBar(this.snackBar)
       }
-    );
+    }));
 
     var counter = 0;
     //400ms to wait | max wait for 5s
@@ -241,6 +243,9 @@ export class GraphsComponent implements OnInit, IComponent {
 
       }
     };
+  }
+  ngOnDestroy(): void {
+    this.subs.unsubscribe()
   }
   getTitle(): string {
     return "Grafy";

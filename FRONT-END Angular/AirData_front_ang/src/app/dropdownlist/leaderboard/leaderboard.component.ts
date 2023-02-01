@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { ActivatedRoute, Router } from '@angular/router';
 import { PrePreparedLeaderboardData } from 'src/app/objects/LeaderboardDataForHtml';
 import { LeaderboardData } from "../../objects/Leaderboard";
@@ -7,7 +7,8 @@ import { LeaderboardService } from "./leaderboard.service";
 import { LeaderboardDataExtended } from "../../objects/LeaderboardDataExtended";
 import { round } from 'src/app/utilities/utils';
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { openSnackBar } from 'src/app/errors/custom in-page errors/snack-bar/custom-error-snackbar';
+import { openSnackBar } from 'src/app/errors/custom in-page errors/snack-bar/server_error/custom-error-snackbar';
+import { SubSink } from "subsink";
 
 export interface leaderboardDifferenceData {
   value: number,
@@ -20,55 +21,58 @@ export interface leaderboardDifferenceData {
   styleUrls: ['./leaderboard.component.scss']
 })
 
-export class LeaderboardComponent implements OnInit, IComponent {
-
+export class LeaderboardComponent implements OnInit, IComponent, OnDestroy {
+  private subs = new SubSink()
   public leaderboard_datas?: LeaderboardData[] = undefined;
   public leaderboard_data_preparedExtended: LeaderboardDataExtended[] = [];
   public leaderboard_data_prepared: PrePreparedLeaderboardData[] = [];
   public showLoading: boolean = true;
 
   constructor(private service: LeaderboardService, private router: Router, private route: ActivatedRoute, private snackBar: MatSnackBar) { }
+  ngOnDestroy(): void {
+    this.subs.unsubscribe()
+  }
 
   getTitle(): string {
     return "Žebříčky";
   }
 
   ngOnInit(): void {
-    this.service.getAllLeaderboardData().subscribe(async (response: LeaderboardData[]) => {
+    this.subs.add(this.service.getAllLeaderboardData().subscribe({
+      next: async (response: LeaderboardData[]) => {
 
-      this.leaderboard_datas = response;
-      var counter = 0;
-      const msToWait = 400, msMaxToWait = 5000;
-      while (this.leaderboard_datas?.length === 0 && counter < (msMaxToWait / msToWait)) {
-        await new Promise(f => setTimeout(f, msToWait));
-        counter++;
-      }
+        this.leaderboard_datas = response;
+        var counter = 0;
+        const msToWait = 400, msMaxToWait = 5000;
+        while (this.leaderboard_datas?.length === 0 && counter < (msMaxToWait / msToWait)) {
+          await new Promise(f => setTimeout(f, msToWait));
+          counter++;
+        }
 
-      this.leaderboard_datas!
-        .map(data => data.leaderboardType)
-        .filter((value: string, index: number, array: string[]) => array.indexOf(value) === index)
-        .sort((t1, t2) => t1.substring(t1.indexOf('_')).localeCompare(t2.substring(t2.indexOf('_'))))
-        .forEach(lType => {
-          this.leaderboard_data_prepared
-            .push({
-              type: lType, leaderboardData: this.leaderboard_datas!.filter(data => data.leaderboardType === lType)
-                .sort((a, b) => a.position - b.position)
-            } as PrePreparedLeaderboardData);
+        this.leaderboard_datas!
+          .map(data => data.leaderboardType)
+          .filter((value: string, index: number, array: string[]) => array.indexOf(value) === index)
+          .sort((t1, t2) => t1.substring(t1.indexOf('_')).localeCompare(t2.substring(t2.indexOf('_'))))
+          .forEach(lType => {
+            this.leaderboard_data_prepared
+              .push({
+                type: lType, leaderboardData: this.leaderboard_datas!.filter(data => data.leaderboardType === lType)
+                  .sort((a, b) => a.position - b.position)
+              } as PrePreparedLeaderboardData);
+          });
+
+        this.leaderboard_data_prepared.forEach(data => {
+          this.leaderboard_data_preparedExtended.push({
+            type: data.type.substring(data.type.indexOf('_') + 1) as string,
+            mapSubTypeToLeaderboardData: new Map<string, LeaderboardData[]>().set(data.type, data.leaderboardData.sort((A, B) => A.position - B.position))
+          })
         });
-
-      this.leaderboard_data_prepared.forEach(data => {
-        this.leaderboard_data_preparedExtended.push({
-          type: data.type.substring(data.type.indexOf('_') + 1) as string,
-          mapSubTypeToLeaderboardData: new Map<string, LeaderboardData[]>().set(data.type, data.leaderboardData.sort((A, B) => A.position - B.position))
-        })
-      });
-
-      this.showLoading = false;
-    },
-      () => {
-        this.showLoading = false;
+      },
+      error: () => {
         openSnackBar(this.snackBar)
-      });
+      },
+      complete: () => this.showLoading = false
+    }));
   }
 
   public getUniqueTypesFrom__leaderboard_data_preparedExtended(): string[] {

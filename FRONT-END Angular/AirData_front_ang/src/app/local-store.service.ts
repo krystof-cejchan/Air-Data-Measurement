@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import CryptoJS from 'crypto-js';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
 
 
 

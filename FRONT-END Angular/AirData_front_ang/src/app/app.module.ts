@@ -19,7 +19,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { AirDataDetailsComponent } from './air-data-details/air-data-details.component';
 import { MainPageComponent } from './main-page/main-page.component';
-import { LocationStrategy, HashLocationStrategy, PathLocationStrategy } from "@angular/common";
+import { LocationStrategy, PathLocationStrategy } from "@angular/common";
 import { MatChipsModule, MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/chips';
 import { MatListModule } from '@angular/material/list';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -69,7 +69,37 @@ import { DevComponent } from './dev/dev/dev.component';
 import { ApiComponent } from './dev/api/api.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ForecastComponent } from './forecast/forecast.component';
+import { NgcCookieConsentModule, NgcCookieConsentConfig } from 'ngx-cookieconsent';
+import { environment } from 'src/environments/environment';
 
+const cookieConfig: NgcCookieConsentConfig = {
+  cookie: {
+    domain: environment.domain
+  },
+  position: "bottom",
+  theme: "classic",
+  palette: {
+    popup: {
+      background: "#000000bb",
+      text: "#ffffff",
+      link: "#ffffff"
+    },
+    button: {
+      background: "#36bfff",
+      text: "#ffffff",
+      border: "transparent"
+    }
+  },
+  type: "info",
+  content: {
+    message: "Tyto webové stránky používají k poskytování služeb soubory cookie.",
+    dismiss: "Jasný, chápu!",
+    deny: "Odmítnout",
+    link: "Chci vědět víc.",
+    href: "https://www.netbox.cz/cookies",
+    policy: "Cookie Policy"
+  }
+};
 
 @NgModule({
   declarations: [
@@ -143,6 +173,7 @@ import { ForecastComponent } from './forecast/forecast.component';
     FormsModule,
     NoopAnimationsModule,
     BrowserAnimationsModule,
+    NgcCookieConsentModule.forRoot(cookieConfig)
   ],
   providers: [AirDataService, {
     provide: LocationStrategy, useClass: PathLocationStrategy

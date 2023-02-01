@@ -30,7 +30,7 @@ import static java.lang.Thread.sleep;
 @SpringBootApplication
 public class AqmApplication implements CommandLineRunner {
     /**
-     * a secret passed to the database
+     * my lil secret
      */
     public static String dbpsd = "", ardtkn = "";
 
@@ -52,8 +52,8 @@ public class AqmApplication implements CommandLineRunner {
      */
     public static void main(String @NotNull ... args) {
         long startTime = System.currentTimeMillis();
-        dbpsd = args[0];
-        ardtkn = args[1];
+        dbpsd = System.getenv("DBPSD");
+        ardtkn = System.getenv("ARDTKN");
 
         SpringApplication.run(AqmApplication.class, args);
 
