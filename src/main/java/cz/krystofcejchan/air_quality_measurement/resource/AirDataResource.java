@@ -11,12 +11,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 import static cz.krystofcejchan.air_quality_measurement.AqmApplication.ardtkn;
 
@@ -67,8 +69,7 @@ public record AirDataResource(AirDataService airDataService) {
         BooleanValidation<String, String[]> token_params2_validation = (str1, strArr) -> str1.equals(strArr[1]);
         BooleanValidation<String, String> user_agent_validation = String::contains;
 
-        validations.add(user_agent_validation.validPassed(Arrays.toString(userAgent.getBytes(StandardCharsets.UTF_8)),
-                (Arrays.toString("ESP8266HTTPClient".getBytes(StandardCharsets.UTF_8)))));
+        validations.add(user_agent_validation.validPassed(userAgent, "ESP8266HTTPClient"));
         validations.add(token_params1_validation.validPassed(airData, tokenParams));
         validations.add(token_params2_validation.validPassed(ardtkn, tokenParams));
 
@@ -107,6 +108,10 @@ public record AirDataResource(AirDataService airDataService) {
         return airDataService.getLatestAirData(locationId);
     }
 
+    /**
+     *
+     * @return average temperature from the latest data
+     */
     @GetMapping("/average_temperature")
     public @NotNull ResponseEntity<? extends Number> getAverageTemperatureFromLatestData() {
         return airDataService.getCurrentAverageTemperature();

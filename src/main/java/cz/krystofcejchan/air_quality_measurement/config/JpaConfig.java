@@ -7,9 +7,16 @@ import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
 
+/**
+ * JPA configuration
+ */
 @Configuration
 public class JpaConfig {
-
+    /**
+     * Localhost JPA conf
+     *
+     * @return DataSource for localhost mysql db
+     */
     @Primary
     @Bean
     public DataSource getSecondaryDataSource() {
@@ -19,7 +26,12 @@ public class JpaConfig {
         dataSourceBuilder.password("jetotereza");
         return dataSourceBuilder.build();
     }
-/*
+
+    /**
+     * Server mysql db
+     *
+     * @return DataSource for server-side db
+     */
     @Primary
     @Bean
     public DataSource getPrimaryDataSource() {
@@ -28,5 +40,5 @@ public class JpaConfig {
         dataSourceBuilder.username("doadmin");
         dataSourceBuilder.password(cz.krystofcejchan.air_quality_measurement.AqmApplication.dbpsd);
         return dataSourceBuilder.build();
-    }*/
+    }
 }
