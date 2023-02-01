@@ -26,7 +26,7 @@ export class AirDataDetailsService {
    * @returns void
    */
   public reportAirData(id: number): Observable<void> {
-    return this.http.put<void>(`${this.serverUrl}/update_reportN`, id);
+    return this.http.put<void>(`${this.serverUrl}/update_reportN`, { headers: { 'id': id } });
   }
 
 }

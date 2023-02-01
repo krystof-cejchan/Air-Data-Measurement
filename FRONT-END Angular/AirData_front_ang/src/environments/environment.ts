@@ -8,7 +8,8 @@ export const environment = {
   baseAirDataUrl: 'http://localhost:8080/airdata',
   baseUrlAPI: 'http://localhost:8080/airdata/api',
   leaderboard: 'http://localhost:8080/airdata/leaderboard',
-  forecastUrl: 'http://localhost:8080/airdata/forecast'
+  forecastUrl: 'http://localhost:8080/airdata/forecast',
+  domain: 'localhost'
   /* baseUrl: 'https://airq.krystofcejchan.online',
    baseAirDataUrl: 'https://airq.krystofcejchan.online/airdata',
    baseUrlAPI: 'https://airq.krystofcejchan.online/airdata/api',

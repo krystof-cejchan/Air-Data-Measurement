@@ -1,22 +1,23 @@
 import { DOCUMENT, formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy } from "@angular/core";
 import { ActivatedRoute, Router } from '@angular/router';
 import { AirData } from 'src/app/airdata';
-import { openSnackBar } from 'src/app/errors/custom in-page errors/snack-bar/custom-error-snackbar';
+import { openSnackBar } from 'src/app/errors/custom in-page errors/snack-bar/server_error/custom-error-snackbar';
 import { LatestDataService } from './latest-data.service';
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { SubSink } from "subsink";
 
 @Component({
   selector: 'app-latest-data',
   templateUrl: './latest-data.component.html',
   styleUrls: ['./latest-data.component.scss']
 })
-export class LatestDataComponent implements OnInit, IComponent {
+export class LatestDataComponent implements OnInit, IComponent, OnDestroy {
 
   public htmlToAdd = '';
 
-
+  private subs = new SubSink()
   public airdatas: AirData[] = [];
   private formattedAirDatas: AirData[] = [];
   public selectedIndex: number = -1;
@@ -27,6 +28,9 @@ export class LatestDataComponent implements OnInit, IComponent {
     private router: Router,
     private latestDataService: LatestDataService,
     private snackBar: MatSnackBar) {
+  }
+  ngOnDestroy(): void {
+    this.subs.unsubscribe()
   }
   getTitle(): string {
     return "Nejnovější data";
@@ -40,32 +44,24 @@ export class LatestDataComponent implements OnInit, IComponent {
    * tries to get AirData from the back-end
    */
   public getAirDatas(): void {
-    this.latestDataService.getLatestData().subscribe(
-      (response: AirData[]) => {
-        //console.log(response);
-
+    this.subs.add(this.latestDataService.getLatestData().subscribe({
+      next: (response: AirData[]) => {
         this.formattedAirDatas = response;
-        // console.log(response)
         try {
           this.formattedAirDatas.forEach(airdata => {
             let formattedAitDate = airdata;
-            //formatting date to more humanly readable date
             formattedAitDate.receivedDataDateTime = this.formatDate(new Date(airdata.receivedDataDateTime));
-            //background picture set to folder "assets/imgs/faculties/" where images are stored ... not needed anymore as location table in db has been updated to contain bcg pic URL
-            //formattedAitDate.bcgPictureUrl = "assets/imgs/faculties/" + airdata.locationId.name_short + "_cover.jpg";
             this.airdatas.push(formattedAitDate);
           })
-          this.showLoading = false;
         } catch (error) {
           this.airdatas = response;
-          this.showLoading = false;
         }
       },
-      () => {
-        this.showLoading = false;
+      error: () => {
         openSnackBar(this.snackBar)
-      }
-    );
+      },
+      complete: () => this.showLoading = false
+    }));
 
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 
@@ -10,9 +10,10 @@ import { Router } from '@angular/router';
 export class AppComponent implements OnInit {
   constructor(private router: Router) {
   }
-  ngOnInit(): void {
 
+  ngOnInit(): void {
   }
+
   getHamburger() {
     return "hamburger_" + (this.router.url === '/' ? 'white' : 'black')
   }

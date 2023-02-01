@@ -25,7 +25,8 @@ import static cz.krystofcejchan.air_quality_measurement.AqmApplication.ardtkn;
  */
 @RestController
 @RequestMapping("/airdata")
-@CrossOrigin(origins = {"https://krystofcejchan.cz", "http://localhost:4200"}, methods = {RequestMethod.GET, RequestMethod.POST},
+@CrossOrigin(origins = {"https://krystofcejchan.cz", "http://localhost:4200"},
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT},
         maxAge = 60, allowedHeaders = "*", exposedHeaders = "*")
 public record AirDataResource(AirDataService airDataService) {
 
@@ -52,7 +53,7 @@ public record AirDataResource(AirDataService airDataService) {
     @PostMapping("/add")
     @CrossOrigin(origins = {"*"}, methods = {RequestMethod.POST},
             maxAge = 60, allowedHeaders = "*", exposedHeaders = "*")
-    public @NotNull ResponseEntity<AirData> addAirData(@RequestBody(required = true) AirData airData,
+    public @NotNull ResponseEntity<AirData> addAirData(@RequestBody() AirData airData,
                                                        @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
                                                        @RequestHeader(HttpHeaders.USER_AGENT) String userAgent) {
         if (airData == null || userAgent.isEmpty() || token.isEmpty())
@@ -90,9 +91,9 @@ public record AirDataResource(AirDataService airDataService) {
      */
     @Contract("_ -> new")
     @PutMapping("/update_reportN")
-    public @NotNull ResponseEntity<AirData> increaseReportNumberByOne(@RequestBody @NotNull Long id) {
+    public @NotNull ResponseEntity<AirData> increaseReportNumberByOne(@RequestHeader @NotNull Long id) {
         var reportingAirData = airDataService.updateNumberReportedById(id);
-        return new ResponseEntity<>(reportingAirData, reportingAirData == null ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
+        return new ResponseEntity<>(reportingAirData, reportingAirData == null ? HttpStatus.CONFLICT : HttpStatus.OK);
     }
 
     /**

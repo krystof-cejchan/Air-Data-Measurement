@@ -1,10 +1,11 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, OnDestroy } from "@angular/core";
 import { AirData } from '../airdata';
 import { LatestDataService } from '../dropdownlist/latest-data/latest-data.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { round } from '../utilities/utils';
-import { openSnackBar } from '../errors/custom in-page errors/snack-bar/custom-error-snackbar';
+import { openSnackBar } from '../errors/custom in-page errors/snack-bar/server_error/custom-error-snackbar';
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { SubSink } from "subsink";
 
 
 @Component({
@@ -12,12 +13,16 @@ import { MatSnackBar } from "@angular/material/snack-bar";
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.scss']
 })
-export class MainPageComponent implements OnInit {
+export class MainPageComponent implements OnInit, OnDestroy {
+  private subs = new SubSink()
   public current_temperature: number = NaN;
   public temp_sentence_show: boolean = false;
 
   constructor(private latestDataService: LatestDataService, private deviceService: DeviceDetectorService,
     private snackBar: MatSnackBar) {
+  }
+  ngOnDestroy(): void {
+    this.subs.unsubscribe()
   }
 
   ngOnInit(): void {
@@ -25,8 +30,8 @@ export class MainPageComponent implements OnInit {
   }
 
   public getAirDatas(): void {
-    this.latestDataService.getLatestData().subscribe(
-      async (response: AirData[]) => {
+    this.subs.add(this.latestDataService.getLatestData().subscribe({
+      next: async (response: AirData[]) => {
         var counter = 0;
         const msToWait = 400, msMaxToWait = 5000;
         while (response.length === 0 && counter < (msMaxToWait / msToWait)) {
@@ -36,11 +41,12 @@ export class MainPageComponent implements OnInit {
         this.current_temperature = this.round((response
           .map(airData => airData.temperature)
           .reduce((sum, current) => sum + current, 0) / response.length), 1);
-      }, () => {
+      },
+      error: () => {
         this.current_temperature = this.round(this.current_temperature, 1);
         openSnackBar(this.snackBar)
       }
-    );
+    }));
   }
   public getColourBasedOnTemp(): string {
     if (this.current_temperature <= -15)
