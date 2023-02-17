@@ -32,9 +32,21 @@ body {
 	min-width: 0;
 }
 
-#marginFromNav {
-	padding-top: 50px;
-}
+/*main {
+	position: relative;
+	width: 100%;
+
+	&::after {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		z-index: -1;
+		content: '';
+		background: rgb(0, 0, 0);
+	}
+}*/
 
 #navbarNavDropdown {
 	background-color: rgba(99, 99, 99, 0.459);

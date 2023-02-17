@@ -1,0 +1,55 @@
+.modal-newsletter {
+    background-color: #ffffffab;
+    color: #999;
+    font-size: 1em;
+    display: flex;
+    flex-direction: column;
+    text-align: center
+}
+
+.modal-newsletter h4 {
+    color: #000;
+    font-size: 1.1em;
+    margin: 0;
+    padding: 0 5 0 0;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1em;
+}
+
+.icon-box {
+    width: fit-content;
+    height: fit-content;
+    font-size: 2.5em;
+    text-align: center;
+}
+
+.hint-text {
+    margin: 100px auto;
+    text-align: center;
+}
+
+.newsletter-form-field {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 70%;
+    margin-left: 15%;
+}
+
+u {
+    color: rgba(255, 0, 0, 0.75);
+    font-style: italic;
+    cursor: pointer;
+}
+
+#disclaimer {
+    margin-top: 1rem;
+    font-size: 0.6rem;
+    color: #8a8a8a;
+
+    >b {
+        color: #686868;
+        font-size: 0.66rem;
+    }
+}

@@ -22,4 +22,6 @@ public interface AirDataAverageOfDayRepository extends JpaRepository<AirDataAver
      * @return the optional
      */
     Optional<List<AirDataAverageOfDay>> findByLocationAndReceivedDataDate(LocationData location, LocalDate receivedDataDate);
+
+    Optional<List<AirDataAverageOfDay>> findByReceivedDataDate(LocalDate receivedDataDate);
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -55,7 +56,14 @@ public record AirDataAverageOfDayService(
      * @param day the day
      * @return the average air data for one specific day
      */
-    public Optional<HashMap<LocationData, AirDataAverageOfDay>> getAverageAirDataForOneSpecificDay(java.time.LocalDate day) {
+    public Optional<HashMap<LocationData, AirDataAverageOfDay>> getAverageAirDataForOneSpecificDay(LocalDate day, boolean isAutoDay) {
+        if (!isAutoDay) {
+            Optional<List<AirDataAverageOfDay>> existingAvgData = avgRepository.findByReceivedDataDate(day);
+            if (existingAvgData.isPresent() && !existingAvgData.get().isEmpty()) {
+                avgRepository.deleteAllById(existingAvgData.get().stream().map(AirDataAverageOfDay::getId).toList());
+            }
+        }
+
         List<LocationData> locationDataList = locationDataRepository.findAll();
         Optional<List<AirData>> receivedData = airDataRepository
                 .findByReceivedDataDateTimeBetween(LocalDateTime.of(day, LocalTime.MIN),

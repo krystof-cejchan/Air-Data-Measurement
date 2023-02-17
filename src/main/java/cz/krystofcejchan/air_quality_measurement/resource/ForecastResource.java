@@ -34,7 +34,7 @@ public record ForecastResource(ForecastService service) {
     public @NotNull ResponseEntity<List<ForecastAtHour>> getForecastForAllDaysAndTimes() {
         List<ForecastAtHour> forecastData = service.getForecastFor3UpcomingDays();
         if (forecastData == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         else
             return new ResponseEntity<>(forecastData, HttpStatus.OK);
 

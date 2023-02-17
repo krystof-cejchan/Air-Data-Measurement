@@ -72,6 +72,7 @@ export class GraphsComponent implements OnInit, IComponent, OnDestroy {
       await new Promise(f => setTimeout(f, msToWait!));
       counter++;
     }
+    this.allDataFromDatabase = this.allDataFromDatabase.sort((a, b) => a.receivedDataDate.localeCompare(b.receivedDataDate))
     let dates = [];
     let locations = [];
     locations = this.uniqByFilter<string>(this.allDataFromDatabase.map(it => it.location.name_short));
@@ -122,7 +123,6 @@ export class GraphsComponent implements OnInit, IComponent, OnDestroy {
       data: [500]
     }];
     this.series = seriesNameToData;
-    // eachLocation = this.uniqByFilter<string>(eachLocation);
     this.chartOptionsAirQ = {
       series: this.series,
       chart_airQ: {

@@ -68,7 +68,7 @@ export class AirDataDetailsComponent implements OnInit, OnDestroy {
     }
     ));
   }
-  
+
   ngOnDestroy(): void {
     this.subs.unsubscribe()
   }

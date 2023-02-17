@@ -2,6 +2,8 @@ package cz.krystofcejchan.air_quality_measurement;
 
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
 import cz.krystofcejchan.air_quality_measurement.domain.AirDataLeaderboard;
+import cz.krystofcejchan.air_quality_measurement.enums.Production;
+import cz.krystofcejchan.air_quality_measurement.notifications.NotificationsRepository;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataAverageOfDayRepository;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataLeaderboardRepository;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataRepository;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import java.util.List;
 import java.util.Map;
@@ -34,6 +37,11 @@ public class AqmApplication implements CommandLineRunner {
      */
     public static String dbpsd = "", ardtkn = "";
 
+    /**
+     * {@link Production} ENUM to determinate whether the app is in development mode or is publicly running
+     */
+    public static Production production = Production.TESTING;
+
     @Autowired
     private AirDataLeaderboardRepository airDataLeaderboardRepo;
     @Autowired
@@ -44,6 +52,10 @@ public class AqmApplication implements CommandLineRunner {
     private AirDataAverageOfDayRepository avgRepository;
     @Autowired
     private AirDataRepository airDataRepository;
+    @Autowired
+    private NotificationsRepository notificationsRepository;
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     /**
      * Main.
@@ -54,6 +66,7 @@ public class AqmApplication implements CommandLineRunner {
         long startTime = System.currentTimeMillis();
         dbpsd = System.getenv("DBPSD");
         ardtkn = System.getenv("ARDTKN");
+        production = Production.valueOf(System.getenv("PROD"));
 
         SpringApplication.run(AqmApplication.class, args);
 
@@ -79,7 +92,11 @@ public class AqmApplication implements CommandLineRunner {
         LeaderboardTable.saveChangedDataAndDeleteOldData(airDataLeaderboardRepo, existingAirData, map);
         new InsertLocationData().runScheduledTask(locationDataRepository);
 
-        new ScheduledTaskRunnableManager(avgRepository, airDataRepository, locationDataRepository)
+        new ScheduledTaskRunnableManager(avgRepository,
+                airDataRepository,
+                locationDataRepository,
+                notificationsRepository,
+                javaMailSender)
                 .getRunnableList().forEach(ScheduledTaskRunnable::runScheduledTask);
     }
 
@@ -114,6 +131,5 @@ public class AqmApplication implements CommandLineRunner {
 			}
 		};
 	}*/
-
 }
 

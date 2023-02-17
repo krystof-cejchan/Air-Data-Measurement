@@ -9,7 +9,18 @@ export const environment = {
   baseUrlAPI: 'http://localhost:8080/airdata/api',
   leaderboard: 'http://localhost:8080/airdata/leaderboard',
   forecastUrl: 'http://localhost:8080/airdata/forecast',
-  domain: 'localhost'
+  notificationUrl: 'http://localhost:8080/airdata/notifications',
+  domain: 'localhost',
+  firebase: {
+    apiKey: "•••",
+    authDomain: "•••",
+    projectId: "•••",
+    storageBucket: "•••",
+    messagingSenderId: "•••",
+    appId: "•••",
+    measurementId: "•••",
+    vapidKey: "•••"
+  }
   /* baseUrl: 'https://airq.krystofcejchan.online',
    baseAirDataUrl: 'https://airq.krystofcejchan.online/airdata',
    baseUrlAPI: 'https://airq.krystofcejchan.online/airdata/api',

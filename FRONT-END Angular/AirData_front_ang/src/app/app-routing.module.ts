@@ -9,19 +9,16 @@ import { LeaderboardComponent } from './dropdownlist/leaderboard/leaderboard.com
 import { AirDataDetailsComponent } from "./air-data-details/air-data-details.component";
 import { MainPageComponent } from "./main-page/main-page.component";
 import { DevComponent } from "./dev/dev/dev.component";
-import { ApiComponent } from "./dev/api/api.component";
 import { Title } from '@angular/platform-browser';
 import { ForecastComponent } from "./forecast/forecast.component";
+import { ConfirmationComponent } from "./newsletter subscription/confirmation/confirmation.component";
+import { CancellationComponent } from "./newsletter subscription/cancellation/cancellation.component";
 
 
 const routes: Routes = [
   {
     path: '', title: 'Úvodní strana', component: MainPageComponent
   },
-
-  /* {
-     path: 'funkce/:spec', pathMatch: 'full',title: 'popupTitle', component: LatestDataComponent
-   },*/
   {
     path: 'nejnovejsi-data', pathMatch: 'full', title: 'Nejnovější data', component: LatestDataComponent
   },
@@ -52,6 +49,12 @@ const routes: Routes = [
   },
   {
     path: 'predpoved/:day/:time', pathMatch: 'full', title: 'Předpověď počasí', component: ForecastComponent
+  },
+  {
+    path: 'predplatne/potvrzeni/:id/:hash', pathMatch: 'full', title: 'Potvrzení předplatného', component: ConfirmationComponent
+  },
+  {
+    path: 'predplatne/zruseni/:id/:hash', pathMatch: 'full', title: 'Zrušení předplatného', component: CancellationComponent
   },
   {
     path: '**', title: 'Vyskytla se chyba', component: ErrorsComponent

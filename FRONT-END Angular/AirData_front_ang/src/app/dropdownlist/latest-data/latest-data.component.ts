@@ -59,6 +59,7 @@ export class LatestDataComponent implements OnInit, IComponent, OnDestroy {
       },
       error: () => {
         openSnackBar(this.snackBar)
+        this.showLoading = false
       },
       complete: () => this.showLoading = false
     }));

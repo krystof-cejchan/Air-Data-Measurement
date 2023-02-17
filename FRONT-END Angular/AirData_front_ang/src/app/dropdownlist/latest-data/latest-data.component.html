@@ -36,7 +36,7 @@
         <button type="button" class="btn btn-light btn-sm"
           (click)="scrollToElement(airdata.locationId.name)">{{airdata.locationId.name_short}}</button>
       </span>
-      <div class="row row-cols-3 row-cols-md-2 align-items-stretch g-2 py-5">
+      <!--     <div class="row row-cols-3 row-cols-md-2 align-items-stretch g-2 py-5">
         <div *ngFor="let airdata of airdatas;let j = index;" class="col">
           <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
             [ngClass]="{'highlight': selectedIndex==j}" id="{{airdata.locationId.name}}" style="background:
@@ -72,16 +72,53 @@
                   <small class="airdata_receivedDataDateTime">{{airdata.receivedDataDateTime}}</small>
                 </li>
               </ul>
+            </div>      </div>
+-->
+      <div class="row row-cols-3 row-cols-md-2 align-items-stretch g-2 py-5">
+        <div *ngFor="let airdata of airdatas;let j = index;" class="col">
+          <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
+            [ngClass]="{'highlight': selectedIndex==j}" id="{{airdata.locationId.name}}" style="background:
+                              linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.61)), url({{airdata.locationId.imgUrl}});
+                              background-size:cover; background-position: center;">
+            <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1" id={{airdata.locationId}}>
+              <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold d-flex flex-column">
+                <span id="airQualityT" mat-raised-button matTooltip="Kvalita vzduchu" matTooltipPosition="after">
+                  {{airdata.airQuality}}ppm</span>
+                <span id="temperatureT" mat-raised-button matTooltip="Teplota" matTooltipPosition="after">
+                  {{airdata.temperature}}°C</span>
+                <span id="humidityT" mat-raised-button matTooltip="Vlhkost"
+                  matTooltipPosition="after">{{airdata.humidity}}% </span>
+              </h3>
+              <ul class="d-flex list-unstyled mt-auto">
+                <li class="me-auto">
+                  <img (click)="showDetails({id:airdata.id,hash:airdata.rndHash})" alt=""
+                    class="rounded-circle border border-white" height="32"
+                    src="assets/imgs/question_mark_help_for_latest_data.png" width="32">
+                </li>
+                <li class="d-flex align-items-center me-3">
+                  <svg class="bi me-2" height="1em" width="1em">
+                    <use xlink:href="#geo-fill" />
+                  </svg>
+                  <small>{{airdata.locationId.name_short}}</small>
+                </li>
+                <li class="d-flex align-items-center">
+                  <svg class="bi me-2" height="1em" width="1em">
+                    <use xlink:href="#calendar3" />
+                  </svg>
+                  <small class="airdata_receivedDataDateTime">{{airdata.receivedDataDateTime}}</small>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
       </div>
-      <div *ngIf="showLoading" class="spinner-border" role="status">
-        <span class="sr-only">Loading...</span>
-      </div>
-      <div [innerHtml]="htmlToAdd" class="err"></div>
 
-    </div></div>
+    </div>
+  </div>
+  <div *ngIf="showLoading" class="spinner-border" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+  <div [innerHtml]="htmlToAdd" class="err"></div>
 
 </body>
 

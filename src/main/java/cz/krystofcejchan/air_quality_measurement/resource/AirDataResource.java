@@ -11,12 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.CheckForNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,7 +28,7 @@ import static cz.krystofcejchan.air_quality_measurement.AqmApplication.ardtkn;
 @RestController
 @RequestMapping("/airdata")
 @CrossOrigin(origins = {"https://krystofcejchan.cz", "http://localhost:4200"},
-        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT},
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PATCH},
         maxAge = 60, allowedHeaders = "*", exposedHeaders = "*")
 public record AirDataResource(AirDataService airDataService) {
 
@@ -59,7 +59,7 @@ public record AirDataResource(AirDataService airDataService) {
                                                        @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
                                                        @RequestHeader(HttpHeaders.USER_AGENT) String userAgent) {
         if (airData == null || userAgent.isEmpty() || token.isEmpty())
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
         List<Boolean> validations = new LinkedList<>();
 
@@ -80,7 +80,7 @@ public record AirDataResource(AirDataService airDataService) {
                     HttpStatus.CREATED);
 
         else
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
     }
 
@@ -90,10 +90,11 @@ public record AirDataResource(AirDataService airDataService) {
      * @param id the id
      * @return the response entity
      */
-    @Contract("_ -> new")
-    @PutMapping("/update_reportN")
-    public @NotNull ResponseEntity<AirData> increaseReportNumberByOne(@RequestHeader @NotNull Long id) {
-        var reportingAirData = airDataService.updateNumberReportedById(id);
+
+    @PatchMapping("/update_reportN")
+    public @NotNull ResponseEntity<AirData> increaseReportNumberByOne(@RequestHeader() @NotNull Long id,
+                                                                      @RequestHeader(required = false) @CheckForNull String pswd) {
+        var reportingAirData = airDataService.reportAirDataById(id, pswd);
         return new ResponseEntity<>(reportingAirData, reportingAirData == null ? HttpStatus.CONFLICT : HttpStatus.OK);
     }
 
@@ -109,7 +110,6 @@ public record AirDataResource(AirDataService airDataService) {
     }
 
     /**
-     *
      * @return average temperature from the latest data
      */
     @GetMapping("/average_temperature")
@@ -186,7 +186,7 @@ public record AirDataResource(AirDataService airDataService) {
             startD = LocalDate.parse(start);
             endD = LocalDate.parse(end);
         } catch (DateTimeParseException dateTimeParseException) {
-            return new ResponseEntity<>(Collections.singleton(dateTimeParseException.getMessage()), HttpStatus.PRECONDITION_FAILED);
+            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         }
         return airDataService.gerAirDataForDateRange(startD, endD);
     }
