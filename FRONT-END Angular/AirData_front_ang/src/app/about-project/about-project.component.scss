@@ -1,10 +1,25 @@
-
 body {
     margin: 0;
     height: 100vh;
     width: 100vw;
     position: fixed;
     z-index: 500;
+}
+
+ul {
+    list-style-type: square;
+
+    >li {
+        text-align: left;
+        word-spacing: 2px;
+        margin-top: .3rem;
+        font-size: 1.15rem;
+    }
+
+    li:nth-child(1) {
+        margin-top: 2rem;
+        text-decoration: underline orange dotted 3px;
+    }
 }
 
 .bd-placeholder-img {

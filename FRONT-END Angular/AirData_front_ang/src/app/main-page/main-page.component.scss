@@ -3,7 +3,11 @@ html {
 	height: 100%;
 	width: 100%;
 	margin: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
 }
+
+$footer-color: rgba(255, 255, 255, 0.407);
 
 *,
 *::before,
@@ -18,6 +22,39 @@ html {
 	background: rgba(62, 67, 71, 0.644);
 }
 
+/*
+::-webkit-scrollbar {
+	width: 1em;
+}
+
+::-webkit-scrollbar-track {
+	box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: rgb(0, 255, 13);
+	outline: 1px solid rgb(201, 255, 5);
+}
+*/
+section {
+	&.main_background_photo {
+		width: 100vw;
+		height: 100%;
+	}
+
+	&#below-main {
+		width: 100vw;
+		height: 100vh;
+		position: relative;
+		z-index: 1;
+		background: #151f20;
+		/*	background: -moz-linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(21,31,32,1) 20%);
+		background: -webkit-linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(21,31,32,1) 20%);
+		background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(21,31,32,1) 20%);
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#151f20",GradientType=1); */
+	}
+}
+
 .fullscreen-bg__video {
 	position: fixed;
 	top: 0;
@@ -26,8 +63,8 @@ html {
 	left: 0;
 	z-index: 0;
 	overflow: hidden;
-	min-width: 100%;
-	min-height: 100%;
+	min-width: 100vw;
+	min-height: 100vh;
 }
 
 
@@ -118,12 +155,15 @@ nav {
 
 footer {
 	position: fixed;
-	bottom: 1px;
+	bottom: 0;
 	z-index: 9998;
-	width: 100vw;
+	width: 100%;
 	height: 3vh;
-	color: rgba(255, 255, 255, 0.407);
+	color: $footer-color;
 	text-align: center;
+	padding: 0 0 0 0;
+	margin: 0 0 0 0;
+	background-color: transparent;
 }
 
 #Copyright {
@@ -131,6 +171,7 @@ footer {
 
 	&:hover {
 		color: white;
+		text-decoration: underline white;
 	}
 }
 

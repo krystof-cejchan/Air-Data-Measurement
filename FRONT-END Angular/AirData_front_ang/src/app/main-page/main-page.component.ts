@@ -85,11 +85,6 @@ export class MainPageComponent implements OnInit, OnDestroy {
     return round(value, precision);
   }
 
-  /*@HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    this.isMobile();
-  }*/
-
   public isMobile(): boolean {
     // console.log(this.deviceService.isMobile());
 

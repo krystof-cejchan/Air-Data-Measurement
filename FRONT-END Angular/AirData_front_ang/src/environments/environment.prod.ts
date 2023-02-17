@@ -9,5 +9,16 @@ export const environment = {
   baseUrlAPI: 'https://airq.krystofcejchan.online/airdata/api',
   leaderboard: 'https://airq.krystofcejchan.online/airdata/leaderboard',
   forecastUrl: 'https://airq.krystofcejchan.online/airdata/forecast',
-  domain: 'krystofcejchan.cz'
+  notificationUrl: 'https://airq.krystofcejchan.online/airdata/notifications',
+  domain: 'krystofcejchan.cz',
+  firebase: {
+    apiKey: "•••",
+    authDomain: "•••",
+    projectId: "•••",
+    storageBucket: "•••",
+    messagingSenderId: "•••",
+    appId: "•••",
+    measurementId: "•••",
+    vapidKey: "•••"
+  }
 };

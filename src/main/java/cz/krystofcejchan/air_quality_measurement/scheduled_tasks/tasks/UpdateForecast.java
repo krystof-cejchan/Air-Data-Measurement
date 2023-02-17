@@ -34,6 +34,7 @@ public class UpdateForecast implements ScheduledTaskRunnable {
                 if (forecast != null && forecast.getAllSavedForecasts() != null && !forecast.getAllSavedForecasts().isEmpty()) {
                     ForecastMap.forecastMap.clear();
                     ForecastMap.forecastMap.addAll(forecast.getAllSavedForecasts());
+                    //ForecastMap.forecastMap.replaceAll((k,v)->forecast.getAllSavedForecasts());
                 }
             }
         };

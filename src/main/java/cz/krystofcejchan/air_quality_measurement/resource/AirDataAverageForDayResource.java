@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 /**
@@ -16,7 +18,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/airdata/avg")
-@CrossOrigin(origins = {"https://krystofcejchan.cz","http://localhost:4200"}, methods = {RequestMethod.GET, RequestMethod.PUT},
+@CrossOrigin(origins = {"https://krystofcejchan.cz", "http://localhost:4200"}, methods = {RequestMethod.GET, RequestMethod.PATCH},
         maxAge = 60, allowedHeaders = "*", exposedHeaders = "*")
 public record AirDataAverageForDayResource(AirDataAverageOfDayService service) {
     /**
@@ -28,16 +30,17 @@ public record AirDataAverageForDayResource(AirDataAverageOfDayService service) {
     public AirDataAverageForDayResource {
     }
 
-    /**
-     * Calc average response entity.
-     *
-     * @return the response entity
-     */
-    @Contract(" -> new")
-    @PutMapping("/calc")
+
+    @PatchMapping("/calc")
     public @NotNull
-    ResponseEntity<?> calcAverage() {
-        return CalcAvgFactory.calc(service);
+    ResponseEntity<?> calcAverage(@RequestHeader(required = false) String day) {
+        LocalDate dayForAvgCalc;
+        try {
+            dayForAvgCalc = LocalDate.parse(day);
+        } catch (DateTimeParseException e) {
+            dayForAvgCalc = null;
+        }
+        return CalcAvgFactory.calc(service, dayForAvgCalc);
     }
 
     /**

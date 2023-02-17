@@ -1,6 +1,11 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  RewriteCond %{HTTP} on
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  
   # Redirection of requests to index.html
   RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -f [OR]
   RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -d
@@ -8,8 +13,6 @@
   # Redirect all non-file routes to index.html
   RewriteRule ^(?!.*\.).*$ index.html [NC,L]
 
-  RewriteCond %{HTTPS} off
-  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 </IfModule>
 
 # Disable browser caching for all files that don't get a hash string by Angular.

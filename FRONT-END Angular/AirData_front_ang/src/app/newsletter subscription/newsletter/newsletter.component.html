@@ -1,0 +1,39 @@
+<div class="container modal-newsletter">
+    <div class="row">
+        <h4 mat-dialog-title>Chcete být pravidelně informováni o předpovědi počasí a jiných zajímavostech?</h4>
+    </div>
+    <div mat-dialog-content>
+        <mat-icon color="warn" class="icon-box">email</mat-icon>
+        <p>Každý den obdržíte e-mail s předpovědí počasí, abyste měli přehled o počasí v Olomouci na nadcházející den!</p>
+        <form>
+            <div class="newsletter-form-field row">
+                <mat-form-field class="newsletter-input">
+                    <mat-label>Email</mat-label>
+                    <input matInput [formControl]="newsletterForm">
+                    <mat-error *ngIf="newsletterForm.hasError('email') && !newsletterForm.hasError('required')">
+                        Napište platnou emailovou adresu
+                    </mat-error>
+                    <mat-error *ngIf="newsletterForm.hasError('required')">
+                        Email je <strong>povinný</strong>
+                    </mat-error>
+                </mat-form-field>
+
+                <div class="row">
+                    <div class="col-12 col-md-4 mt-3 mt-md-1 d-inline-block">
+                        <button mat-raised-button color="primary" mat-dialog-close (click)="subscribe()"
+                            [disabled]="!newsletterForm.valid">Potvrdit</button>
+                    </div>
+                    <div class="col-12 col-md-4 mt-3 mt-md-1 d-inline-block"> <button mat-raised-button color="warn"
+                            (click)="closeDialog()">Připomenout později</button></div>
+                    <div class="col-12 col-md-4 mt-3 mt-md-1 d-inline-block"> <label
+                            (click)="closeDialog(false)"><u>Nemám
+                                zájem.</u></label></div>
+
+                </div>
+                <span id="disclaimer">Potvrzením souhlasíte se zpracováním vašeho e-mailu za účelem posílání jakéhokoliv
+                    obsahu nabízený na této stránce. <b>Máte právo svůj souhlas odvolat.</b></span>
+            </div>
+        </form>
+    </div>
+
+</div>

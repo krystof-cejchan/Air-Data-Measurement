@@ -70,7 +70,11 @@ import { ApiComponent } from './dev/api/api.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ForecastComponent } from './forecast/forecast.component';
 import { NgcCookieConsentModule, NgcCookieConsentConfig } from 'ngx-cookieconsent';
-import { environment } from 'src/environments/environment';
+import { environment } from "src/environments/environment";
+import { NewsletterComponent } from './newsletter subscription/newsletter/newsletter.component';
+import { ConfirmationComponent } from './newsletter subscription/confirmation/confirmation.component';
+import { CancellationComponent } from './newsletter subscription/cancellation/cancellation.component';
+
 
 const cookieConfig: NgcCookieConsentConfig = {
   cookie: {
@@ -115,6 +119,9 @@ const cookieConfig: NgcCookieConsentConfig = {
     DevComponent,
     ApiComponent,
     ForecastComponent,
+    NewsletterComponent,
+    ConfirmationComponent,
+    CancellationComponent,
   ],
   imports: [
     BrowserModule,

@@ -75,6 +75,12 @@ body {
     margin-left: 50%;
 }
 
+#airQualityT,
+#humidityT,
+#temperatureT {
+    width: fit-content;
+}
+
 /*.nav-scroller {
     position: relative;
     z-index: 2;

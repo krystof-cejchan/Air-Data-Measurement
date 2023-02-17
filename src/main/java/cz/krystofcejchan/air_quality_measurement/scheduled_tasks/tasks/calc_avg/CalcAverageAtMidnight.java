@@ -38,7 +38,7 @@ public record CalcAverageAtMidnight(
         //what happens when service is triggered
         Runnable calcAverageDataAndAddToDatabase = () -> {
 
-            ResponseEntity<?> calculatedAvgWithResponse = CalcAvgFactory.calc(service);
+            ResponseEntity<?> calculatedAvgWithResponse = CalcAvgFactory.calc(service, null);
 
 
             System.out.println("Avg calculation:\t" + (calculatedAvgWithResponse.getStatusCode().is2xxSuccessful() ? "SUCCESS"

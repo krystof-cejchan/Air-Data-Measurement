@@ -1,5 +1,6 @@
 package cz.krystofcejchan.air_quality_measurement.service;
 
+import cz.krystofcejchan.air_quality_measurement.AqmApplication;
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
 import cz.krystofcejchan.air_quality_measurement.domain.location.LocationData;
 import cz.krystofcejchan.air_quality_measurement.domain.nondatabase_objects.AirDataAverage;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.CheckForNull;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -103,7 +105,7 @@ public class AirDataService {
      * @return AirData or null if no record matched the id
      */
     @Nullable
-    public synchronized AirData updateNumberReportedById(Long id) {
+    public synchronized AirData reportAirDataById(Long id, @CheckForNull String pswd) {
         var airDataOptional = airDataRepository.findById(id);
         if (airDataOptional.isPresent()) {
             AirData airData = airDataOptional.get();
@@ -114,13 +116,14 @@ public class AirDataService {
                     .orElse(Collections.singletonList(airData))
                     .get(0);*/
 
-            List<AirData> optionalPreviousAirData = airDataRepository.findByLocationIdAndReceivedDataDateTimeBefore(airData.getLocationId(),
+            List<AirData> previousAirDataList = airDataRepository.findByLocationIdAndReceivedDataDateTimeBefore(airData.getLocationId(),
                             airData.getReceivedDataDateTime())
                     .orElse(Collections.emptyList());
 
-            AirData previousAirData = optionalPreviousAirData.isEmpty() ? airData : optionalPreviousAirData.get(0);
+            AirData previousAirData = previousAirDataList.isEmpty() ? airData : previousAirDataList.get(0);
+            boolean isAuthRequest = !(pswd == null || pswd.isEmpty() || pswd.isBlank() || !pswd.equals(AqmApplication.dbpsd));
             try {
-                if (areDataNotValid(airData) || !compareAirDataObjects(airData, previousAirData)) {
+                if (isAuthRequest || areDataNotValid(airData) || !compareAirDataObjects(airData, previousAirData)) {
                     airDataRepository.delete(airData);
                     LeaderboardTable.saveChangedDataAndDeleteOldData(leaderboardRepository,
                             leaderboardRepository.findAll(),
@@ -202,7 +205,7 @@ public class AirDataService {
                         .orElseThrow(DataNotFoundException::new).get(0);
                 return new ResponseEntity<>(Collections.singletonList(airData), OK);
             } catch (DataNotFoundException dataNotFoundException) {
-                return new ResponseEntity<>(null, BAD_REQUEST);
+                return new ResponseEntity<>(BAD_REQUEST);
             }
         } else {
             return new ResponseEntity<>(locationData.stream()
@@ -224,7 +227,7 @@ public class AirDataService {
      */
     public @NotNull ResponseEntity<?> getAverageAirDataFromDateToDate(LocalDateTime start, LocalDateTime end) {
         Optional<List<AirData>> receivedDate = airDataRepository.findByReceivedDataDateTimeBetween(start, end);
-        return receivedDate.isEmpty() ? new ResponseEntity<>(BAD_REQUEST.getReasonPhrase(), BAD_REQUEST) : new ResponseEntity<>(receivedDate.orElseThrow(DataNotFoundException::new).stream().toList(), OK);
+        return receivedDate.isEmpty() ? new ResponseEntity<>(BAD_REQUEST) : new ResponseEntity<>(receivedDate.orElseThrow(DataNotFoundException::new).stream().toList(), OK);
     }
 
     /**
@@ -250,7 +253,7 @@ public class AirDataService {
         Optional<List<AirData>> receivedDate = airDataRepository.findByReceivedDataDateTimeBetween(LocalDateTime.of(day, LocalTime.MIN), LocalDateTime.of(day, LocalTime.MAX));
 
         if (receivedDate.orElseThrow(DataNotFoundException::new).isEmpty())
-            return new ResponseEntity<>(new AirDataAverage(null, null, null), OK);
+            return new ResponseEntity<>(BAD_REQUEST);
 
         try {
             BigDecimal airQualityAvg = BigDecimal.valueOf(receivedDate.orElseThrow(DataNotFoundException::new).stream().map(AirData::getAirQuality).mapToDouble(BigDecimal::doubleValue).average().orElseThrow(DataNotFoundException::new));
@@ -277,7 +280,7 @@ public class AirDataService {
                         LocalDateTime.of(day, LocalTime.MAX));
 
         if (receivedDate.orElseThrow(DataNotFoundException::new).isEmpty())
-            return new ResponseEntity<>(BAD_REQUEST.getReasonPhrase(), BAD_REQUEST);
+            return new ResponseEntity<>(BAD_REQUEST);
 
         return new ResponseEntity<>(receivedDate, OK);
     }
@@ -305,7 +308,7 @@ public class AirDataService {
         Optional<AirData> receivedDate = airDataRepository.findByIdAndRndHash(id, hash);
 
         if (receivedDate.isEmpty())
-            return new ResponseEntity<>(BAD_REQUEST.getReasonPhrase(), BAD_REQUEST);
+            return new ResponseEntity<>(BAD_REQUEST);
         else return new ResponseEntity<>(receivedDate, OK);
     }
 

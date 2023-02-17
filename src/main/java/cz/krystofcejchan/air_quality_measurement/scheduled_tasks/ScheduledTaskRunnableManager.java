@@ -1,10 +1,13 @@
 package cz.krystofcejchan.air_quality_measurement.scheduled_tasks;
 
+import cz.krystofcejchan.air_quality_measurement.notifications.NotificationsRepository;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataAverageOfDayRepository;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataRepository;
 import cz.krystofcejchan.air_quality_measurement.repository.LocationDataRepository;
 import cz.krystofcejchan.air_quality_measurement.scheduled_tasks.tasks.UpdateForecast;
 import cz.krystofcejchan.air_quality_measurement.scheduled_tasks.tasks.calc_avg.CalcAverageAtMidnight;
+import cz.krystofcejchan.air_quality_measurement.scheduled_tasks.tasks.notifications.SendForecastForTheDay;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +23,12 @@ public class ScheduledTaskRunnableManager {
      * Instantiates a new Scheduled task runnable manager.
      */
     public ScheduledTaskRunnableManager(AirDataAverageOfDayRepository avgRepository, AirDataRepository airDataRepository,
-                                        LocationDataRepository locationDataRepository) {
+                                        LocationDataRepository locationDataRepository, NotificationsRepository notificationsRepository,
+                                        JavaMailSender javaMailSender) {
         this();
         addToList(new CalcAverageAtMidnight(avgRepository, airDataRepository, locationDataRepository));
+        addToList(new SendForecastForTheDay(notificationsRepository,javaMailSender));
+
     }
 
     public ScheduledTaskRunnableManager() {

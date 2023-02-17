@@ -53,8 +53,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "2.5kb",
+                  "maximumError": "5kb"
                 }
               ],
               "fileReplacements": [
@@ -107,11 +107,13 @@
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/cookieconsent/build/cookieconsent.min.css"
             ],
             "scripts": [
               "src/assets/js/jquery.min.js",
-              "src/assets/js/nav-bar-closeable.js"
+              "src/assets/js/nav-bar-closeable.js",
+              "node_modules/cookieconsent/build/cookieconsent.min.js"
             ]
           }
         }

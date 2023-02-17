@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <div class="main_background_photo">
+    <section class="main_background_photo">
         <div id="overlay">
             <video loop="loop" [muted]="'muted'" autoplay="autoplay" *ngIf="!isMobile()" poster="
                 ./assets/imgs/thumbnail_for_bcgvideo.webp" class="fullscreen-bg__video">
@@ -69,10 +69,11 @@
                 </div>
             </div>
         </div>
-    </div>
-    <footer><small><span id="Copyright" (click)="openLink('https://krystofcejchan.cz')">&copy; Copyright
-                2022-{{getCurrYear()}}, Kryštof
-                Čejchan</span></small></footer>
+        <footer><small><span id="Copyright" (click)="openLink('https://krystofcejchan.cz')">&copy; Copyright
+                    2022-{{getCurrYear()}}, Kryštof
+                    Čejchan</span></small></footer>
+
+    </section>
 </body>
 
 </html>
