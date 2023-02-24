@@ -70,11 +70,7 @@ public class AirDataService {
         airData.setRndHash(UUID.randomUUID().toString());
 
         AirData airDataSave = airDataRepository.save(airData);
-      /*  try {
-            Thread.sleep(300);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
+
         leaderboardService.updateLeaderboard();
         return airDataSave;
     }
@@ -110,11 +106,6 @@ public class AirDataService {
         if (airDataOptional.isPresent()) {
             AirData airData = airDataOptional.get();
             airData.setReportedN(airData.getReportedN() + 1);
-
-          /*  AirData previousAirData = airDataRepository.findByLocationAndReceivedDataDateTimeBefore(airData.getLocation(),
-                            airData.getReceivedDataDateTime())
-                    .orElse(Collections.singletonList(airData))
-                    .get(0);*/
 
             List<AirData> previousAirDataList = airDataRepository.findByLocationIdAndReceivedDataDateTimeBefore(airData.getLocationId(),
                             airData.getReceivedDataDateTime())
@@ -195,7 +186,7 @@ public class AirDataService {
      * @param paramLocationId the param location
      * @return the latest air data
      */
-    public @NotNull ResponseEntity<List<AirData>> getLatestAirData(Long paramLocationId) {
+    public @NotNull ResponseEntity<List<AirData>> getLatestAirData(@Nullable Long paramLocationId) {
         List<LocationData> locationData = locationDataRepository.findAll();
         if (paramLocationId != null) {
             //paramLocationId is set and its value matches at least one LocationData
@@ -291,9 +282,9 @@ public class AirDataService {
                         LocalDateTime.of(end, LocalTime.MAX));
 
         if (receivedDate.orElseThrow(DataNotFoundException::new).isEmpty())
-            return new ResponseEntity<Set<String>>(Collections.singleton(TOO_EARLY.getReasonPhrase()), TOO_EARLY);
+            return new ResponseEntity<>(Collections.singleton(TOO_EARLY.getReasonPhrase()), TOO_EARLY);
 
-        return new ResponseEntity<List<AirData>>(receivedDate.get(), OK);
+        return new ResponseEntity<>(receivedDate.get(), OK);
     }
 
     /**

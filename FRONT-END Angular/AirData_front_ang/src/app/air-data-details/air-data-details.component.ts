@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, OnDestroy } from "@angular/core";
 import { ActivatedRoute } from '@angular/router';
 import { AirDataDetailsService } from './air-data-details.service';
-import { AirData } from "../airdata";
+import { AirData } from "../objects/airdata";
 import { formatDate } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
 import { LocationData } from '../objects/LocationData';

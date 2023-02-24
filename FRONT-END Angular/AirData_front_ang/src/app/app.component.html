@@ -34,11 +34,11 @@
           <span class="navbar-toggler-icon {{getHamburger()}}"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
-          <ul class="navbar-nav">
-            <li class="nav-item" routerLink="" routerLinkActive="active">
+          <ul class="navbar-nav flex-grow-1">
+            <li class="nav-item flex-grow-1" routerLink="" routerLinkActive="active">
               <a aria-current="page" class="nav-link active">Úvodní strana</a>
             </li>
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown flex-grow-1">
               <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button">
                 Všechny funkce
               </a>
@@ -50,24 +50,34 @@
                 <li routerLink="/zebricky" routerLinkActive="active"><a class="dropdown-item">Žebříčky</a></li>
               </ul>
             </li>
-            <li class="nav-item" routerLink="/predpoved" routerLinkActive="active">
+            <li class="nav-item flex-grow-1" routerLink="/predpoved" routerLinkActive="active">
               <a class="nav-link">Předpověď počasí</a>
             </li>
-            <li class="nav-item" routerLink="/projekt" routerLinkActive="active">
+            <li class="nav-item dropdown flex-grow-1">
+              <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button">
+                Uživatelské preference
+              </a>
+              <ul class="dropdown-menu">
+                <li routerLink="/predplatne/spravce" routerLinkActive="active"><a class="dropdown-item">Odběr
+                    novinek</a>
+                </li>
+                <!--<li routerLink="/nekdejsi-data" routerLinkActive="active"><a class="dropdown-item">Historie</a></li>
+                <li routerLink="/grafy" routerLinkActive="active"><a class="dropdown-item">Grafy</a></li>
+                <li routerLink="/zebricky" routerLinkActive="active"><a class="dropdown-item">Žebříčky</a></li>-->
+              </ul>
+            </li>
+            <li class="nav-item flex-grow-1" routerLink="/projekt" routerLinkActive="active">
               <a class="nav-link">O projektu</a>
             </li>
-          </ul>
-          <ul class="navbar-nav">
-            <li class="nav-item " routerLink="/dev" routerLinkActive="active">
+            <!--
+            <li class="nav-item flex-grow-1" routerLink="/dev" routerLinkActive="active">
               <a class="nav-link">API</a>
-            </li>
+            </li>-->
           </ul>
         </div>
-
-
-
       </div>
     </nav>
+
 
     <!-- 
   <div class="side-navbar active-nav d-flex justify-content-between flex-wrap flex-column" id="sidebar">

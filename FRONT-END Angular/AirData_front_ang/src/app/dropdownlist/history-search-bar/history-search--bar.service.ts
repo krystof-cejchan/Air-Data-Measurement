@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AirData } from 'src/app/airdata';
-import { AirDataAverage } from 'src/app/airdata_average';
+import { AirData } from 'src/app/objects/airdata';
+import { AirDataAverage } from 'src/app/objects/airdata_average';
 import { environment } from 'src/environments/environment';
 
 @Injectable({

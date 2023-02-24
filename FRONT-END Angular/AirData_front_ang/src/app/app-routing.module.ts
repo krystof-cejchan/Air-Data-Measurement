@@ -13,6 +13,7 @@ import { Title } from '@angular/platform-browser';
 import { ForecastComponent } from "./forecast/forecast.component";
 import { ConfirmationComponent } from "./newsletter subscription/confirmation/confirmation.component";
 import { CancellationComponent } from "./newsletter subscription/cancellation/cancellation.component";
+import { ManagerComponent } from "./newsletter subscription/manager/manager.component";
 
 
 const routes: Routes = [
@@ -51,10 +52,13 @@ const routes: Routes = [
     path: 'predpoved/:day/:time', pathMatch: 'full', title: 'Předpověď počasí', component: ForecastComponent
   },
   {
-    path: 'predplatne/potvrzeni/:id/:hash', pathMatch: 'full', title: 'Potvrzení předplatného', component: ConfirmationComponent
+    path: 'predplatne/spravce', pathMatch: 'full', title: 'Správa odběru', component: ManagerComponent
   },
   {
-    path: 'predplatne/zruseni/:id/:hash', pathMatch: 'full', title: 'Zrušení předplatného', component: CancellationComponent
+    path: 'predplatne/potvrzeni/:id/:hash', pathMatch: 'full', title: 'Potvrzení odběru', component: ConfirmationComponent
+  },
+  {
+    path: 'predplatne/zruseni/:id/:hash', pathMatch: 'full', title: 'Zrušení odběru', component: CancellationComponent
   },
   {
     path: '**', title: 'Vyskytla se chyba', component: ErrorsComponent

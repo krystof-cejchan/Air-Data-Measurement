@@ -74,6 +74,7 @@ import { environment } from "src/environments/environment";
 import { NewsletterComponent } from './newsletter subscription/newsletter/newsletter.component';
 import { ConfirmationComponent } from './newsletter subscription/confirmation/confirmation.component';
 import { CancellationComponent } from './newsletter subscription/cancellation/cancellation.component';
+import { ManagerComponent } from './newsletter subscription/manager/manager.component';
 
 
 const cookieConfig: NgcCookieConsentConfig = {
@@ -122,6 +123,7 @@ const cookieConfig: NgcCookieConsentConfig = {
     NewsletterComponent,
     ConfirmationComponent,
     CancellationComponent,
+    ManagerComponent,
   ],
   imports: [
     BrowserModule,

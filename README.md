@@ -26,20 +26,20 @@ napsanou v HTML5, SCSS a Typescriptu za použití Angular frameworku.
 - Zasílání aktuální předpovědi na e-mail
 - Nahlašování chybných měření uživateli
 - Responzivita pro většinu obrazovek
-- Dostupnost *API* pro vývojáře
+- Dostupnost **API** pro vývojáře
 
 ## Technologie, na kterých to běží
 
-- Na back-endu byl použit *framework Spring Boot* s programovacím jazykem *Java*
-  - Back-end běží v cloudu díky *AWS Elastic Beanstalk*, který má doinstalované SSL certifikáty
-- Vzhled a funkčnost webové stránky byl napsán v *HTML5*, *SCSS* a *TypeScriptu* za pomoci dodatečného *JavaScriptu* a
-  to celé je zabaleno ve *frameworku Angular*
+- Na back-endu byl použit **framework Spring Boot** s programovacím jazykem **Java**
+  - Back-end běží v cloudu díky **AWS Elastic Beanstalk**, který má doinstalované SSL certifikáty
+- Vzhled a funkčnost webové stránky byl napsán v **HTML5**, **SCSS** a **TypeScriptu** za pomoci dodatečného **JavaScriptu** a
+  to celé je zabaleno ve **frameworku Angular**
   - Celé je to hostované přes web-hosting
     - Web-hosting běží na serveru s upravenou konfigurací pro lepší zpracování požadavků pro Angular aplikaci
-- Data a záznamy se ukládají do relačního databázového systému *MySQL*
+- Data a záznamy se ukládají do relačního databázového systému **MySQL**
   - Databázový systém je taky hostován na cloudu
-- Data jsou měřena za pomocí čipů a senzorů připojených na *Arduino (NodeMCU)*
-  - Kód běžící na Arduinu je napsán v *C++*
+- Data jsou měřena za pomocí čipů a senzorů připojených na **Arduino (NodeMCU)**
+  - Kód běžící na Arduinu je napsán v **C++**
 
 ## Screenshoty
 

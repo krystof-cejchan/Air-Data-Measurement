@@ -2,7 +2,7 @@ import { DOCUMENT, formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Inject, OnInit, OnDestroy } from "@angular/core";
 import { ActivatedRoute, Router } from '@angular/router';
-import { AirData } from 'src/app/airdata';
+import { AirData } from 'src/app/objects/airdata';
 import { openSnackBar } from 'src/app/errors/custom in-page errors/snack-bar/server_error/custom-error-snackbar';
 import { LatestDataService } from './latest-data.service';
 import { MatSnackBar } from "@angular/material/snack-bar";
