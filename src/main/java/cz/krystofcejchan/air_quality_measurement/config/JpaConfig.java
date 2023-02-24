@@ -17,7 +17,7 @@ public class JpaConfig {
      *
      * @return DataSource for localhost mysql db
      */
-   // @Primary
+  /*  @Primary
     @Bean
     public DataSource getSecondaryDataSource() {
         DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
@@ -25,7 +25,7 @@ public class JpaConfig {
         dataSourceBuilder.username("root");
         dataSourceBuilder.password("jetotereza");
         return dataSourceBuilder.build();
-    }
+    }*/
 
     /**
      * Server mysql db
