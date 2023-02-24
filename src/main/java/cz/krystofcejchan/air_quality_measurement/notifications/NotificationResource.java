@@ -2,7 +2,6 @@ package cz.krystofcejchan.air_quality_measurement.notifications;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,18 +10,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/airdata/notifications")
 @CrossOrigin(origins = {"https://krystofcejchan.cz", "http://localhost:4200"}, methods = {RequestMethod.POST, RequestMethod.PATCH, RequestMethod.DELETE},
         maxAge = 60, allowedHeaders = "*", exposedHeaders = "*")
-public class NotificationResource {
-    @Autowired
-    private final NotificationService service;
+public record NotificationResource(NotificationService service) {
 
-    @Contract(pure = true)
-    public NotificationResource(NotificationService service) {
-        this.service = service;
-    }
-
+    @Contract("null -> new")
     @PostMapping("/add")
-    public ResponseEntity<NotificationReceiver> addNewReceiver(@RequestHeader() String email) {
-        System.out.println(email);
+    public @NotNull ResponseEntity<NotificationReceiver> addNewReceiver(@RequestHeader() String email) {
         if (email == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
@@ -30,14 +22,16 @@ public class NotificationResource {
         return new ResponseEntity<>(addedReceiver, addedReceiver == null ? HttpStatus.UNAUTHORIZED : HttpStatus.CREATED);
     }
 
+    @Contract("_, _ -> new")
     @PatchMapping("/confirm")
-    public ResponseEntity<Boolean> confirmReceiver(@RequestHeader() Long id, @RequestHeader() String hash) {
+    public @NotNull ResponseEntity<Boolean> confirmReceiver(@RequestHeader() Long id, @RequestHeader() String hash) {
         return new ResponseEntity<>(service.confirmReceiver(id, hash));
     }
 
+    @Contract("_, _, _ -> new")
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteReceiver(@RequestHeader() Long id, @RequestHeader() @NotNull String hash,
-                                            @RequestHeader(name = "password") Integer psw) {
+    public @NotNull ResponseEntity<?> deleteReceiver(@RequestHeader() Long id, @RequestHeader() @NotNull String hash,
+                                                     @RequestHeader(name = "password") Integer psw) {
 
         if (psw != id * hash.length())
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

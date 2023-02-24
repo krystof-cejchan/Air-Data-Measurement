@@ -5,7 +5,6 @@ import jakarta.mail.internet.MimeMessage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -18,8 +17,6 @@ public class EmailServiceImpl implements EmailService {
 
     @Autowired
     private JavaMailSender javaMailSender;
-    @Value("${spring.mail.username}")
-    private String sender;
 
     /**
      * sends an email
@@ -38,7 +35,8 @@ public class EmailServiceImpl implements EmailService {
                 MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
                 MimeMessageHelper mimeMessageHelper
                         = new MimeMessageHelper(mimeMessage, true);
-                mimeMessageHelper.setFrom(sender == null ? "upocasi.notification@gmail.com" : sender);
+                String sender = "upocasi.notifications.noreply@gmail.com";
+                mimeMessageHelper.setFrom(sender);
                 mimeMessageHelper.setTo(emailDetail.getRecipient());
                 mimeMessageHelper.setText(emailDetail.getMsgBody(), true);
                 mimeMessageHelper.setSubject(

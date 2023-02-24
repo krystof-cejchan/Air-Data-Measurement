@@ -20,14 +20,12 @@ public class NotificationService {
 
     @Autowired
     private EmailService emailService;
-
-    private final NotificationsRepository repository;
+    @Autowired
+    private  NotificationsRepository repository;
 
     @Autowired
     @Contract(pure = true)
-    public NotificationService(NotificationsRepository repository) {
-        this.repository = repository;
-    }
+    public NotificationService() {    }
 
     public @Nullable NotificationReceiver addNewNotificationReceiver(@NotNull String receiversEmail) {
         final NotificationReceiver receiver = new NotificationReceiver(-1L,
@@ -40,7 +38,11 @@ public class NotificationService {
         var optUserWithSameEmail = repository.findByEmailAddress(receiversEmail);
         if (optUserWithSameEmail.isEmpty()) {
             var newlySavedReceiver = repository.save(receiver);
-            emailService.sendSimpleMail(null,new EmailDetails(newlySavedReceiver, EmailTemplates.CONFIRM));
+            var sendEmailAndGetStatus = this.emailService.sendSimpleMail(null, new EmailDetails(newlySavedReceiver, EmailTemplates.CONFIRM));
+            if (!sendEmailAndGetStatus.is2xxSuccessful()) {
+                repository.deleteById(newlySavedReceiver.getId());
+                return null;
+            }
             return newlySavedReceiver;
         } else return null;
     }
@@ -62,7 +64,7 @@ public class NotificationService {
         Optional<NotificationReceiver> optReceiver = repository.findByIdAndRndHash(id, hash);
         if (optReceiver.isEmpty()) return HttpStatus.CONFLICT;
         var receiver = optReceiver.get();
-        emailService.sendSimpleMail(null,new EmailDetails(receiver, EmailTemplates.UNSUBSCRIBE));
+        emailService.sendSimpleMail(null, new EmailDetails(receiver, EmailTemplates.UNSUBSCRIBE));
         repository.deleteById(receiver.getId());
         return HttpStatus.OK;
     }

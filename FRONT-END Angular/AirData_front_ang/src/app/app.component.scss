@@ -68,11 +68,12 @@ body {
 }
 
 .navbar-nav>li {
-	padding-left: 50px;
-	padding-right: 50px;
+	//padding-left: 20px;
+	//padding-right: 20px;
 	padding-top: 5px;
 	padding-bottom: 5px;
 	font-size: large;
+	text-align: center;
 	cursor: pointer;
 
 	&:hover {
@@ -81,6 +82,21 @@ body {
 		border-radius: 10px;
 	}
 }
+
+
+.navbar-expand-xl .navbar-nav .dropdown-menu {
+	width: 50%;
+	left: 25%;
+	text-align: center;
+	//position: relative;
+}
+
+@media screen and (max-width: 1200px) {
+	.navbar-expand-xl .navbar-nav .dropdown-menu {
+		position: relative;
+	}
+}
+
 
 .dropdown-item {
 	color: rgb(252, 252, 252) !important;

@@ -1,4 +1,4 @@
-import { LocationData } from "./objects/LocationData";
+import { LocationData } from "./LocationData";
 
 export interface AirData {
     id: number;

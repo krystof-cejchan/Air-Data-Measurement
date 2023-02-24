@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AirData } from 'src/app/airdata';
+import { AirData } from 'src/app/objects/airdata';
 import { environment } from 'src/environments/environment';
 
 @Injectable({

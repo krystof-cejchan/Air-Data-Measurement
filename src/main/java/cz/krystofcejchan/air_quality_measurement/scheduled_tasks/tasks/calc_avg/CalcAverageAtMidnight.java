@@ -39,11 +39,6 @@ public record CalcAverageAtMidnight(
         Runnable calcAverageDataAndAddToDatabase = () -> {
 
             ResponseEntity<?> calculatedAvgWithResponse = CalcAvgFactory.calc(service, null);
-
-
-            System.out.println("Avg calculation:\t" + (calculatedAvgWithResponse.getStatusCode().is2xxSuccessful() ? "SUCCESS"
-                    : "FAIL => NOT NEEDED / COULD NOT CONNECT TO JPA"));
-
         };
 
         //first trigger at 00:00, then wait one day to trigger again

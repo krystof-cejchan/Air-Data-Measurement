@@ -1,5 +1,5 @@
 import { Component, HostListener, OnInit, OnDestroy } from "@angular/core";
-import { AirData } from '../airdata';
+import { AirData } from '../objects/airdata';
 import { LatestDataService } from '../dropdownlist/latest-data/latest-data.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { round } from '../utilities/utils';

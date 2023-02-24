@@ -1,4 +1,4 @@
-import { AirData } from "../airdata";
+import { AirData } from "./airdata";
 import { LocationData } from "./LocationData";
 
 export interface LeaderboardData {

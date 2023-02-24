@@ -54,6 +54,11 @@ public class AqmApplication implements CommandLineRunner {
     private AirDataRepository airDataRepository;
     @Autowired
     private NotificationsRepository notificationsRepository;
+
+    public JavaMailSender getJavaMailSender() {
+        return javaMailSender;
+    }
+
     @Autowired
     private JavaMailSender javaMailSender;
 

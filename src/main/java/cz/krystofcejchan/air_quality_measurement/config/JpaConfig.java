@@ -36,7 +36,7 @@ public class JpaConfig {
     @Bean
     public DataSource getPrimaryDataSource() {
         DataSourceBuilder<? extends DataSource> dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.url("jdbc:mysql://doadmin:AVNS_MrIOZIhEXx3CUdn6f0k@db-mysql-fra1-97613-do-user-13223853-0.b.db.ondigitalocean.com:25060/airdatameasurement?ssl-mode=REQUIRED");
+        dataSourceBuilder.url(System.getenv("DB"));
         dataSourceBuilder.username("doadmin");
         dataSourceBuilder.password(cz.krystofcejchan.air_quality_measurement.AqmApplication.dbpsd);
         return dataSourceBuilder.build();
