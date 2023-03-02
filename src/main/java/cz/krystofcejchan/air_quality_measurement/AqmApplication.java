@@ -22,10 +22,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
-
-import static java.lang.Thread.sleep;
 
 /**
  * Main Class
@@ -54,11 +54,6 @@ public class AqmApplication implements CommandLineRunner {
     private AirDataRepository airDataRepository;
     @Autowired
     private NotificationsRepository notificationsRepository;
-
-    public JavaMailSender getJavaMailSender() {
-        return javaMailSender;
-    }
-
     @Autowired
     private JavaMailSender javaMailSender;
 
@@ -79,6 +74,9 @@ public class AqmApplication implements CommandLineRunner {
         System.out.println("\nFully ready after: " + (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - startTime)) + 's');
     }
 
+    public JavaMailSender getJavaMailSender() {
+        return javaMailSender;
+    }
 
     /**
      * implemented from {@link CommandLineRunner}
@@ -89,12 +87,15 @@ public class AqmApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        List<AirDataLeaderboard> existingAirData = airDataLeaderboardRepo.findAll();
-        sleep(2500);
-        Map<LeaderBoardKey, List<AirData>> map = LeaderboardTable.getFreshDataForLeaderboard(airDataRepo);
-        sleep(5000);
+        final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        Runnable recalculateLeaderboard = () -> {
+            List<AirDataLeaderboard> existingAirData = airDataLeaderboardRepo.findAll();
+            Map<LeaderBoardKey, List<AirData>> map = LeaderboardTable.getFreshDataForLeaderboard(airDataRepo);
+            LeaderboardTable.saveChangedDataAndDeleteOldData(airDataLeaderboardRepo, existingAirData, map);
+        };
 
-        LeaderboardTable.saveChangedDataAndDeleteOldData(airDataLeaderboardRepo, existingAirData, map);
+        scheduledExecutorService.schedule(recalculateLeaderboard, 10, TimeUnit.SECONDS);
+
         new InsertLocationData().runScheduledTask(locationDataRepository);
 
         new ScheduledTaskRunnableManager(avgRepository,

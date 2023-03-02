@@ -6,7 +6,6 @@ import { SnackBarErrorComponent } from "../../errors/custom in-page errors/snack
 import { popUpSnackBar } from "../../utilities/utils";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { NewsletterService } from "./newsletter.service";
-import { NotificationReceiver } from "./NotificationReceiver";
 
 @Component({
   selector: 'app-newsletter',
@@ -43,7 +42,7 @@ export class NewsletterComponent implements OnInit {
     const expression: RegExp = /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
     const formValue = this.newsletterForm.value;
 
-    if (!this.newsletterForm.valid /*|| !expression.test(formValue)*/) {
+    if (!this.newsletterForm.valid && !expression.test(formValue)) {
       popUpSnackBar(this.snackBar, "Nastala chyba při ověřování e-mailu. Zkuste to, prosím, znovu.", 4, true);
       return;
     }

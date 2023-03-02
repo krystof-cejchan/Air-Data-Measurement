@@ -21,6 +21,7 @@ public class SendForecastManager {
     }
 
     public void sendEmailsAndDeleteInactiveAccounts() {
+        //   System.out.println("email sending");
         var allNotificationReceivers = notificationsRepository.findAll();
         var inactive = allNotificationReceivers.stream()
                 .filter(receiver -> !receiver.getConfirmed())

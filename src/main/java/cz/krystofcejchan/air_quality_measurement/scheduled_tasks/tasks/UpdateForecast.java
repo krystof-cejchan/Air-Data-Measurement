@@ -1,6 +1,6 @@
 package cz.krystofcejchan.air_quality_measurement.scheduled_tasks.tasks;
 
-import cz.krystofcejchan.air_quality_measurement.forecast.ForecastMap;
+import cz.krystofcejchan.air_quality_measurement.forecast.ForecastDataList;
 import cz.krystofcejchan.air_quality_measurement.scheduled_tasks.ScheduledTaskRunnable;
 import cz.krystofcejchan.lite_weather_lib.enums_exception.enums.DAY;
 import cz.krystofcejchan.lite_weather_lib.enums_exception.enums.TIME;
@@ -32,15 +32,15 @@ public class UpdateForecast implements ScheduledTaskRunnable {
                 while (forecast == null && counter.incrementAndGet() < 10);
 
                 if (forecast != null && forecast.getAllSavedForecasts() != null && !forecast.getAllSavedForecasts().isEmpty()) {
-                    ForecastMap.forecastMap.clear();
-                    ForecastMap.forecastMap.addAll(forecast.getAllSavedForecasts());
-                    //ForecastMap.forecastMap.replaceAll((k,v)->forecast.getAllSavedForecasts());
+                    ForecastDataList.forecastAtHourList.clear();
+                    ForecastDataList.forecastAtHourList.addAll(forecast.getAllSavedForecasts());
+                    //ForecastDataList.forecastAtHourList.replaceAll((k,v)->forecast.getAllSavedForecasts());
                 }
             }
         };
         scheduledExecutorService.scheduleAtFixedRate(updateForecast,
                 0L,
-                ForecastMap.UPDATE_TIME.getSeconds(),
+                ForecastDataList.UPDATE_TIME.getSeconds(),
                 TimeUnit.SECONDS);
     }
 }

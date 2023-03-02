@@ -17,7 +17,7 @@ public class JpaConfig {
      *
      * @return DataSource for localhost mysql db
      */
-  /*  @Primary
+    /*@Primary
     @Bean
     public DataSource getSecondaryDataSource() {
         DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
@@ -32,13 +32,23 @@ public class JpaConfig {
      *
      * @return DataSource for server-side db
      */
-    @Primary
+   /* @Primary
     @Bean
     public DataSource getPrimaryDataSource() {
         DataSourceBuilder<? extends DataSource> dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.url(System.getenv("DB"));
         dataSourceBuilder.username("doadmin");
         dataSourceBuilder.password(cz.krystofcejchan.air_quality_measurement.AqmApplication.dbpsd);
+        return dataSourceBuilder.build();
+    }
+*/
+    @Primary
+    @Bean
+    public DataSource getPrimaryDataSource() {
+        DataSourceBuilder<? extends DataSource> dataSourceBuilder = DataSourceBuilder.create();
+        dataSourceBuilder.url("");
+        dataSourceBuilder.username("");
+        dataSourceBuilder.password("");
         return dataSourceBuilder.build();
     }
 }
