@@ -1,6 +1,6 @@
 package cz.krystofcejchan.air_quality_measurement.service;
 
-import cz.krystofcejchan.air_quality_measurement.forecast.ForecastMap;
+import cz.krystofcejchan.air_quality_measurement.forecast.ForecastDataList;
 import cz.krystofcejchan.lite_weather_lib.weather_objects.subparts.forecast.days.hour.ForecastAtHour;
 import org.jetbrains.annotations.Contract;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ public class ForecastService {
     }
 
     public List<ForecastAtHour> getForecastFor3UpcomingDays() {
-        return ForecastMap.forecastMap;
+        return ForecastDataList.forecastAtHourList;
     }
 
 }
