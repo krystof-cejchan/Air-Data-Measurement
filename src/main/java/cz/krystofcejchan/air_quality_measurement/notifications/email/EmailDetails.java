@@ -3,7 +3,7 @@ package cz.krystofcejchan.air_quality_measurement.notifications.email;
 import cz.krystofcejchan.air_quality_measurement.AqmApplication;
 import cz.krystofcejchan.air_quality_measurement.enums.Production;
 import cz.krystofcejchan.air_quality_measurement.exceptions.DataNotFoundException;
-import cz.krystofcejchan.air_quality_measurement.forecast.ForecastMap;
+import cz.krystofcejchan.air_quality_measurement.forecast.ForecastDataList;
 import cz.krystofcejchan.air_quality_measurement.notifications.NotificationReceiver;
 import cz.krystofcejchan.lite_weather_lib.enums_exception.enums.DAY;
 import cz.krystofcejchan.lite_weather_lib.enums_exception.enums.TIME;
@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 
 public class EmailDetails {
@@ -43,28 +44,33 @@ public class EmailDetails {
 
         switch (template) {
             case CONFIRM -> {
-                this.msgBody = "<html><head><meta charset=\"UTF-8\"></head><body><p style=\"text-align:center\"><strong><span style=\"font-size:30px\"><span style=\"background-color:#2969b0;color:#efefef;text-shadow:rgba(255,255,255,.65) 3px 2px 4px\">UPo&ccaron;as&iacute;</span></span></strong></p><p>Dobr&yacute; den,</p><p>k potvrzen&iacute; klikn&ecaron;te zde:<a href=\"%s/predplatne/potvrzeni/%s/%s\" rel=\"noopener noreferrer\" target=\"_blank\">TADY</a></p><p><br></p><p>Pokud jste o nic neza&zcaron;&aacute;dali, e-mail m&uring;&zcaron;ete ignorovat nebo smazat.</p><p><br></p><p><br></p><p><br></p><hr><p><span style=\"font-size:10px\"><strong>E-mail byl vygenerov&aacute;n automaricky - neodpov&iacute;dejte na n&ecaron;j.</strong></span></p></body></html>"
+                this.msgBody = "<p style='text-align:center'><strong><span style='font-size:30px'><span style='background-color:#2969b0;color:#efefef;text-shadow:rgba(255,255,255,.65) 3px 2px 4px'>UPočasí</span></span></strong></p><p>Dobrý den,</p><p>k potvrzení klikněte: <a href='%s/predplatne/potvrzeni/%s/%s' rel='noopener noreferrer' target='_blank'>TADY</a></p><p><br></p><p>Pokud jste o nic nezažádali, e-mail můžete ignorovat nebo smazat.</p><p><br></p><p><br></p><p><br></p><hr><p><span style='font-size:10px'><strong>E-mail byl vygenerován automaricky - neodpovídejte na něj.</strong></span></p>"
                         .formatted(url, receiver.getId(), receiver.getRndHash());
                 this.subject += "Potvrzení";
             }
             case WEATHER_FORECAST -> {
                 TIME[] dayTimes = {TIME.AM_6, TIME.AM_9, TIME.AM_12, TIME.PM_3, TIME.PM_6};
-                var tempAvg = ForecastMap.forecastMap.parallelStream()
+                var tempAvg = ForecastDataList.forecastAtHourList.parallelStream()
                         .filter(it -> it.getDay() == DAY.TODAY && Arrays.stream(dayTimes).anyMatch(time -> time == it.getTime()))
                         .mapToDouble(ForecastAtHour::getTemperatureC)
                         .average();
-                this.msgBody = "<p style='text-align:center'><span style='font-size:30px;color:#2c82c9'><strong><br></strong></span></p><p>Dobr&yacute; den,</p><p>dnes bude v Olomouci %s s teplotou %s&deg;C.</p><p><br>V&iacute;ce informac&iacute; m&uring;&zcaron;ete naj&iacute;t<a href='https://krystofcejchan.cz/arduino_aiq_quality/beta/predpoved/' rel='noopener noreferrer' target='_blank'>na webov&eacute; str&aacute;nce ZDE.</a></p><p style='text-align:center'><strong><span style='font-size:36px;color:#2c82c9'>UPo&ccaron;as&iacute;</span></strong></p><p><br></p><p><br></p><hr><p><span style='font-size:10px'>Pokus nechcete dost&aacute;vat tyto upozorn&ecaron;n&iacute;, m&uring;&zcaron;ete tak prov&eacute;zt <a href='%s/predplatne/zruseni/%s/%s' rel='noopener noreferrer' target='_blank'> ZDE</a>.</span></p>"
+                var tempList = ForecastDataList.forecastAtHourList.stream().filter(day -> day.getDay() == DAY.TODAY)
+                        .toList();
+                //<p style='text-align:center'><span style='font-size:30px;color:#2c82c9'><strong><br></strong></span></p><p>Dobr&yacute; den,</p><p>dnes bude v Olomouci %s s teplotou %s&deg;C.</p><p><br>V&iacute;ce informac&iacute; m&uring;&zcaron;ete naj&iacute;t <a href='https://krystofcejchan.cz/arduino_aiq_quality/beta/predpoved/' rel='noopener noreferrer' target='_blank'>na webov&eacute; str&aacute;nce ZDE.</a></p><p style='text-align:center'><strong><span style='font-size:36px;color:#2c82c9'>UPo&ccaron;as&iacute;</span></strong></p><p><br></p><p><br></p><hr><p><span style='font-size:10px'>Pokus nechcete dost&aacute;vat tyto upozorn&ecaron;n&iacute;, m&uring;&zcaron;ete tak prov&eacute;zt <a href='%s/predplatne/zruseni/%s/%s' rel='noopener noreferrer' target='_blank'> ZDE</a>.</span></p>
+                this.msgBody = "<p style='text-align:center'><span style='font-size:30px;color:#2c82c9'><strong><br></strong></span></p><p>Dobrý den,</p><p>dnes bude v Olomouci %s s teplotou %s&deg;C.</p><p><br>Více informací můžete najít <a href='https://krystofcejchan.cz/arduino_aiq_quality/beta/predpoved/' rel='noopener noreferrer' target='_blank'>na webové stránce ZDE.</a></p><p style='text-align:center'><strong><span style='font-size:36px;color:#2c82c9'>UPočasí</span></strong></p><p><br></p><p><br></p><hr><p><span style='font-size:10px'>Pokus nechcete dostávat tyto upozornění, můžete tak provést <a href='%s/predplatne/zruseni/%s/%s' rel='noopener noreferrer' target='_blank'> ZDE</a>.</span></p>"
                         .formatted(
-                                weatherCodeToDescribtionInCzech(ForecastMap.forecastMap.stream()
-                                        .filter(it -> it.getDay() == DAY.TODAY && it.getTime() == TIME.AM_12)
+                                weatherCodeToDescriptionInCzech(tempList.stream()
+                                        .filter(it -> it.getTime() == TIME.AM_12)
+                                        .limit(1)
                                         .findAny()
                                         .orElseThrow(DataNotFoundException::new)
                                         .getWeatherCode()),
-                                tempAvg.orElse(Double.NaN), url, receiver.getId(), receiver.getRndHash());
+                                new DecimalFormat("#0.00").format(tempAvg.orElse(Double.NaN)),
+                                url, receiver.getId(), receiver.getRndHash());
                 this.subject += "Dnešní předpověď pro Olomouc";
             }
             case UNSUBSCRIBE -> {
-                this.msgBody = "<p style='text-align:center'><span style='font-size:30px;color:#efefef'><span style='background-color:#2969b0'>UPo&ccaron;as&iacute;</span></span></p><p style='text-align:left'><span style='font-size:14px;color:#2969b0'>Dobr&yacute; den, va&scaron;e p&rcaron;edplatn&eacute; bylo zru&scaron;eno.<br></span></p>";
+                this.msgBody = "<p style='text-align:center'><span style='font-size:30px;color:#efefef'><span style='background-color:#2969b0'>UPočasí</span></span></p><p style='text-align:left'><span style='font-size:14px;color:#2969b0'>Dobrý den, vaše předplatné bylo zrušeno.<br></span></p>";
                 this.subject += "Zrušení Vašeho předplatného";
             }
             default -> throw new IllegalArgumentException();
@@ -73,21 +79,8 @@ public class EmailDetails {
 
     }
 
-//    private String readTextFile(String textFilePathInResources) {
-//        try {
-//            Resource resource = new ClassPathResource(textFilePathInResources);
-//            File file = resource.getFile();
-//            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-//
-//            return bufferedReader.lines().collect(Collectors.joining());
-//
-//        } catch (Exception e) {
-//            return e.getMessage();
-//        }
-//    }
-
     @Contract(pure = true)
-    private String weatherCodeToDescribtionInCzech(int code) {
+    private String weatherCodeToDescriptionInCzech(int code) {
         return switch (code) {
             case 113 -> "Slunečno";
             case 116 -> "Částečně zataženo";

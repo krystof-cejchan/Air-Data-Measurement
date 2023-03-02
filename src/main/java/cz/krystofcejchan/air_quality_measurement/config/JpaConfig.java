@@ -1,5 +1,6 @@
 package cz.krystofcejchan.air_quality_measurement.config;
 
+import cz.krystofcejchan.air_quality_measurement.AqmApplication;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,12 +13,8 @@ import javax.sql.DataSource;
  */
 @Configuration
 public class JpaConfig {
-    /**
-     * Localhost JPA conf
-     *
-     * @return DataSource for localhost mysql db
-     */
-  /*  @Primary
+
+    /*@Primary
     @Bean
     public DataSource getSecondaryDataSource() {
         DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
@@ -28,9 +25,8 @@ public class JpaConfig {
     }*/
 
     /**
-     * Server mysql db
-     *
-     * @return DataSource for server-side db
+     * MySQL server connection bean
+     * @return DataSource
      */
     @Primary
     @Bean
@@ -38,7 +34,7 @@ public class JpaConfig {
         DataSourceBuilder<? extends DataSource> dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.url(System.getenv("DB"));
         dataSourceBuilder.username("doadmin");
-        dataSourceBuilder.password(cz.krystofcejchan.air_quality_measurement.AqmApplication.dbpsd);
+        dataSourceBuilder.password(AqmApplication.dbpsd);
         return dataSourceBuilder.build();
     }
 }

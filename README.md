@@ -2,11 +2,20 @@
 
     předběžný přístup
 
-- [UPočasí](#upoas)
-  - [Popis projektu](#popis-projektu)
-  - [Co to umí?](#co-to-um)
-  - [Technologie, na kterých to běží](#technologie-na-kterch-to-b)
-  - [Screenshoty](#screenshoty)
+## Obsah
+- [UPočasí](#upočasí)
+  * [Obsah](#obsah)
+  * [Popis projektu](#popis-projektu)
+  * [Co to umí?](#co-to-umí)
+  * [Technologie, na kterých to běží](#technologie-na-kterých-to-běží)
+  * [Screenshoty](#screenshoty)
+    + [Úvodní stránka](#úvodní-stránka)
+    + [Nejnovější data](#nejnovější-data)
+    + [Historie](#historie)
+    + [Grafy](#grafy)
+    + [Žebříčky](#žebříčky)
+    + [Předpověď počasí](#předpověď-počasí)
+    + [Detaily dat](#detaily-dat)
 
 <span style="border:1px solid #59ff20">Odkaz na stránku https://krystofcejchan.cz/arduino_aiq_quality/beta/ </span>
 
@@ -42,19 +51,27 @@ napsanou v HTML5, SCSS a Typescriptu za použití Angular frameworku.
   - Kód běžící na Arduinu je napsán v **C++**
 - Dostupnost *API* pro vývojáře
 
-## Technologie, na kterých to běží
-
-- Na back-endu byl použit *framework Spring Boot* s programovacím jazykem *Java*
-  - Back-end běží v cloudu díky *AWS Elastic Beanstalk*, který má doinstalované SSL certifikáty
-- Vzhled a funkčnost webové stránky byl napsán v *HTML5*, *SCSS* a *TypeScriptu* za pomoci dodatečného *JavaScriptu* a
-  to celé je zabaleno ve *frameworku Angular*
-  - Celé je to hostované přes web-hosting
-    - Web-hosting běží na serveru s upravenou konfigurací pro lepší zpracování požadavků pro Angular aplikaci
-- Data a záznamy se ukládají do relačního databázového systému *MySQL*
-  - Databázový systém je taky hostován na cloudu
-- Data jsou měřena za pomocí čipů a senzorů připojených na *Arduino (NodeMCU)*
-  - Kód běžící na Arduinu je napsán v *C++*
-
 ## Screenshoty
+### Úvodní stránka
+![main_page_img](https://user-images.githubusercontent.com/40124530/222465453-caf85467-4b7b-4c4e-a6b5-b8977748a1fa.png)
 
-![image](https://user-images.githubusercontent.com/40124530/218798013-88c2d192-6a6d-4d48-9e74-e3bf1b6c4f8c.png)
+### Nejnovější data
+![image](https://user-images.githubusercontent.com/40124530/222467797-1f0b8ecf-cf9f-43aa-a2f6-53b0f16a83e9.png)
+
+### Historie
+![history_page_img](https://user-images.githubusercontent.com/40124530/222465847-4225f37b-1a23-41b6-ad46-a0d0d4fffa19.png)
+
+### Grafy
+![image](https://user-images.githubusercontent.com/40124530/222468061-aaefe3ab-0005-40d1-bbf3-6e52f0625557.png)
+
+### Žebříčky
+![image](https://user-images.githubusercontent.com/40124530/222466122-d938f806-97a1-45be-adcc-1944b94659df.png)
+
+### Předpověď počasí
+![image](https://user-images.githubusercontent.com/40124530/222466376-4147e19e-fac6-497b-8e25-54a42a75b885.png)
+
+### Detaily dat
+![image](https://user-images.githubusercontent.com/40124530/222467129-81644761-649c-46cb-a2d8-58a795702545.png)
+
+
+

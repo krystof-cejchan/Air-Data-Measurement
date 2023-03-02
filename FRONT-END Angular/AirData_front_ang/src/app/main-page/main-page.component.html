@@ -43,7 +43,7 @@
                 </div>
                 <div class="row justify-content-md-center open_animation {{temp_sentence_show}}">
                     <div class="col align-self-center" id="teplota_text">
-                        <span *ngIf="!temp_sentence_show"> </span>
+                        <span *ngIf="!temp_sentence_show">&nbsp;</span>
                         <span *ngIf="temp_sentence_show">
                             <span>Právě je </span>
                             <b id="curr_temp" [ngStyle]="{'color':getColourBasedOnTemp()}">{{current_temperature}}°C</b>

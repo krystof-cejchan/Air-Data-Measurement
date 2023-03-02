@@ -1,5 +1,6 @@
 package cz.krystofcejchan.air_quality_measurement.resource;
 
+import cz.krystofcejchan.air_quality_measurement.forecast.ForecastDataList;
 import cz.krystofcejchan.air_quality_measurement.service.ForecastService;
 import cz.krystofcejchan.lite_weather_lib.weather_objects.subparts.forecast.days.hour.ForecastAtHour;
 import org.jetbrains.annotations.Contract;
@@ -25,7 +26,7 @@ public record ForecastResource(ForecastService service) {
     }
 
     /**
-     * mapping to return all {@link cz.krystofcejchan.air_quality_measurement.forecast.ForecastMap} data
+     * mapping to return all {@link ForecastDataList} data
      *
      * @return response as {@link List} of {@link ForecastAtHour}
      */

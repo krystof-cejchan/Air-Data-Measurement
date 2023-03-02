@@ -13,6 +13,11 @@ export class NewsletterService {
 
   constructor(private http: HttpClient) { }
 
+  /**
+ * adds new notifier
+ * @param email user's email address
+ * @returns added NotificationReceiver
+ */
   public addNewNotifier(email: string): Observable<NotificationReceiver> {
     // const headers = new HttpHeaders().set('email', email);
     return this.http.post<NotificationReceiver>(`${this.notificationUrl}/add`, {}, { headers: { 'email': email } });

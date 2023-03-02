@@ -7,11 +7,11 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ForecastMap {
+public class ForecastDataList {
     /**
      * static variable which contains forecast for the following 2 days along with the current day;
      * it is updated once every UPDATE_TIME
      */
-    static public final List<ForecastAtHour> forecastMap = new ArrayList<>();
+    static public final List<ForecastAtHour> forecastAtHourList = new ArrayList<>();
     static public final Duration UPDATE_TIME = Duration.of(12, ChronoUnit.HOURS);
 }
