@@ -20,6 +20,8 @@ import { SubSink } from "subsink";
 
 const moment = _rollupMoment || _moment;
 export interface PeriodicElement {
+  id: number,
+  hash: string,
   no: number;
   time: string;
   place: string;
@@ -296,6 +298,8 @@ export class HistorySearchBarComponent implements OnInit, IComponent, OnDestroy 
             var no = 0;
             airDataForDay.forEach(data => {
               this.sortedData.push({
+                id: data.id,
+                hash: data.rndHash,
                 no: ++no,
                 time: data.receivedDataDateTime,
                 place: data.locationId.name_short,
@@ -318,6 +322,8 @@ export class HistorySearchBarComponent implements OnInit, IComponent, OnDestroy 
           } catch (error) {
             response.forEach(data => {
               this.sortedData.push({
+                id: data.id,
+                hash: data.rndHash,
                 no: ++no,
                 time: data.receivedDataDateTime,
                 place: data.locationId.name_short,
@@ -391,5 +397,49 @@ export class HistorySearchBarComponent implements OnInit, IComponent, OnDestroy 
       this.activeLocations.push(location);
 
     this.sortedData = this.sortedDataCopy.filter(filter => this.activeLocations.includes(filter.place))
+  }
+
+  public getColourBasedOnTemp(temperature: number): string {
+    if (temperature <= -15)
+      return "#535eba"
+    // 1
+    if (temperature <= -10)
+      return "#187ac3"
+    // 2
+    if (temperature <= 0)
+      return "#1cb3d0";
+    // 3
+    if (temperature <= 10)
+      return "#25d3f5";
+    // 4
+    if (temperature <= 15)
+      return "#fdf121";
+    // 5
+    if (temperature <= 20)
+      return "#facd32";
+    // 6
+    if (temperature <= 25)
+      return "#f6ac43";
+    // 7
+    if (temperature <= 30)
+      return "#fb7832"
+    // 8
+    if (temperature <= 35)
+      return "#ff4929";
+    // 9
+    if (temperature > 35)
+      return "#d2449a";
+    else return "black";
+  }
+
+  /**
+  * uses provided id and hash from data obtained from database to redirect a user to a page where details of the record found 
+  * by provided airdataInfo will be displayed, if nothing is found with such id and hash,
+  * the redirection will be executed anyway but 
+  * error message will be displayed in the component where the user would be redirected to
+  * @param airdataInfo 
+  */
+  public showDetails(airdataInfo: { id: number, hash: string }) {
+    this.router.navigate([`/data-detaily/mereni/${airdataInfo.id}/${airdataInfo.hash}`], { relativeTo: this.route });
   }
 }

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Detaily Dat</title>
+    <!-- <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" rel="stylesheet">
+  <script crossorigin="anonymous" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js">
+    </script>-->
+</head>
+
+<body>
+    <div class="container px-0 py-5">
+        <div class="container px-2 px-md-0 py-5" *ngFor="let locationData of [locationData]">
+            <h2 class="pb-2 border-bottom">Detaily záznamu</h2>
+            <h3 class="fw-bold"><b>Název: </b>{{locationData?.name ?? "n / a"}}<br></h3>
+            <p class="text-muted">Zkrácený název: {{locationData?.name_short ?? "n / a"}} </p>
+            <span class="validity" [ngStyle]="{'color': (locationData?.outofservice ?? false)?'red':'green'}">Mimo
+                provoz: {{!(locationData?.outofservice ?? false)?'Nepravda':'Pravda'}} </span>
+            <div class="row align-items-md-center">
+                <div class="d-flex flex-column align-items-start gap-2">
+                </div>
+                <div class="col-12 col-md-6">
+                    <img src="{{locationData?.imgUrl ?? 'https://static.thenounproject.com/png/532200-200.png'}}"
+                        class="img-thumbnail float-left rounded img-fluid img-max-width80" alt="Location photo">
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="d-flex flex-column gap-2">
+                                <h4 class="fw-semibold mb-0">Zeměpisná šířka</h4>
+                                <p class="text-muted">{{locationData?.latitude ?? 'NaN'}}</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex flex-column gap-2">
+                                <h4 class="fw-semibold mb-0">Zeměpisná délka</h4>
+                                <p class="text-muted">{{locationData?.longitude ?? 'NaN'}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="d-flex flex-column gap-2">
+                                <h4 class="fw-semibold mb-0">Město</h4>
+                                <p class="text-muted">{{locationData?.city ?? "n / a"}}</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex flex-column gap-2">
+                                <h4 class="fw-semibold mb-0">Metry nad zemí</h4>
+                                <p>
+                                    {{locationData?.metersAboveTheGroundApprox ?? 'NaN'}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

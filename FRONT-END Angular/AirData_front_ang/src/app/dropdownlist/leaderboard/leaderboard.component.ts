@@ -100,7 +100,7 @@ export class LeaderboardComponent implements OnInit, IComponent, OnDestroy {
    * @param airdataInfo aid data consisting of id and hash code - these data are used to get a record from database matching the id and hash
    */
   public showDetails(airdataInfo: { id: number, hash: string }) {
-    this.router.navigate([`/data-detaily/${airdataInfo.id}/${airdataInfo.hash}`], { relativeTo: this.route });
+    this.router.navigate([`/data-detaily/mereni/${airdataInfo.id}/${airdataInfo.hash}`], { relativeTo: this.route });
   }
 
   private generateValueInMap(conf: { position: number, leaderboardType: string }, previous: LeaderboardData, behind: LeaderboardData): leaderboardDifferenceData {

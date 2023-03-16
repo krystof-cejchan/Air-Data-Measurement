@@ -4,8 +4,8 @@ export interface LocationData {
     city: string,
     name: string,
     name_short: string,
-    latitude: number,
-    longitude: number,
-    metersAboveTheGroundApprox: number,
+    latitude?: number,
+    longitude?: number,
+    metersAboveTheGroundApprox?: number,
     imgUrl: string
 }   

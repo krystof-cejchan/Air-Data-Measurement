@@ -88,7 +88,9 @@
           <th mat-sort-header="airQuality">Kvalita vzduchu (ppm)</th>
         </tr>
 
-        <tr *ngFor="let tblData of sortedData">
+        <tr *ngFor="let tblData of sortedData"
+          [ngStyle]="{'background-color':getColourBasedOnTemp(tblData.temperature)}"
+          (click)="showDetails({id:tblData.id,hash:tblData.hash})" class="clickable">
           <td id="no">{{tblData.no}}</td>
           <td>{{tblData.time}}</td>
           <td>{{tblData.place}}</td>

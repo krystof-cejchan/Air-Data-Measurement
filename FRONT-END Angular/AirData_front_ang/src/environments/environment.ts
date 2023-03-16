@@ -10,6 +10,7 @@ export const environment = {
   leaderboard: 'http://localhost:8080/airdata/leaderboard',
   forecastUrl: 'http://localhost:8080/airdata/forecast',
   notificationUrl: 'http://localhost:8080/airdata/notifications',
+  locationUrl: 'http://localhost:8080/airdata/locations',
   domain: 'localhost',
   firebase: {
     apiKey: "•••",

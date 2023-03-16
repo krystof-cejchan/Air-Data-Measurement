@@ -144,6 +144,7 @@ body {
 
     &:hover {
         transform: scale(1.012);
+        cursor: pointer;
     }
 }
 
@@ -172,6 +173,11 @@ span {
 
 .me-auto {
     cursor: pointer;
+}
+
+.btn:first-child:hover,
+:not(.btn-check)+.btn:hover {
+    color: #091e92 !important;
 }
 
 @media (min-width: 768px) {

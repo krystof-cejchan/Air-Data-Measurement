@@ -50,6 +50,10 @@ table {
             background-color: $even-row-color;
         }
 
+        &:not(:first-child) {
+            border-bottom: 1px solid rgba(128, 128, 128, 0.664);
+        }
+
         td#no {
             color: $no-color;
             font-style: italic;
@@ -104,4 +108,8 @@ table {
 mat-label>#cal-label {
     font-family: 'Courier New', Courier, monospace !important;
     letter-spacing: 1px;
+}
+
+.clickable {
+    cursor: pointer;
 }

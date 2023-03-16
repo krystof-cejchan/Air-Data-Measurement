@@ -74,7 +74,7 @@ export class LatestDataComponent implements OnInit, IComponent, OnDestroy {
    * @param airdataInfo 
    */
   public showDetails(airdataInfo: { id: number, hash: string }) {
-    this.router.navigate([`/data-detaily/${airdataInfo.id}/${airdataInfo.hash}`], { relativeTo: this.route });
+    this.router.navigate([`/data-detaily/mereni/${airdataInfo.id}/${airdataInfo.hash}`], { relativeTo: this.route });
   }
 
   /**

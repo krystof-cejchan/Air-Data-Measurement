@@ -26,6 +26,7 @@ public class JpaConfig {
 
     /**
      * MySQL server connection bean
+     *
      * @return DataSource
      */
     @Primary

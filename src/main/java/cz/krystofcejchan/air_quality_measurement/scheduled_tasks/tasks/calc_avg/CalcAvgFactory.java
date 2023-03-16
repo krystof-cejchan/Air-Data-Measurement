@@ -33,6 +33,6 @@ public class CalcAvgFactory {
         } else
             resultCode = HttpStatus.BAD_REQUEST;
 
-        return new ResponseEntity<>(resultCode.getReasonPhrase(), resultCode);
+        return new ResponseEntity<>(resultCode);
     }
 }

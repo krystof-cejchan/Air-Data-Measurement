@@ -131,7 +131,9 @@ export class ForecastComponent implements OnInit, IComponent, OnDestroy {
     return preffix + (morning ? closest : closest - 12).toString();
   }
 
-
+  getDayIndex(): number {
+    return this.availableDates.indexOf(this.route.snapshot.params['day']);
+  }
   getClosestNumberTime(hour: string = this.route.snapshot.params['time']): number {
     if (!hour)
       return 0;

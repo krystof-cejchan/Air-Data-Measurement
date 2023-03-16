@@ -254,7 +254,7 @@ public class AirDataService {
             return new ResponseEntity<>(new AirDataAverage(temperatureAvg.setScale(2, RoundingMode.HALF_UP), humidityAvg.setScale(2, RoundingMode.HALF_UP), airQualityAvg.setScale(2, RoundingMode.HALF_UP)), OK);
 
         } catch (DataNotFoundException e) {
-            return new ResponseEntity<>(BAD_REQUEST.getReasonPhrase() + '\n' + e.getMessage(), BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
         }
     }
 
@@ -282,7 +282,7 @@ public class AirDataService {
                         LocalDateTime.of(end, LocalTime.MAX));
 
         if (receivedDate.orElseThrow(DataNotFoundException::new).isEmpty())
-            return new ResponseEntity<>(Collections.singleton(TOO_EARLY.getReasonPhrase()), TOO_EARLY);
+            return new ResponseEntity<>(TOO_EARLY);
 
         return new ResponseEntity<>(receivedDate.get(), OK);
     }
