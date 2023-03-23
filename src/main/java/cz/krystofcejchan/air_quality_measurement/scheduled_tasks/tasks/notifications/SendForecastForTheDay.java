@@ -35,7 +35,7 @@ public record SendForecastForTheDay(
         scheduledExecutorService.scheduleAtFixedRate(sendEmailsAndRemoveInactiveAccounts,
                 LocalDateTime.now(ZonedDateUtils.getPragueZoneId())
                         .until(LocalDateTime.of(LocalDate.now(ZonedDateUtils.getPragueZoneId()).plusDays(1),
-                                LocalTime.of(5, 0)), ChronoUnit.SECONDS),//10L,
+                                LocalTime.of(5, 0)), ChronoUnit.SECONDS),//20L,
                 Duration.ofDays(1).getSeconds(),
                 TimeUnit.SECONDS);
 
