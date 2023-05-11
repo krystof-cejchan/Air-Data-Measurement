@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Contract;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -31,13 +30,13 @@ public record SendForecastForTheDay(
         Runnable sendEmailsAndRemoveInactiveAccounts = () ->
                 new SendForecastManager(notificationsRepository, javaMailSender).sendEmailsAndDeleteInactiveAccounts();
 
-
+        final var plusDays = LocalTime.now().isAfter(LocalTime.of(5, 0)) ? 1 : 0;
         scheduledExecutorService.scheduleAtFixedRate(sendEmailsAndRemoveInactiveAccounts,
                 LocalDateTime.now(ZonedDateUtils.getPragueZoneId())
-                        .until(LocalDateTime.of(LocalDate.now(ZonedDateUtils.getPragueZoneId()).plusDays(1),
-                                LocalTime.of(5, 0)), ChronoUnit.SECONDS),//10L,
-                Duration.ofDays(1).getSeconds(),
-                TimeUnit.SECONDS);
+                        .until(LocalDateTime.of(LocalDate.now(ZonedDateUtils.getPragueZoneId()).plusDays(plusDays),
+                                LocalTime.of(5, 0)), ChronoUnit.HOURS),//10L,
+                24,
+                TimeUnit.HOURS);
 
     }
 }
