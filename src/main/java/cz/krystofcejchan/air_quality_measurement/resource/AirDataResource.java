@@ -4,6 +4,7 @@ import cz.krystofcejchan.air_quality_measurement.domain.AirData;
 import cz.krystofcejchan.air_quality_measurement.service.AirDataService;
 import cz.krystofcejchan.air_quality_measurement.utilities.ZonedDateUtils;
 import cz.krystofcejchan.air_quality_measurement.utilities.functional_interfaces.BooleanValidation;
+import cz.krystofcejchan.air_quality_measurement.utilities.psw.Psw;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +21,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import static cz.krystofcejchan.air_quality_measurement.AqmApplication.ardtkn;
 
 /**
  * The type Air data resource.
@@ -71,7 +71,7 @@ public record AirDataResource(AirDataService airDataService) {
 
         validations.add(user_agent_validation.validPassed(userAgent, "ESP8266HTTPClient"));
         validations.add(token_params1_validation.validPassed(airData, tokenParams));
-        validations.add(token_params2_validation.validPassed(ardtkn, tokenParams));
+        validations.add(token_params2_validation.validPassed(String.valueOf(Psw.ardtkn), tokenParams));
 
 
         if (validations.stream().allMatch(Boolean::booleanValue))

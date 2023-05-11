@@ -1,10 +1,10 @@
 package cz.krystofcejchan.air_quality_measurement.notifications.email;
 
-import cz.krystofcejchan.air_quality_measurement.AqmApplication;
 import cz.krystofcejchan.air_quality_measurement.enums.Production;
 import cz.krystofcejchan.air_quality_measurement.exceptions.DataNotFoundException;
 import cz.krystofcejchan.air_quality_measurement.forecast.ForecastDataList;
 import cz.krystofcejchan.air_quality_measurement.notifications.NotificationReceiver;
+import cz.krystofcejchan.air_quality_measurement.utilities.psw.Psw;
 import cz.krystofcejchan.lite_weather_lib.enums_exception.enums.DAY;
 import cz.krystofcejchan.lite_weather_lib.enums_exception.enums.TIME;
 import cz.krystofcejchan.lite_weather_lib.weather_objects.subparts.forecast.days.hour.ForecastAtHour;
@@ -39,7 +39,7 @@ public class EmailDetails {
 
     @Contract(pure = true)
     public EmailDetails(@NotNull NotificationReceiver receiver, @NotNull EmailTemplates template) throws IllegalArgumentException {
-        final String url = AqmApplication.production == Production.TESTING ? "http://localhost:4200" : "https://krystofcejchan.cz/arduino_aiq_quality/beta";
+        final String url = Psw.production == Production.TESTING ? "http://localhost:4200" : "https://krystofcejchan.cz/arduino_aiq_quality/beta";
         this.recipient = receiver.getEmailAddress();
         this.subject = "UPočasí |\s";
 

@@ -34,7 +34,7 @@ public class JpaConfig {
         DataSourceBuilder<? extends DataSource> dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.url(System.getenv("DB"));
         dataSourceBuilder.username("doadmin");
-        dataSourceBuilder.password(cz.krystofcejchan.air_quality_measurement.AqmApplication.dbpsd);
+        dataSourceBuilder.password(String.valueOf(cz.krystofcejchan.air_quality_measurement.utilities.psw.Psw.dbpsd));
         return dataSourceBuilder.build();
     }
 }
