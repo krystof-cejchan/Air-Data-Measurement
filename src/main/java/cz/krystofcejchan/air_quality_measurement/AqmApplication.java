@@ -32,15 +32,6 @@ import java.util.stream.Stream;
  */
 @SpringBootApplication
 public class AqmApplication implements CommandLineRunner {
-    /**
-     * my lil secret
-     */
-    public static String dbpsd = "", ardtkn = "";
-
-    /**
-     * {@link Production} ENUM to determinate whether the app is in development mode or is publicly running
-     */
-    public static Production production = Production.TESTING;
 
     @Autowired
     private AirDataLeaderboardRepository airDataLeaderboardRepo;
@@ -64,9 +55,6 @@ public class AqmApplication implements CommandLineRunner {
      */
     public static void main(String @NotNull ... args) {
         long startTime = System.currentTimeMillis();
-        dbpsd = System.getenv("DBPSD");
-        ardtkn = System.getenv("ARDTKN");
-        production = Production.valueOf(System.getenv("PROD"));
 
         SpringApplication.run(AqmApplication.class, args);
 

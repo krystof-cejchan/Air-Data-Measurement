@@ -1,6 +1,5 @@
 package cz.krystofcejchan.air_quality_measurement.service;
 
-import cz.krystofcejchan.air_quality_measurement.AqmApplication;
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
 import cz.krystofcejchan.air_quality_measurement.domain.location.LocationData;
 import cz.krystofcejchan.air_quality_measurement.domain.nondatabase_objects.AirDataAverage;
@@ -13,6 +12,7 @@ import cz.krystofcejchan.air_quality_measurement.repository.AirDataRepository;
 import cz.krystofcejchan.air_quality_measurement.repository.LocationDataRepository;
 import cz.krystofcejchan.air_quality_measurement.utilities.MathUtils;
 import cz.krystofcejchan.air_quality_measurement.utilities.leaderboard.table.LeaderboardTable;
+import cz.krystofcejchan.air_quality_measurement.utilities.psw.Psw;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,7 +112,7 @@ public class AirDataService {
                     .orElse(Collections.emptyList());
 
             AirData previousAirData = previousAirDataList.isEmpty() ? airData : previousAirDataList.get(0);
-            boolean isAuthRequest = !(pswd == null || pswd.isEmpty() || pswd.isBlank() || !pswd.equals(AqmApplication.dbpsd));
+            boolean isAuthRequest = !(pswd == null || pswd.isEmpty() || pswd.isBlank() || !pswd.equals(String.valueOf(Psw.dbpsd)));
             try {
                 if (isAuthRequest || areDataNotValid(airData) || !compareAirDataObjects(airData, previousAirData)) {
                     airDataRepository.delete(airData);

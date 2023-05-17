@@ -2,6 +2,7 @@ package cz.krystofcejchan.air_quality_measurement.notifications.email;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +13,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
+
 @Service
 public class EmailServiceImpl implements EmailService {
 
     @Autowired
     private JavaMailSender javaMailSender;
+
+    @Contract(pure = true)
+    @Autowired
+    public EmailServiceImpl() {
+    }
 
     /**
      * sends an email
@@ -34,9 +41,8 @@ public class EmailServiceImpl implements EmailService {
                 assert this.javaMailSender != null;
                 MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
                 MimeMessageHelper mimeMessageHelper
-                        = new MimeMessageHelper(mimeMessage, true);
-                String sender = "upocasi.notifications.noreply@gmail.com";
-                mimeMessageHelper.setFrom(sender);
+                        = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+                mimeMessageHelper.setFrom("upocasi.notifications.noreply@gmail.com");
                 mimeMessageHelper.setTo(emailDetail.getRecipient());
                 mimeMessageHelper.setText(emailDetail.getMsgBody(), true);
                 mimeMessageHelper.setSubject(
