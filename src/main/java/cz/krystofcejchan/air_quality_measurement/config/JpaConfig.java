@@ -21,7 +21,8 @@ public class JpaConfig {
         dataSourceBuilder.username("root");
         dataSourceBuilder.password("jetotereza");
         return dataSourceBuilder.build();
-    }*/
+    }
+*/
 
     /**
      * MySQL server connection bean
