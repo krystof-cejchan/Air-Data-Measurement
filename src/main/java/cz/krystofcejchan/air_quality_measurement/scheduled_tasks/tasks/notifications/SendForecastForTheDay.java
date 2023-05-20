@@ -38,6 +38,5 @@ public record SendForecastForTheDay(
                                 sendingTime), ChronoUnit.MINUTES),//10L,
                 Period.days(1).getMinutes(),
                 TimeUnit.MINUTES);
-
     }
 }
