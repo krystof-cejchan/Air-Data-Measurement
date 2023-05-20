@@ -41,8 +41,8 @@ public class NotificationService {
 
         var optUserWithSameEmail = repository.findByEmailAddress(receiversEmail);
         if (optUserWithSameEmail.isEmpty()) {
-            var newlySavedReceiver = repository.save(receiver);
-            var sendEmailAndGetStatus = this.emailService.sendSimpleMail(javaMailSender, new EmailDetails(newlySavedReceiver, EmailTemplates.CONFIRM));
+            final var newlySavedReceiver = repository.save(receiver);
+            final var sendEmailAndGetStatus = this.emailService.sendSimpleMail(javaMailSender, new EmailDetails(newlySavedReceiver, EmailTemplates.CONFIRM));
             if (!sendEmailAndGetStatus.is2xxSuccessful()) {
                 repository.deleteById(newlySavedReceiver.getId());
                 return null;

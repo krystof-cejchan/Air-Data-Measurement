@@ -2,7 +2,6 @@ package cz.krystofcejchan.air_quality_measurement;
 
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
 import cz.krystofcejchan.air_quality_measurement.domain.AirDataLeaderboard;
-import cz.krystofcejchan.air_quality_measurement.enums.Production;
 import cz.krystofcejchan.air_quality_measurement.notifications.NotificationsRepository;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataAverageOfDayRepository;
 import cz.krystofcejchan.air_quality_measurement.repository.AirDataLeaderboardRepository;
@@ -19,6 +18,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.List;
 import java.util.Map;
@@ -31,6 +31,7 @@ import java.util.stream.Stream;
  * Main Class
  */
 @SpringBootApplication
+@EnableScheduling
 public class AqmApplication implements CommandLineRunner {
 
     @Autowired
