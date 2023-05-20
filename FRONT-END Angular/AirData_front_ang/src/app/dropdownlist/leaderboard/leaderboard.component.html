@@ -72,7 +72,7 @@
                                             </td>
                                             <td><span class="{{mapValue.position<=1 ? 'text-success' : 'text-danger'}}"
                                                     *ngFor="let leaderbdata of [(getDifferenceFromMap({position:mapValue.position,leaderboardType:mapValue.leaderboardType},true))]">
-                                                    <i *ngIf="mapValue.position>1 || leaderbdata.PN0!='zero'"><svg
+                                                    <i *ngIf="mapValue.position>1 && leaderbdata.PN0!='zero'"><svg
                                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"
                                                             width="10px" fill="red">
                                                             <path *ngIf="leaderbdata.PN0==='positive'"
@@ -85,7 +85,7 @@
                                             </td>
                                             <td><span class="{{mapValue.position<=1 ? 'text-success' : 'text-danger'}}"
                                                     *ngFor="let leaderbdata of [(getDifferenceFromMap({position:mapValue.position,leaderboardType:mapValue.leaderboardType},false))]">
-                                                    <i *ngIf="mapValue.position>1 || leaderbdata.PN0!='zero'"><svg
+                                                    <i *ngIf="mapValue.position>1 && leaderbdata.PN0!='zero'"><svg
                                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"
                                                             width="10px" fill="red">
                                                             <path *ngIf="leaderbdata.PN0==='positive'"

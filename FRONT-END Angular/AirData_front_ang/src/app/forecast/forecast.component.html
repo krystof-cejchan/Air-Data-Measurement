@@ -14,7 +14,8 @@
         <div class="card2 col-lg-4 col-md-4 text-center">
           <p>Dny</p>
           <div class="row align-items-start px-3 mt-3 mb-3">
-            <div *ngFor="let days of ['Dnes', 'Zítra', 'Pozítří']; let i = index" class="col days" (click)="setDate(i)">
+            <div *ngFor="let days of ['Dnes', 'Zítra', 'Pozítří']; let i = index" class="col days" (click)="setDate(i)"
+              ngClass="{{i==getDayIndex()?'selected':'unselected'}}">
               <div id="day_display"> {{days}}</div>
               <div id="date_display"> ({{getDateFromDay(days)}})</div>
               <div id="dayTemp_display"> {{calcDayAvg(i,false)}}°C</div>
@@ -26,7 +27,7 @@
 
           <p style="margin-bottom: 0!important; margin-top: 1rem;">Čas</p>
 
-          <mat-slider class="timeSlider" color="acent" [max]="slider_params.max" [min]="slider_params.min"
+          <mat-slider class="timeSlider" color="primary" [max]="slider_params.max" [min]="slider_params.min"
             [step]="slider_params.step" [discrete]="slider_params.thumbLabel" [showTickMarks]="slider_params.showTicks"
             [displayWith]="formatOutput" (input)="dragOver()">
             <input matSliderThumb [(ngModel)]="slider_params.value">

@@ -1,5 +1,5 @@
-:host{
-  --text-color:"#000000";
+:host {
+  --text-color: "#000000";
 }
 
 .feature-icon {
@@ -60,6 +60,13 @@
   font-size: large;
 }
 
-.btn{
+.btn {
   color: white !important;
+}
+
+$underline_color: #007bff;
+
+#location-link {
+  color: $underline_color;
+  text-decoration: underline solid $underline_color;
 }

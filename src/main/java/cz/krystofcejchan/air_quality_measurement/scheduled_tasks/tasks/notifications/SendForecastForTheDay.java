@@ -4,10 +4,10 @@ import cz.krystofcejchan.air_quality_measurement.notifications.NotificationsRepo
 import cz.krystofcejchan.air_quality_measurement.scheduled_tasks.ScheduledTaskRunnable;
 import cz.krystofcejchan.air_quality_measurement.utilities.ZonedDateUtils;
 import org.jetbrains.annotations.Contract;
+import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -30,14 +30,13 @@ public record SendForecastForTheDay(
 
         Runnable sendEmailsAndRemoveInactiveAccounts = () ->
                 new SendForecastManager(notificationsRepository, javaMailSender).sendEmailsAndDeleteInactiveAccounts();
-
-
+        final var sendingTime = LocalTime.of(5, 0, 0, 0);
+        final var plusDays = LocalTime.now().isAfter(sendingTime) ? 1 : 0;
         scheduledExecutorService.scheduleAtFixedRate(sendEmailsAndRemoveInactiveAccounts,
                 LocalDateTime.now(ZonedDateUtils.getPragueZoneId())
-                        .until(LocalDateTime.of(LocalDate.now(ZonedDateUtils.getPragueZoneId()).plusDays(1),
-                                LocalTime.of(5, 0)), ChronoUnit.SECONDS),//10L,
-                Duration.ofDays(1).getSeconds(),
-                TimeUnit.SECONDS);
-
+                        .until(LocalDateTime.of(LocalDate.now(ZonedDateUtils.getPragueZoneId()).plusDays(plusDays),
+                                sendingTime), ChronoUnit.MINUTES),//10L,
+                Period.days(1).getMinutes(),
+                TimeUnit.MINUTES);
     }
 }

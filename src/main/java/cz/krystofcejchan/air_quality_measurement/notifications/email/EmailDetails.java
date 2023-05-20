@@ -1,10 +1,10 @@
 package cz.krystofcejchan.air_quality_measurement.notifications.email;
 
-import cz.krystofcejchan.air_quality_measurement.AqmApplication;
 import cz.krystofcejchan.air_quality_measurement.enums.Production;
 import cz.krystofcejchan.air_quality_measurement.exceptions.DataNotFoundException;
 import cz.krystofcejchan.air_quality_measurement.forecast.ForecastDataList;
 import cz.krystofcejchan.air_quality_measurement.notifications.NotificationReceiver;
+import cz.krystofcejchan.air_quality_measurement.utilities.psw.Psw;
 import cz.krystofcejchan.lite_weather_lib.enums_exception.enums.DAY;
 import cz.krystofcejchan.lite_weather_lib.enums_exception.enums.TIME;
 import cz.krystofcejchan.lite_weather_lib.weather_objects.subparts.forecast.days.hour.ForecastAtHour;
@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class EmailDetails {
 
@@ -38,7 +39,7 @@ public class EmailDetails {
 
     @Contract(pure = true)
     public EmailDetails(@NotNull NotificationReceiver receiver, @NotNull EmailTemplates template) throws IllegalArgumentException {
-        final String url = AqmApplication.production == Production.TESTING ? "http://localhost:4200" : "https://krystofcejchan.cz/arduino_aiq_quality/beta";
+        final String url = Psw.production == Production.TESTING ? "http://localhost:4200" : "https://krystofcejchan.cz/arduino_aiq_quality/beta";
         this.recipient = receiver.getEmailAddress();
         this.subject = "UPočasí |\s";
 
@@ -49,24 +50,35 @@ public class EmailDetails {
                 this.subject += "Potvrzení";
             }
             case WEATHER_FORECAST -> {
-                TIME[] dayTimes = {TIME.AM_6, TIME.AM_9, TIME.AM_12, TIME.PM_3, TIME.PM_6};
-                var tempAvg = ForecastDataList.forecastAtHourList.parallelStream()
+                TIME[] dayTimes = {TIME.AM_6, TIME.AM_9, TIME.AM_12, TIME.PM_3, TIME.PM_6, TIME.PM_9};
+
+                var tempAvgByTime = ForecastDataList.forecastAtHourList.parallelStream()
                         .filter(it -> it.getDay() == DAY.TODAY && Arrays.stream(dayTimes).anyMatch(time -> time == it.getTime()))
-                        .mapToDouble(ForecastAtHour::getTemperatureC)
-                        .average();
+                        .collect(Collectors.toMap(ForecastAtHour::getTime, ForecastAtHour::getTemperatureC));
+
                 var tempList = ForecastDataList.forecastAtHourList.stream().filter(day -> day.getDay() == DAY.TODAY)
                         .toList();
+
+                DecimalFormat decimalFormatForTemp = new DecimalFormat("#0.00");
                 //<p style='text-align:center'><span style='font-size:30px;color:#2c82c9'><strong><br></strong></span></p><p>Dobr&yacute; den,</p><p>dnes bude v Olomouci %s s teplotou %s&deg;C.</p><p><br>V&iacute;ce informac&iacute; m&uring;&zcaron;ete naj&iacute;t <a href='https://krystofcejchan.cz/arduino_aiq_quality/beta/predpoved/' rel='noopener noreferrer' target='_blank'>na webov&eacute; str&aacute;nce ZDE.</a></p><p style='text-align:center'><strong><span style='font-size:36px;color:#2c82c9'>UPo&ccaron;as&iacute;</span></strong></p><p><br></p><p><br></p><hr><p><span style='font-size:10px'>Pokus nechcete dost&aacute;vat tyto upozorn&ecaron;n&iacute;, m&uring;&zcaron;ete tak prov&eacute;zt <a href='%s/predplatne/zruseni/%s/%s' rel='noopener noreferrer' target='_blank'> ZDE</a>.</span></p>
-                this.msgBody = "<p style='text-align:center'><span style='font-size:30px;color:#2c82c9'><strong><br></strong></span></p><p>Dobrý den,</p><p>dnes bude v Olomouci %s s teplotou %s&deg;C.</p><p><br>Více informací můžete najít <a href='https://krystofcejchan.cz/arduino_aiq_quality/beta/predpoved/' rel='noopener noreferrer' target='_blank'>na webové stránce ZDE.</a></p><p style='text-align:center'><strong><span style='font-size:36px;color:#2c82c9'>UPočasí</span></strong></p><p><br></p><p><br></p><hr><p><span style='font-size:10px'>Pokus nechcete dostávat tyto upozornění, můžete tak provést <a href='%s/predplatne/zruseni/%s/%s' rel='noopener noreferrer' target='_blank'> ZDE</a>.</span></p>"
-                        .formatted(
+                this.msgBody =
+                        String.format("<div style='font-family: Times, \"Times New Roman\", Georgia, serif;'><p style='text-align:center'><span style='font-size:30px;color:#2c82c9'><strong><br></strong></span></p><p>Dobrý den,</p><p>dnes bude v Olomouci %s</p><table style=\"border-collapse:collapse;border-color:#9ABAD9;border-spacing:0;border-style:solid;border-width:1px\" class=\"tg\"><thead><tr><th style=\"background-color:#409cff;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#fff;font-family:Arial, sans-serif;font-size:14px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">Čas</th><th style=\"background-color:#409cff;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#fff;font-family:Arial, sans-serif;font-size:14px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">Teplota [°C]</th></tr></thead><tbody><tr><td style=\"background-color:#D2E4FC;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:serif !important;font-size:15px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">6:00</td><td style=\"background-color:#D2E4FC;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">%s</td></tr><tr><td style=\"background-color:#EBF5FF;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">9:00</td><td style=\"background-color:#EBF5FF;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">%s</td></tr><tr><td style=\"background-color:#D2E4FC;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">12:00</td><td style=\"background-color:#D2E4FC;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">%s</td></tr><tr><td style=\"background-color:#EBF5FF;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">15:00</td><td style=\"background-color:#EBF5FF;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">%s</td></tr><tr><td style=\"background-color:#D2E4FC;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">18:00</td><td style=\"background-color:#D2E4FC;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">%s</td></tr><tr><td style=\"background-color:#EBF5FF;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">21:00</td><td style=\"background-color:#EBF5FF;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">%s</td></tr></tbody></table><p><br>Více informací můžete najít <a href='https://krystofcejchan.cz/arduino_aiq_quality/beta/predpoved/' rel='noopener noreferrer' target='_blank'>na webové stránce ZDE.</a></p><p style='text-align:center'><strong><span style='font-size:36px;color:#2c82c9'>UPočasí</span></strong></p><p><br></p><p><br></p><hr><p><span style='font-size:10px'>Pokus nechcete dostávat tyto upozornění, můžete tak provést <a href='%s/predplatne/zruseni/%s/%s' rel='noopener noreferrer' target='_blank'> ZDE</a>.</span></p></div>",
                                 weatherCodeToDescriptionInCzech(tempList.stream()
                                         .filter(it -> it.getTime() == TIME.AM_12)
                                         .limit(1)
                                         .findAny()
                                         .orElseThrow(DataNotFoundException::new)
                                         .getWeatherCode()),
-                                new DecimalFormat("#0.00").format(tempAvg.orElse(Double.NaN)),
-                                url, receiver.getId(), receiver.getRndHash());
+                                decimalFormatForTemp.format(tempAvgByTime.get(TIME.AM_6)),
+                                decimalFormatForTemp.format(tempAvgByTime.get(TIME.AM_9)),
+                                decimalFormatForTemp.format(tempAvgByTime.get(TIME.AM_12)),
+                                decimalFormatForTemp.format(tempAvgByTime.get(TIME.PM_3)),
+                                decimalFormatForTemp.format(tempAvgByTime.get(TIME.PM_6)),
+                                decimalFormatForTemp.format(tempAvgByTime.get(TIME.AM_9)),
+                                url,
+                                receiver.getId(),
+                                receiver.getRndHash());
+                //this.msgBody = new String(this.msgBody.getBytes(StandardCharsets.UTF_8),StandardCharsets.UTF_8);
                 this.subject += "Dnešní předpověď pro Olomouc";
             }
             case UNSUBSCRIBE -> {

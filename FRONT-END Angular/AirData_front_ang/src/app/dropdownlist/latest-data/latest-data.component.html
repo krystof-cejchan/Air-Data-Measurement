@@ -33,8 +33,8 @@
     <div class="container px-2 px-md-0 py-5" id="custom-cards">
       <h2 class="pb-2 border-bottom">{{getTitle()}}</h2>
       <span *ngFor="let airdata of airdatas; let i = index;" (click)="setSelectedIndex(i)" class="col">
-        <button type="button" class="btn btn-light btn-sm"
-          (click)="scrollToElement(airdata.locationId.name)">{{airdata.locationId.name_short}}</button>
+        <button mat-stroked-button color="primary" class="btn btn-sm"
+          (click)="scrollToElement(airdata.locationId.name)">{{airdata.locationId.name}}</button>
       </span>
       <!--     <div class="row row-cols-3 row-cols-md-2 align-items-stretch g-2 py-5">
         <div *ngFor="let airdata of airdatas;let j = index;" class="col">
@@ -79,7 +79,8 @@
           <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
             [ngClass]="{'highlight': selectedIndex==j}" id="{{airdata.locationId.name}}" style="background:
                               linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.61)), url({{airdata.locationId.imgUrl}});
-                              background-size:cover; background-position: center;">
+                              background-size:cover; background-position: center;"
+            (click)="showDetails({id:airdata.id,hash:airdata.rndHash})">
             <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1" id={{airdata.locationId}}>
               <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold d-flex flex-column">
                 <span id="airQualityT" mat-raised-button matTooltip="Kvalita vzduchu" matTooltipPosition="after">

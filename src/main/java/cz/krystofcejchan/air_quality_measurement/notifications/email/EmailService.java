@@ -7,5 +7,5 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 
 public interface EmailService {
-    HttpStatus sendSimpleMail(@Nullable JavaMailSender javaMailSender, @NotNull EmailDetails @NotNull ... details);
+   abstract HttpStatus sendSimpleMail(@Nullable JavaMailSender javaMailSender, @NotNull EmailDetails @NotNull ... details);
 }

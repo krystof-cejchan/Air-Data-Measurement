@@ -10,6 +10,7 @@ export const environment = {
   leaderboard: 'https://airq.krystofcejchan.online/airdata/leaderboard',
   forecastUrl: 'https://airq.krystofcejchan.online/airdata/forecast',
   notificationUrl: 'https://airq.krystofcejchan.online/airdata/notifications',
+  locationUrl: 'https://airq.krystofcejchan.online/airdata/locations',
   domain: 'krystofcejchan.cz',
   firebase: {
     apiKey: "•••",

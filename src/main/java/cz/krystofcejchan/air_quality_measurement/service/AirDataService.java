@@ -1,6 +1,5 @@
 package cz.krystofcejchan.air_quality_measurement.service;
 
-import cz.krystofcejchan.air_quality_measurement.AqmApplication;
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
 import cz.krystofcejchan.air_quality_measurement.domain.location.LocationData;
 import cz.krystofcejchan.air_quality_measurement.domain.nondatabase_objects.AirDataAverage;
@@ -13,6 +12,7 @@ import cz.krystofcejchan.air_quality_measurement.repository.AirDataRepository;
 import cz.krystofcejchan.air_quality_measurement.repository.LocationDataRepository;
 import cz.krystofcejchan.air_quality_measurement.utilities.MathUtils;
 import cz.krystofcejchan.air_quality_measurement.utilities.leaderboard.table.LeaderboardTable;
+import cz.krystofcejchan.air_quality_measurement.utilities.psw.Psw;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,7 +112,7 @@ public class AirDataService {
                     .orElse(Collections.emptyList());
 
             AirData previousAirData = previousAirDataList.isEmpty() ? airData : previousAirDataList.get(0);
-            boolean isAuthRequest = !(pswd == null || pswd.isEmpty() || pswd.isBlank() || !pswd.equals(AqmApplication.dbpsd));
+            boolean isAuthRequest = !(pswd == null || pswd.isEmpty() || pswd.isBlank() || !pswd.equals(String.valueOf(Psw.dbpsd)));
             try {
                 if (isAuthRequest || areDataNotValid(airData) || !compareAirDataObjects(airData, previousAirData)) {
                     airDataRepository.delete(airData);
@@ -254,7 +254,7 @@ public class AirDataService {
             return new ResponseEntity<>(new AirDataAverage(temperatureAvg.setScale(2, RoundingMode.HALF_UP), humidityAvg.setScale(2, RoundingMode.HALF_UP), airQualityAvg.setScale(2, RoundingMode.HALF_UP)), OK);
 
         } catch (DataNotFoundException e) {
-            return new ResponseEntity<>(BAD_REQUEST.getReasonPhrase() + '\n' + e.getMessage(), BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
         }
     }
 
@@ -282,7 +282,7 @@ public class AirDataService {
                         LocalDateTime.of(end, LocalTime.MAX));
 
         if (receivedDate.orElseThrow(DataNotFoundException::new).isEmpty())
-            return new ResponseEntity<>(Collections.singleton(TOO_EARLY.getReasonPhrase()), TOO_EARLY);
+            return new ResponseEntity<>(TOO_EARLY);
 
         return new ResponseEntity<>(receivedDate.get(), OK);
     }

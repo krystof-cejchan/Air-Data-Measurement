@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,9 @@ public class NotificationService {
     private EmailService emailService;
     @Autowired
     private  NotificationsRepository repository;
+    @Autowired
+    JavaMailSender javaMailSender;
+
 
     @Autowired
     @Contract(pure = true)
@@ -38,7 +42,7 @@ public class NotificationService {
         var optUserWithSameEmail = repository.findByEmailAddress(receiversEmail);
         if (optUserWithSameEmail.isEmpty()) {
             var newlySavedReceiver = repository.save(receiver);
-            var sendEmailAndGetStatus = this.emailService.sendSimpleMail(null, new EmailDetails(newlySavedReceiver, EmailTemplates.CONFIRM));
+            var sendEmailAndGetStatus = this.emailService.sendSimpleMail(javaMailSender, new EmailDetails(newlySavedReceiver, EmailTemplates.CONFIRM));
             if (!sendEmailAndGetStatus.is2xxSuccessful()) {
                 repository.deleteById(newlySavedReceiver.getId());
                 return null;
@@ -64,7 +68,7 @@ public class NotificationService {
         Optional<NotificationReceiver> optReceiver = repository.findByIdAndRndHash(id, hash);
         if (optReceiver.isEmpty()) return HttpStatus.CONFLICT;
         var receiver = optReceiver.get();
-        emailService.sendSimpleMail(null, new EmailDetails(receiver, EmailTemplates.UNSUBSCRIBE));
+        emailService.sendSimpleMail(javaMailSender, new EmailDetails(receiver, EmailTemplates.UNSUBSCRIBE));
         repository.deleteById(receiver.getId());
         return HttpStatus.OK;
     }

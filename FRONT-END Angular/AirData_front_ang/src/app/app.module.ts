@@ -75,6 +75,7 @@ import { NewsletterComponent } from './newsletter subscription/newsletter/newsle
 import { ConfirmationComponent } from './newsletter subscription/confirmation/confirmation.component';
 import { CancellationComponent } from './newsletter subscription/cancellation/cancellation.component';
 import { ManagerComponent } from './newsletter subscription/manager/manager.component';
+import { LocationDetailsComponent } from './location-details/location-details.component';
 
 
 const cookieConfig: NgcCookieConsentConfig = {
@@ -124,6 +125,7 @@ const cookieConfig: NgcCookieConsentConfig = {
     ConfirmationComponent,
     CancellationComponent,
     ManagerComponent,
+    LocationDetailsComponent,
   ],
   imports: [
     BrowserModule,

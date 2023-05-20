@@ -14,6 +14,7 @@ import { ForecastComponent } from "./forecast/forecast.component";
 import { ConfirmationComponent } from "./newsletter subscription/confirmation/confirmation.component";
 import { CancellationComponent } from "./newsletter subscription/cancellation/cancellation.component";
 import { ManagerComponent } from "./newsletter subscription/manager/manager.component";
+import { LocationDetailsComponent } from "./location-details/location-details.component";
 
 
 const routes: Routes = [
@@ -40,7 +41,10 @@ const routes: Routes = [
     path: 'projekt', pathMatch: 'full', title: 'Projekt', component: AboutProjectComponent
   },
   {
-    path: 'data-detaily/:id/:hash', pathMatch: 'full', title: 'Detaily', component: AirDataDetailsComponent
+    path: 'data-detaily/mereni/:id/:hash', pathMatch: 'full', title: 'Detaily měření', component: AirDataDetailsComponent
+  },
+  {
+    path: 'data-detaily/lokace/:id', pathMatch: 'full', title: 'Detaily lokace', component: LocationDetailsComponent
   },
   {
     path: 'dev', pathMatch: 'full', title: 'Pro vývojáře', component: DevComponent
