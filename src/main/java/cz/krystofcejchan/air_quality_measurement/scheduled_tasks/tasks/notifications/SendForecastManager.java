@@ -3,22 +3,12 @@ package cz.krystofcejchan.air_quality_measurement.scheduled_tasks.tasks.notifica
 import cz.krystofcejchan.air_quality_measurement.notifications.NotificationReceiver;
 import cz.krystofcejchan.air_quality_measurement.notifications.NotificationsRepository;
 import cz.krystofcejchan.air_quality_measurement.notifications.email.EmailDetails;
-import cz.krystofcejchan.air_quality_measurement.notifications.email.EmailService;
 import cz.krystofcejchan.air_quality_measurement.notifications.email.EmailServiceImpl;
 import cz.krystofcejchan.air_quality_measurement.notifications.email.EmailTemplates;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Service;
 
-@Service
-public class SendForecastManager {
-    private final NotificationsRepository notificationsRepository;
-    private final EmailService emailService = new EmailServiceImpl();
-    private final JavaMailSender javaMailSender;
-
-    public SendForecastManager(NotificationsRepository notificationsRepository, JavaMailSender javaMailSender) {
-        this.notificationsRepository = notificationsRepository;
-        this.javaMailSender = javaMailSender;
-    }
+public record SendForecastManager(
+        NotificationsRepository notificationsRepository,
+        EmailServiceImpl emailService) {
 
     public void sendEmailsAndDeleteInactiveAccounts() {
         var allNotificationReceivers = notificationsRepository.findAll();
@@ -26,7 +16,7 @@ public class SendForecastManager {
                 .filter(receiver -> !receiver.getConfirmed())
                 .map(NotificationReceiver::getId).toList();
         notificationsRepository.deleteAllById(inactive);
-        emailService.sendSimpleMail(this.javaMailSender, allNotificationReceivers.stream()
+        emailService.sendSimpleMail(allNotificationReceivers.stream()
                 .filter(NotificationReceiver::getConfirmed)
                 .map(it -> new EmailDetails(it, EmailTemplates.WEATHER_FORECAST))
                 .toList().toArray(new EmailDetails[0]));

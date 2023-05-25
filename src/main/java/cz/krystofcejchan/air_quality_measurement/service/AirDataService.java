@@ -120,7 +120,6 @@ public class AirDataService {
                             leaderboardRepository.findAll(),
                             LeaderboardTable.getFreshDataForLeaderboard((airDataRepository)));
                     return airData;
-                    //airData.setInvalidData(true);
                 }
                 return airDataRepository.save(airData);
             } catch (AlreadyInvalidData | GreatTimeDifferenceException exception) {

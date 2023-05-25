@@ -10,7 +10,7 @@ import java.net.URL;
 class StaticLocationDataTest {
     @Test
     void URL() throws MalformedURLException {
-        URL url = new URL("http", "krystofcejchan.cz", "/arduino_aiq_quality/assets/imgs/faculties/PrF_cover.jpg");
+        URL url = new URL("https", "krystofcejchan.cz", "/arduino_aiq_quality/assets/imgs/faculties/PrF_cover.jpg");
         Assertions.assertEquals(url.toString(), "https://krystofcejchan.cz/arduino_aiq_quality/assets/imgs/faculties/PrF_cover.jpg");
     }
 

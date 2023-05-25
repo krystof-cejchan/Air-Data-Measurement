@@ -2,28 +2,21 @@ package cz.krystofcejchan.air_quality_measurement.notifications.email;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
 
-@Service
-public class EmailServiceImpl implements EmailService {
+@Component
+public class EmailServiceImpl {
 
     @Autowired
     private JavaMailSender javaMailSender;
-
-    @Contract(pure = true)
-    @Autowired
-    public EmailServiceImpl() {
-    }
 
     /**
      * sends an email
@@ -31,15 +24,12 @@ public class EmailServiceImpl implements EmailService {
      * @param details {@link EmailDetails} with all required information
      * @return HttpStatus that corresponds with email sending status
      */
-    @Override
-    public HttpStatus sendSimpleMail(@Nullable JavaMailSender javaMailSender, @NotNull EmailDetails @NotNull ... details) {
-        if (this.javaMailSender == null && javaMailSender != null)
-            this.javaMailSender = javaMailSender;
+    public HttpStatus sendSimpleMail(@NotNull EmailDetails @NotNull ... details) {
+
         try {
             var listOfEmails = new ArrayList<MimeMessage>();
             for (EmailDetails emailDetail : details) {
-                assert this.javaMailSender != null;
-                MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
+                MimeMessage mimeMessage = javaMailSender.createMimeMessage();
                 MimeMessageHelper mimeMessageHelper
                         = new MimeMessageHelper(mimeMessage, true, "UTF-8");
                 mimeMessageHelper.setFrom("upocasi.notifications.noreply@gmail.com");
@@ -50,8 +40,7 @@ public class EmailServiceImpl implements EmailService {
                 listOfEmails.add(mimeMessage);
             }
 
-            assert this.javaMailSender != null;
-            this.javaMailSender.send(listOfEmails.toArray(new MimeMessage[0]));
+            javaMailSender.send(listOfEmails.toArray(new MimeMessage[0]));
 
             return HttpStatus.ACCEPTED;
         } catch (MessagingException e) {
