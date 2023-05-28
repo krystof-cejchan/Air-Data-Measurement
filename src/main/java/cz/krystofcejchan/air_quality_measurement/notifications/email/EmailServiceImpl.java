@@ -24,19 +24,19 @@ public class EmailServiceImpl {
      * @param details {@link EmailDetails} with all required information
      * @return HttpStatus that corresponds with email sending status
      */
-    public HttpStatus sendSimpleMail(@NotNull EmailDetails @NotNull ... details) {
+    public HttpStatus sendSimpleMail(@NotNull EmailDetails details) {
 
         try {
             var listOfEmails = new ArrayList<MimeMessage>();
-            for (EmailDetails emailDetail : details) {
+            for (String k : details.getRecipientToText().keySet()) {
                 MimeMessage mimeMessage = javaMailSender.createMimeMessage();
                 MimeMessageHelper mimeMessageHelper
                         = new MimeMessageHelper(mimeMessage, true, "UTF-8");
                 mimeMessageHelper.setFrom("upocasi.notifications.noreply@gmail.com");
-                mimeMessageHelper.setTo(emailDetail.getRecipient());
-                mimeMessageHelper.setText(emailDetail.getMsgBody(), true);
+                mimeMessageHelper.setTo(k);
+                mimeMessageHelper.setText(details.getRecipientToText().get(k), true);
                 mimeMessageHelper.setSubject(
-                        emailDetail.getSubject());
+                        details.getSubject());
                 listOfEmails.add(mimeMessage);
             }
 

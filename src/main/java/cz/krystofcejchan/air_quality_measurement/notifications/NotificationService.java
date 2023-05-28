@@ -20,11 +20,11 @@ import java.util.UUID;
 public class NotificationService {
 
     @Autowired
-    private  NotificationsRepository repository;
+    private NotificationsRepository repository;
     @Autowired
     JavaMailSender javaMailSender;
     @Autowired
-EmailServiceImpl emailService;
+    EmailServiceImpl emailService;
 
 
     public @Nullable NotificationReceiver addNewNotificationReceiver(@NotNull String receiversEmail) {
@@ -37,7 +37,7 @@ EmailServiceImpl emailService;
         var optUserWithSameEmail = repository.findByEmailAddress(receiversEmail);
         if (optUserWithSameEmail.isEmpty()) {
             final var newlySavedReceiver = repository.save(receiver);
-            final var sendEmailAndGetStatus = emailService.sendSimpleMail( new EmailDetails(newlySavedReceiver, EmailTemplates.CONFIRM));
+            final var sendEmailAndGetStatus = emailService.sendSimpleMail(new EmailDetails(EmailTemplates.CONFIRM, newlySavedReceiver));
             if (!sendEmailAndGetStatus.is2xxSuccessful()) {
                 repository.deleteById(newlySavedReceiver.getId());
                 return null;
@@ -63,7 +63,7 @@ EmailServiceImpl emailService;
         Optional<NotificationReceiver> optReceiver = repository.findByIdAndRndHash(id, hash);
         if (optReceiver.isEmpty()) return HttpStatus.CONFLICT;
         var receiver = optReceiver.get();
-        emailService.sendSimpleMail( new EmailDetails(receiver, EmailTemplates.UNSUBSCRIBE));
+        emailService.sendSimpleMail(new EmailDetails(EmailTemplates.UNSUBSCRIBE, receiver));
         repository.deleteById(receiver.getId());
         return HttpStatus.OK;
     }

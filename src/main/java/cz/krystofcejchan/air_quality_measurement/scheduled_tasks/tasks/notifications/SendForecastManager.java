@@ -16,9 +16,9 @@ public record SendForecastManager(
                 .filter(receiver -> !receiver.getConfirmed())
                 .map(NotificationReceiver::getId).toList();
         notificationsRepository.deleteAllById(inactive);
-        emailService.sendSimpleMail(allNotificationReceivers.stream()
-                .filter(NotificationReceiver::getConfirmed)
-                .map(it -> new EmailDetails(it, EmailTemplates.WEATHER_FORECAST))
-                .toList().toArray(new EmailDetails[0]));
+        emailService.sendSimpleMail(new EmailDetails(EmailTemplates.WEATHER_FORECAST,
+                allNotificationReceivers.stream()
+                        .filter(NotificationReceiver::getConfirmed).toList()
+                        .toArray(new NotificationReceiver[0])));
     }
 }

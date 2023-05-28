@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 @Configuration
 public class JpaConfig {
 
-   /* @Primary
+    /*@Primary
     @Bean
     public DataSource getSecondaryDataSource() {
         DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
@@ -21,8 +21,8 @@ public class JpaConfig {
         dataSourceBuilder.username("root");
         dataSourceBuilder.password("jetotereza");
         return dataSourceBuilder.build();
-    }
-*/
+    }*/
+
 
     /**
      * MySQL server connection bean

@@ -1,5 +1,7 @@
 package cz.krystofcejchan.air_quality_measurement.notifications.email;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,8 +18,15 @@ public class EmailController {
 
     @PostMapping("/sendMail")
     @CrossOrigin(origins = "http://localhost")
-    public ResponseEntity<?> sendMail(@RequestBody() EmailDetails details) {
-        return new ResponseEntity<>(emailService.sendSimpleMail(details));
+    public ResponseEntity<?> sendMail(@RequestBody() @NotNull EmailDetailsSimple details) {
+        return new ResponseEntity<>(emailService.sendSimpleMail(details.getEmailDetails()));
+    }
+
+    private record EmailDetailsSimple(String recipient, String subject, String msgBody) {
+        @Contract(" -> new")
+        private @NotNull EmailDetails getEmailDetails() {
+            return new EmailDetails(msgBody, subject, recipient);
+        }
     }
 
 }
