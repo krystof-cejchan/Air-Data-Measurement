@@ -32,9 +32,6 @@ public class EmailDetails {
     @Nullable
     private String attachment;
 
-    public EmailDetails() {
-    }
-
     @Contract(pure = true)
     public EmailDetails(String msgBody, String subject, @Nullable String attachment, @NotNull String @NotNull ... recipient) {
         this.recipientToText.putAll(Arrays.stream(recipient)
