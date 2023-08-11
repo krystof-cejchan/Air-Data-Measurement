@@ -64,7 +64,7 @@ public class AirDataService {
      * @return the air data
      */
     public @NotNull AirData addAirData(@NotNull AirData airData, @NotNull LocalDateTime timeReceived) {
-        if (areDataNotValid(airData)) return airData;
+        if (!areDataValid(airData)) return airData;
 
         airData.setReceivedDataDateTime(timeReceived);
         airData.setRndHash(UUID.randomUUID().toString());
@@ -114,7 +114,7 @@ public class AirDataService {
             AirData previousAirData = previousAirDataList.isEmpty() ? airData : previousAirDataList.get(0);
             boolean isAuthRequest = !(pswd == null || pswd.isEmpty() || pswd.isBlank() || !pswd.equals(String.valueOf(Psw.dbpsd)));
             try {
-                if (isAuthRequest || areDataNotValid(airData) || !compareAirDataObjects(airData, previousAirData)) {
+                if (isAuthRequest || !areDataValid(airData) || !compareAirDataObjects(airData, previousAirData)) {
                     airDataRepository.delete(airData);
                     LeaderboardTable.saveChangedDataAndDeleteOldData(leaderboardRepository,
                             leaderboardRepository.findAll(),
@@ -169,14 +169,14 @@ public class AirDataService {
     }
 
     @Contract(pure = true)
-    private boolean areDataNotValid(@NotNull AirData airData1) {
+    private boolean areDataValid(@NotNull AirData airData1) {
         ArrayList<Boolean> airQ_temp_hum = new ArrayList<>();
 
         airQ_temp_hum.add(MathUtils.isInBetween(airData1.getAirQuality(), 0, 1_000, false));
         airQ_temp_hum.add(MathUtils.isInBetween(airData1.getTemperature(), -30, 55, true));
         airQ_temp_hum.add(MathUtils.isInBetween(airData1.getHumidity(), 0, 100, true));
 
-        return !airQ_temp_hum.stream().allMatch(Boolean::booleanValue);
+        return airQ_temp_hum.stream().allMatch(Boolean::booleanValue);
     }
 
     /**

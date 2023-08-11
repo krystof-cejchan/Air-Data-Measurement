@@ -1,7 +1,6 @@
 package cz.krystofcejchan.air_quality_measurement.notifications.email;
 
 import cz.krystofcejchan.air_quality_measurement.enums.Production;
-import cz.krystofcejchan.air_quality_measurement.exceptions.DataNotFoundException;
 import cz.krystofcejchan.air_quality_measurement.forecast.ForecastDataList;
 import cz.krystofcejchan.air_quality_measurement.notifications.NotificationReceiver;
 import cz.krystofcejchan.air_quality_measurement.utilities.psw.Psw;
@@ -20,10 +19,12 @@ import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.IntSummaryStatistics;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class EmailDetails {
+public sealed class EmailDetails permits EmailController.EmailDetailsSimple {
     /**
      * recipient's email address to an email text addressed to him
      */
@@ -34,11 +35,15 @@ public class EmailDetails {
 
     @Contract(pure = true)
     public EmailDetails(String msgBody, String subject, @Nullable String attachment, @NotNull String @NotNull ... recipient) {
-        this.recipientToText.putAll(Arrays.stream(recipient)
-                .collect(Collectors.toMap(
-                        rec -> rec,
-                        msg -> msgBody,
-                        (oldValue, newValue) -> newValue)));
+        try {
+            this.recipientToText.putAll(Arrays.stream(recipient).distinct()
+                    .collect(Collectors.toMap(
+                            key -> key,
+                            value -> msgBody,
+                            (oldValue, newValue) -> newValue)));
+        } catch (NullPointerException n) {
+            n.printStackTrace();
+        }
         this.subject = subject;
         this.attachment = attachment;
     }
@@ -71,29 +76,38 @@ public class EmailDetails {
                 case WEATHER_FORECAST -> {
                     TIME[] dayTimes = {TIME.AM_6, TIME.AM_9, TIME.AM_12, TIME.PM_3, TIME.PM_6, TIME.PM_9};
 
-                    var tempAvgByTime = ForecastDataList.forecastAtHourList.parallelStream()
+                    var tempAvgByTime = ForecastDataList.forecastAtHourList.stream()
                             .filter(it -> it.getDay() == DAY.TODAY && Arrays.stream(dayTimes).anyMatch(time -> time == it.getTime()))
-                            .collect(Collectors.toMap(ForecastAtHour::getTime, ForecastAtHour::getTemperatureC));
+                            .collect(Collectors.toMap(ForecastAtHour::getTime, Function.identity()));
 
-                    var tempList = ForecastDataList.forecastAtHourList.stream().filter(day -> day.getDay() == DAY.TODAY)
+                    var tempList = ForecastDataList.forecastAtHourList.stream()
+                            .filter(day -> day.getDay() == DAY.TODAY && Arrays.stream(dayTimes)
+                                    .anyMatch(t -> t.equals(day.getTime())))
                             .toList();
 
-                    DecimalFormat decimalFormatForTemp = new DecimalFormat("#0.00");
-
+                    DecimalFormat decimalFormatForTemp = new DecimalFormat("#0.00'°C'");
+                    IntSummaryStatistics temperatureSummary = tempList.stream().mapToInt(ForecastAtHour::getTemperatureC).summaryStatistics();
                     assert weatherForecastText != null;
                     msgBody = weatherForecastText.formatted(
-                            weatherCodeToDescriptionInCzech(tempList.stream()
-                                    .filter(it -> it.getTime() == TIME.AM_12)
-                                    .limit(1)
-                                    .findAny()
-                                    .orElseThrow(DataNotFoundException::new)
-                                    .getWeatherCode()),
-                            decimalFormatForTemp.format(tempAvgByTime.get(TIME.AM_6)),
-                            decimalFormatForTemp.format(tempAvgByTime.get(TIME.AM_9)),
-                            decimalFormatForTemp.format(tempAvgByTime.get(TIME.AM_12)),
-                            decimalFormatForTemp.format(tempAvgByTime.get(TIME.PM_3)),
-                            decimalFormatForTemp.format(tempAvgByTime.get(TIME.PM_6)),
-                            decimalFormatForTemp.format(tempAvgByTime.get(TIME.AM_9)),
+                            temperatureSummary.getMin(), temperatureSummary.getMax(),
+                            decimalFormatForTemp.format(tempAvgByTime.get(TIME.AM_6).getTemperatureC()),
+                            weatherCodeToDescriptionInCzech(tempAvgByTime.get(TIME.AM_6).getWeatherCode()),
+
+                            decimalFormatForTemp.format(tempAvgByTime.get(TIME.AM_9).getTemperatureC()),
+                            weatherCodeToDescriptionInCzech(tempAvgByTime.get(TIME.AM_9).getWeatherCode()),
+
+                            decimalFormatForTemp.format(tempAvgByTime.get(TIME.AM_12).getTemperatureC()),
+                            weatherCodeToDescriptionInCzech(tempAvgByTime.get(TIME.AM_12).getWeatherCode()),
+
+                            decimalFormatForTemp.format(tempAvgByTime.get(TIME.PM_3).getTemperatureC()),
+                            weatherCodeToDescriptionInCzech(tempAvgByTime.get(TIME.PM_3).getWeatherCode()),
+
+                            decimalFormatForTemp.format(tempAvgByTime.get(TIME.PM_6).getTemperatureC()),
+                            weatherCodeToDescriptionInCzech(tempAvgByTime.get(TIME.PM_6).getWeatherCode()),
+
+                            decimalFormatForTemp.format(tempAvgByTime.get(TIME.PM_9).getTemperatureC()),
+                            weatherCodeToDescriptionInCzech(tempAvgByTime.get(TIME.PM_9).getWeatherCode()),
+
                             url,
                             notificationReceiver.getId(),
                             notificationReceiver.getRndHash());

@@ -2,6 +2,7 @@ package cz.krystofcejchan.air_quality_measurement.resource;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +20,8 @@ public final class Default {
      * @return hello world message
      */
     @Contract(pure = true)
-    @RequestMapping("/")
+    @RequestMapping(value = "/",
+            produces = MediaType.TEXT_PLAIN_VALUE)
     public @NotNull String greetings() {
         return "Hello, World!";
     }

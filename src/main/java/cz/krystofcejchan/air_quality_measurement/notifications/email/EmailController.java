@@ -22,7 +22,7 @@ public class EmailController {
         return new ResponseEntity<>(emailService.sendSimpleMail(details.getEmailDetails()));
     }
 
-    private static final class EmailDetailsSimple extends EmailDetails {
+    static final class EmailDetailsSimple extends EmailDetails {
 
         private EmailDetailsSimple(String recipient, String subject, String msgBody) {
             super(msgBody, subject, recipient);

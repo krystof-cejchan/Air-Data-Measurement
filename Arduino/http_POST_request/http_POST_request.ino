@@ -15,8 +15,8 @@ DHT_Unified dht(DHTPIN, DHTTYPE);
 
 
 #ifndef STASSID
-#define STASSID "STRNADOVA 51"
-#define STAPSK  "stofiadam51"
+#define STASSID "$$$$$"
+#define STAPSK  "$$$$$"
 #endif
 
 #define MQ135_PIN A0

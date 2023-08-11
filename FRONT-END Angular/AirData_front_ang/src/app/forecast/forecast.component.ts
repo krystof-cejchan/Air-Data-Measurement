@@ -1,14 +1,11 @@
-import { Component, EventEmitter, OnInit, Output, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { ForecastData } from "./forecastobject";
 import { ForecastService } from "./forecast.service";
 import moment from "moment";
 import { round, uniqByFilter } from "../utilities/utils";
-import { ActivatedRoute, EventType, NavigationEnd, Router } from "@angular/router";
-import { MatSliderDragEvent } from "@angular/material/slider";
-import { data } from "jquery";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { openSnackBar } from "../errors/custom in-page errors/snack-bar/server_error/custom-error-snackbar";
-import { AppComponent } from "../app.component";
 import { filter } from "rxjs";
 import { SubSink } from "subsink";
 

@@ -26,9 +26,6 @@ public class StaticLocationData {
                             null, null, null,
                             new URL("https", "krystofcejchan.cz", "/arduino_aiq_quality/assets/imgs/faculties/LF_cover.jpg").toString()),
 
-                    /*new LocationData(-1L, false, "Alabama", "Sweet Home Alabama", "ALB",
-                            null, null, null,
-                            "http://cdn.theatlantic.com/media/img/photo/2020/06/alabama-photos/a01_46223491-1/original.jpg"),*/
                     new LocationData(-1L, false, "Náchod", "Home", "NÁCH",
                             null, null, null,
                             "https://krystofcejchan.cz/arduino_aiq_quality/assets/imgs/faculties/nachod.jpg")

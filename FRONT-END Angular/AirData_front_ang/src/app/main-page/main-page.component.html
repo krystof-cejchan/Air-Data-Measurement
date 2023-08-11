@@ -18,12 +18,12 @@
         <div id="overlay">
             <video loop="loop" [muted]="'muted'" autoplay="autoplay" *ngIf="!isMobile()" poster="
                 ./assets/imgs/thumbnail_for_bcgvideo.webp" class="fullscreen-bg__video">
-                <source src="./assets/videos/olomouc bcg s rr.webm" type="video/webm">
+                <source src="{{getVideoSource()}}" type="video/{{getVideoFormat()}}">
             </video>
-            <video loop="loop" [muted]="'muted'" autoplay="autoplay" *ngIf="isMobile()" poster="
+            <!--<video loop="loop" [muted]="'muted'" autoplay="autoplay" *ngIf="isMobile()" poster="
                 ./assets/imgs/thumbnail_for_bcgvideo.webp" class="fullscreen-bg__video">
                 <source src="./assets/videos/olomouc-drone-bcg-r-cropped-to-mobile-apect_ratio.webm" type="video/webm">
-            </video>
+            </video>-->
         </div>
         <div class="px-4 text-center pt-7">
             <div class="container">
@@ -31,7 +31,7 @@
                     <div class="content">
                         <div class="logo_div col align-self-center">
                             <img src="./assets/imgs/logos/UP_logo_horizont_bila_cz.webp" alt="Univerzita Palackého logo"
-                                id="logo">
+                                id="logo" draggable="false">
                         </div>
                     </div>
                 </div>

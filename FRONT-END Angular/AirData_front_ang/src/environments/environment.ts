@@ -4,24 +4,14 @@
 
 export const environment = {
   production: false,
-  baseUrl: 'http://localhost:8080',
-  baseAirDataUrl: 'http://localhost:8080/airdata',
-  baseUrlAPI: 'http://localhost:8080/airdata/api',
-  leaderboard: 'http://localhost:8080/airdata/leaderboard',
-  forecastUrl: 'http://localhost:8080/airdata/forecast',
-  notificationUrl: 'http://localhost:8080/airdata/notifications',
-  locationUrl: 'http://localhost:8080/airdata/locations',
-  domain: 'localhost',
-  firebase: {
-    apiKey: "•••",
-    authDomain: "•••",
-    projectId: "•••",
-    storageBucket: "•••",
-    messagingSenderId: "•••",
-    appId: "•••",
-    measurementId: "•••",
-    vapidKey: "•••"
-  }
+  baseUrl: 'http://localhost:5000',
+  baseAirDataUrl: 'http://localhost:5000/airdata',
+  baseUrlAPI: 'http://localhost:5000/airdata/api',
+  leaderboard: 'http://localhost:5000/airdata/leaderboard',
+  forecastUrl: 'http://localhost:5000/airdata/forecast',
+  notificationUrl: 'http://localhost:5000/airdata/notifications',
+  locationUrl: 'http://localhost:5000/airdata/locations',
+  domain: 'localhost'
   /* baseUrl: 'https://airq.krystofcejchan.online',
    baseAirDataUrl: 'https://airq.krystofcejchan.online/airdata',
    baseUrlAPI: 'https://airq.krystofcejchan.online/airdata/api',

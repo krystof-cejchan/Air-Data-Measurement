@@ -13,23 +13,21 @@ public class InsertLocationData {
         //  final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         Runnable insertNewDataToLocationTable = () -> {
             List<LocationData> locationDataList = locationDataRepository.findAll();
-            try {
+          /*  try {
                 Thread.sleep(200);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
-            //locationDataList.forEach(it -> System.out.println(it.getName()));
-            List<LocationData> locationDataListToBeInserted = new ArrayList<>();
+            }*/
+
+            ArrayList<LocationData> locationDataListToBeInserted = new ArrayList<>();
             List<String> locationDataName = locationDataList.stream().map(LocationData::getName).toList();
-            StaticLocationData.ALL_LOCATIONS_Pre.forEach(locationData -> {
-                if (!locationDataName.contains(locationData.getName())) {
-                    locationDataListToBeInserted.add(locationData);
-                }
-            });
+
+            for (LocationData ld : StaticLocationData.ALL_LOCATIONS_Pre)
+                if (!locationDataName.contains(ld.getName()))
+                    locationDataListToBeInserted.add(ld);
+
             locationDataRepository.saveAll(locationDataListToBeInserted);
-            // System.out.println(locationDataListToBeInserted.size() + "\slocations were inserted to the db.");
         };
         insertNewDataToLocationTable.run();
-
     }
 }

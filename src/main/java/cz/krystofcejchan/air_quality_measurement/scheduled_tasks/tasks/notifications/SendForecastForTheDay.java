@@ -17,8 +17,8 @@ public record SendForecastForTheDay(
         try {
             new SendForecastManager(notificationsRepository, emailService).sendEmailsAndDeleteInactiveAccounts();
         } catch (Exception e) {
-            var failEmailDetails = new EmailDetails(e.toString(),
-                    "Email failed to be sent.", "krystofcejchan@gmail.com");
+            EmailDetails failEmailDetails = new EmailDetails(e.getMessage() + '\n' + e.getCause().toString(),
+                    "Email failed to be sent.", System.getenv("DEF_EMAIL"));
             emailService.sendSimpleMail(failEmailDetails);
         }
     }

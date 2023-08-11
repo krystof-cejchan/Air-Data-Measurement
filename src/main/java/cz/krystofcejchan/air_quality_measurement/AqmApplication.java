@@ -55,16 +55,12 @@ public class AqmApplication implements CommandLineRunner {
      * @param args the args
      */
     public static void main(String @NotNull ... args) {
-        long startTime = System.currentTimeMillis();
+        final long startTime = System.currentTimeMillis();
 
         SpringApplication.run(AqmApplication.class, args);
 
-        Stream.iterate("*", i -> i + "*").limit(15).forEach(System.out::print);
+        Stream.iterate("*", s -> s + '*').parallel().limit(15).forEach(System.out::print);
         System.out.println("\nFully ready after: " + (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - startTime)) + 's');
-    }
-
-    public JavaMailSender getJavaMailSender() {
-        return javaMailSender;
     }
 
     /**
@@ -82,8 +78,7 @@ public class AqmApplication implements CommandLineRunner {
             Map<LeaderBoardKey, List<AirData>> map = LeaderboardTable.getFreshDataForLeaderboard(airDataRepo);
             LeaderboardTable.saveChangedDataAndDeleteOldData(airDataLeaderboardRepo, existingAirData, map);
         };
-
-        scheduledExecutorService.schedule(recalculateLeaderboard, 10, TimeUnit.SECONDS);
+        scheduledExecutorService.schedule(recalculateLeaderboard, 100, TimeUnit.SECONDS);
 
         new InsertLocationData().runScheduledTask(locationDataRepository);
 
@@ -94,37 +89,5 @@ public class AqmApplication implements CommandLineRunner {
                 javaMailSender)
                 .getRunnableList().forEach(ScheduledTaskRunnable::runScheduledTask);
     }
-
-
-//    /**
-//     * Cors filter
-//     *
-//     * @return the cors filter
-//     */
-//    @Bean
-//    public CorsFilter corsFilter() {
-//        CorsConfiguration corsConfiguration = new CorsConfiguration();
-//        corsConfiguration.setAllowCredentials(true);
-//        corsConfiguration.setAllowedOrigins(List.of("https://krystofcejchan.cz/"/*, "http://localhost:4200", "http://uwu.clanweb.eu/","http://localhost:4200", "31.30.115.190"*/));
-//        corsConfiguration.setAllowedHeaders(Arrays.asList("*", "Origin", "Access-Control-Allow-Origin", "Content-Type",
-//                "Accept", "Authorization", "Origin, Accept", "X-Requested-With",
-//                "Access-Control-Request-Method", "Access-Control-Request-Headers"));
-//        corsConfiguration.setExposedHeaders(Arrays.asList("*","Origin", "Content-Type", "Accept", "Authorization",
-//                "Access-Control-Allow-Origin", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
-//        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT"));
-//        corsConfiguration.setMaxAge(Duration.of(1, ChronoUnit.MINUTES));
-//        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
-//        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
-//        return new CorsFilter(urlBasedCorsConfigurationSource);
-//    }
-    /*@Bean
-	public WebMvcConfigurer corsConfigurer() {
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/greeting-javaconfig").allowedOrigins("http://localhost:8080");
-			}
-		};
-	}*/
 }
 
