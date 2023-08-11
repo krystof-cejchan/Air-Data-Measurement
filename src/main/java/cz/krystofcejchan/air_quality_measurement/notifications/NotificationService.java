@@ -1,7 +1,7 @@
 package cz.krystofcejchan.air_quality_measurement.notifications;
 
 import cz.krystofcejchan.air_quality_measurement.notifications.email.EmailDetails;
-import cz.krystofcejchan.air_quality_measurement.notifications.email.EmailService;
+import cz.krystofcejchan.air_quality_measurement.notifications.email.EmailServiceImpl;
 import cz.krystofcejchan.air_quality_measurement.notifications.email.EmailTemplates;
 import cz.krystofcejchan.air_quality_measurement.utilities.ZonedDateUtils;
 import org.jetbrains.annotations.Contract;
@@ -20,16 +20,12 @@ import java.util.UUID;
 public class NotificationService {
 
     @Autowired
-    private EmailService emailService;
-    @Autowired
-    private  NotificationsRepository repository;
+    private NotificationsRepository repository;
     @Autowired
     JavaMailSender javaMailSender;
-
-
     @Autowired
-    @Contract(pure = true)
-    public NotificationService() {    }
+    EmailServiceImpl emailService;
+
 
     public @Nullable NotificationReceiver addNewNotificationReceiver(@NotNull String receiversEmail) {
         final NotificationReceiver receiver = new NotificationReceiver(-1L,
@@ -38,11 +34,10 @@ public class NotificationService {
                 false,
                 LocalDateTime.now(ZonedDateUtils.getPragueZoneId()));
 
-
         var optUserWithSameEmail = repository.findByEmailAddress(receiversEmail);
         if (optUserWithSameEmail.isEmpty()) {
-            var newlySavedReceiver = repository.save(receiver);
-            var sendEmailAndGetStatus = this.emailService.sendSimpleMail(javaMailSender, new EmailDetails(newlySavedReceiver, EmailTemplates.CONFIRM));
+            final var newlySavedReceiver = repository.save(receiver);
+            final var sendEmailAndGetStatus = emailService.sendSimpleMail(new EmailDetails(EmailTemplates.CONFIRM, newlySavedReceiver));
             if (!sendEmailAndGetStatus.is2xxSuccessful()) {
                 repository.deleteById(newlySavedReceiver.getId());
                 return null;
@@ -68,7 +63,7 @@ public class NotificationService {
         Optional<NotificationReceiver> optReceiver = repository.findByIdAndRndHash(id, hash);
         if (optReceiver.isEmpty()) return HttpStatus.CONFLICT;
         var receiver = optReceiver.get();
-        emailService.sendSimpleMail(javaMailSender, new EmailDetails(receiver, EmailTemplates.UNSUBSCRIBE));
+        emailService.sendSimpleMail(new EmailDetails(EmailTemplates.UNSUBSCRIBE, receiver));
         repository.deleteById(receiver.getId());
         return HttpStatus.OK;
     }

@@ -1,0 +1,6 @@
+id,city,img_url,latitude,longitude,meters_above_the_ground_approx,name,name_short,outofservice
+"1,Olomouc,http://krystofcejchan.cz/arduino_aiq_quality/assets/imgs/faculties/PdF_cover.jpg,NULL,NULL,NULL,""Pedagogick fakulta UPOL"",PdF,0"
+"2,Olomouc,http://krystofcejchan.cz/arduino_aiq_quality/assets/imgs/faculties/PrF_cover.jpg,NULL,NULL,NULL,""Peck fakulta UPOL"",PrF,0"
+"3,Olomouc,http://krystofcejchan.cz/arduino_aiq_quality/assets/imgs/faculties/PF_cover.jpg,NULL,NULL,NULL,""Prfakulta UPOL"",PF,0"
+"4,Olomouc,http://krystofcejchan.cz/arduino_aiq_quality/assets/imgs/faculties/LF_cover.jpg,NULL,NULL,NULL,""L fakulta UPOL"",LF,0"
+5,Nachod,http://www.mestonachod.cz/na/z_servis/aktuality/images/6871.jpg,NULL,NULL,NULL,Home,NaÅCH,0

@@ -4,22 +4,12 @@ export const environment = {
   baseAirDataUrl: 'http://aqmbackendeurope2-env.eba-xmww2tf5.eu-central-1.elasticbeanstalk.com/airdata',
   baseUrlAPI: 'http://aqmbackendeurope2-env.eba-xmww2tf5.eu-central-1.elasticbeanstalk.com/airdata/api',
   leaderboard: 'http://aqmbackendeurope2-env.eba-xmww2tf5.eu-central-1.elasticbeanstalk.com/airdata/leaderboard'*/
-  baseUrl: 'https://airq.krystofcejchan.online',
-  baseAirDataUrl: 'https://airq.krystofcejchan.online/airdata',
-  baseUrlAPI: 'https://airq.krystofcejchan.online/airdata/api',
-  leaderboard: 'https://airq.krystofcejchan.online/airdata/leaderboard',
-  forecastUrl: 'https://airq.krystofcejchan.online/airdata/forecast',
-  notificationUrl: 'https://airq.krystofcejchan.online/airdata/notifications',
-  locationUrl: 'https://airq.krystofcejchan.online/airdata/locations',
-  domain: 'krystofcejchan.cz',
-  firebase: {
-    apiKey: "•••",
-    authDomain: "•••",
-    projectId: "•••",
-    storageBucket: "•••",
-    messagingSenderId: "•••",
-    appId: "•••",
-    measurementId: "•••",
-    vapidKey: "•••"
-  }
+  baseUrl: 'https://airq-app.proudcliff-5cdcd465.northeurope.azurecontainerapps.io',
+  baseAirDataUrl: 'https://airq-app.proudcliff-5cdcd465.northeurope.azurecontainerapps.io/airdata',
+  baseUrlAPI: 'https://airq-app.proudcliff-5cdcd465.northeurope.azurecontainerapps.io/airdata/api',
+  leaderboard: 'https://airq-app.proudcliff-5cdcd465.northeurope.azurecontainerapps.io/airdata/leaderboard',
+  forecastUrl: 'https://airq-app.proudcliff-5cdcd465.northeurope.azurecontainerapps.io/airdata/forecast',
+  notificationUrl: 'https://airq-app.proudcliff-5cdcd465.northeurope.azurecontainerapps.io/airdata/notifications',
+  locationUrl: 'https://airq-app.proudcliff-5cdcd465.northeurope.azurecontainerapps.io/airdata/locations',
+  domain: 'krystofcejchan.cz'
 };

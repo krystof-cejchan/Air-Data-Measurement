@@ -30,7 +30,7 @@ public class UpdateForecast implements ScheduledTaskRunnable {
             }
         };
         scheduledExecutorService.scheduleAtFixedRate(updateForecast,
-                5L,
+                0,
                 ForecastDataList.UPDATE_TIME.getSeconds(),
                 TimeUnit.SECONDS);
     }

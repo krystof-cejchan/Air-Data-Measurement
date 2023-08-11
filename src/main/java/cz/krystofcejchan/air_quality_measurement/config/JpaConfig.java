@@ -1,5 +1,7 @@
 package cz.krystofcejchan.air_quality_measurement.config;
 
+import cz.krystofcejchan.air_quality_measurement.enums.Production;
+import cz.krystofcejchan.air_quality_measurement.utilities.psw.Psw;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,18 +14,6 @@ import javax.sql.DataSource;
  */
 @Configuration
 public class JpaConfig {
-
-   /* @Primary
-    @Bean
-    public DataSource getSecondaryDataSource() {
-        DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.url("jdbc:mysql://localhost:3306/airDataMeasurement");
-        dataSourceBuilder.username("root");
-        dataSourceBuilder.password("jetotereza");
-        return dataSourceBuilder.build();
-    }
-*/
-
     /**
      * MySQL server connection bean
      *
@@ -32,10 +22,15 @@ public class JpaConfig {
     @Primary
     @Bean
     public DataSource getPrimaryDataSource() {
-        DataSourceBuilder<? extends DataSource> dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.url(System.getenv("DB"));
-        dataSourceBuilder.username("doadmin");
-        dataSourceBuilder.password(String.valueOf(cz.krystofcejchan.air_quality_measurement.utilities.psw.Psw.dbpsd));
-        return dataSourceBuilder.build();
+        boolean isProd = Production.valueOf(System.getenv("PROD")).equals(Production.LIVE);
+        var testingDBDataSource = DataSourceBuilder.create()
+                .url("jdbc:mysql://localhost:3306/airDataMeasurement")
+                .username("root")
+                .password("jetotereza");
+
+        return (isProd ? DataSourceBuilder.create()
+                .url(System.getenv("DB"))
+                .username(System.getenv("DB_U"))
+                .password(String.valueOf(Psw.dbpsd)) : testingDBDataSource).build();
     }
 }

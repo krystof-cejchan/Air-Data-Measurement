@@ -67,7 +67,7 @@ public record AirDataResource(AirDataService airDataService) {
 
         BooleanValidation<AirData, String[]> token_params1_validation = (airD, strArr) -> airD.getArduinoTime().equals(strArr[0]);
         BooleanValidation<String, String[]> token_params2_validation = (str1, strArr) -> str1.equals(strArr[1]);
-        BooleanValidation<String, String> user_agent_validation = String::contains;
+        BooleanValidation<String, String> user_agent_validation = String::equals;
 
         validations.add(user_agent_validation.validPassed(userAgent, "ESP8266HTTPClient"));
         validations.add(token_params1_validation.validPassed(airData, tokenParams));

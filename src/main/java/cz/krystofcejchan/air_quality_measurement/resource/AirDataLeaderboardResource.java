@@ -28,28 +28,10 @@ public final class AirDataLeaderboardResource {
         this.service = service;
     }
 
-    /*@GetMapping("/getAllByLocationAndLeaderboardType")
-    public @NotNull ResponseEntity<?> getAllByLocationAndLeaderboardType(@RequestParam() Long locationId,
-                                                                         @RequestParam() String leaderboardtype) throws DataNotFoundException {
-        LeaderboardType leaderboardType1;
-        try {
-            leaderboardType1 = LeaderboardType.valueOf(leaderboardtype);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-        Optional<List<AirDataLeaderboard>> airDataLeaderboards = service
-                .getAirDataLeaderboardByLocationAndLeaderboardType(locationDataRepository.findById(locationId)
-                        .orElseThrow(DataNotFoundException::new), leaderboardType1);
-
-        return airDataLeaderboards.orElse(Collections.emptyList()).isEmpty() ?
-                new ResponseEntity<>(false, HttpStatus.BAD_REQUEST)
-                : new ResponseEntity<>(airDataLeaderboards.get(), HttpStatus.OK);
-    }*/
-
     @GetMapping("/getAllDataFromLeaderboard")
     public @NotNull ResponseEntity<?> getAll() {
         Optional<List<AirDataLeaderboard>> airDataLeaderboardList = service.getAllDataFromLeaderboard();
-        return airDataLeaderboardList.isEmpty() ? new ResponseEntity<>(                HttpStatus.BAD_REQUEST)
+        return airDataLeaderboardList.isEmpty() ? new ResponseEntity<>(HttpStatus.BAD_REQUEST)
                 : new ResponseEntity<>(airDataLeaderboardList.get(), HttpStatus.OK);
     }
 }

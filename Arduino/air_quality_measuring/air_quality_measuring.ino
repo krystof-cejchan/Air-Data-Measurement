@@ -21,16 +21,14 @@
 
 DHT_Unified dht(DHTPIN, DHTTYPE);
 
-#define HOST "•••••••••••••••••••••••••••••••••••••"
 #define SERVER_IP \
-  "••••••••••••••••••••••••••••••••••••••••••••••••••"
+  "♠♠♠"
+#define HOST SERVER_IP
 
-//#define SERVER_IP
-//"http://krystofcejchan.cz/arduino_aiq_quality/measurement.php"
 
 #ifndef STASSID
-#define STASSID "••••••••••••••••••••••••••••"
-#define STAPSK "••••••••••••••••••••••••••••"
+#define STASSID "♠♠♠♠♠♠♠♠♠♠♠♠"
+#define STAPSK "♠♠♠♠♠♠♠♠♠♠♠♠"
 #endif
 
 #define MQ135_PIN A0
@@ -45,7 +43,7 @@ NTPClient timeClient(ntpUDP, "pool.ntp.org", 1 * 60 * 60, 60000);
 
 #define location_Id 5
 
-const String scrtpsw = "";
+const String scrtpsw = "♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠";
 
 float ppms[sizeofppms] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -55,12 +53,12 @@ boolean isConfs[sizeofisConfs] = {
   false, false, false, false, false, false, false, false, false
 };
 int loop_counter = 0;
-float conf_limit = 40.00;
+float conf_limit = 40.00f;
 boolean isConf = false;
 int chk;
 const unsigned int sleep_ms = 30 * 60000;
 
-unsigned long lastMillis = 0;
+signed long lastMillis = 0;
 boolean first = true;
 float hum = 55;
 float temp = 20;
@@ -68,37 +66,19 @@ float correctedPPM;
 
 void setup() {
   Serial.begin(115200);
+
   dht.begin();
   timeClient.begin();
-
-
   sensor_t sensor;
   dht.temperature().getSensor(&sensor);
-  WiFi.begin(STASSID, STAPSK);
-  unsigned int stat_counter = 0;
-  Serial.print("Connecting to " + String(STASSID) + "\t");
-  while (WiFi.status() != WL_CONNECTED) {
-    if (stat_counter % 10 == 0)
-      Serial.println(wl_status_to_string(WiFi.status()));
-    else
-      Serial.print("#");
+  connectToWifi();
 
-    stat_counter += 1;
-    delay(500 * 2);
-  }
-  Serial.println("");
-  Serial.print("Connected!IPaddress:");
-  Serial.println(WiFi.localIP());
 }
 
 /**
     Loop method running endlessly until termination or error is thrown
 */
 void loop() {
-  //calcTempAndHum();
-
-  //float correctedPPM = mq135_sensor.getCorrectedPPM(temp, hum);
-
   if (not isConf) {
     calcTempAndHum();
     isConfigurated(mq135_sensor.getCorrectedPPM(temp, hum));
@@ -110,7 +90,7 @@ void loop() {
 
   if (first || millis() - lastMillis > sleep_ms) {
     first = false;
-    if ((WiFi.status() == WL_CONNECTED)) {
+    if (WiFi.status() == WL_CONNECTED) {
       calcTempAndHum();
 
       Serial.println(String(temp) + "°C;\t" + String(hum) + "%");
@@ -140,8 +120,8 @@ void loop() {
         [Host] => krystofcejchan.cz
         )*/
       Serial.print("[HTTP]begin...\n");
+      http.begin(client, String(SERVER_IP) + "/airdata/add");
 
-      http.begin(client, SERVER_IP);
       http.addHeader("Content-Type", "application/json");
       http.addHeader("Accept-Charset", "utf-8");
       http.addHeader("Content-Length", String(json_post_data.length()));
@@ -155,10 +135,11 @@ void loop() {
       Serial.print(currDate);
 
       int httpCode = http.POST(json_post_data);
+      /*while (isnan(httpCode) or httpCode == 0) {
+        delay(100);
+        }*/
 
-      while (isnan(httpCode) or httpCode == 0) {
-        Serial.print('0');
-      }
+      Serial.println(httpCode);
       if (httpCode > 0) {
         Serial.printf("[HTTP]POST...code:%d\n", httpCode);
 
@@ -169,15 +150,39 @@ void loop() {
           Serial.println(">>");
           // Serial.println(generate_http_post_body(5, "time", 50, 40, 60));
         }
+        else if (httpCode == HTTP_CODE_UNAUTHORIZED)
+          Serial.println("authorization failed");
       } else
         Serial.printf("[HTTP]POST...failed, error: %s\n",
                       http.errorToString(httpCode).c_str());
 
       http.end();
     }
+    else connectToWifi();
+
     lastMillis = millis();
+
+
   } else
     calcTempAndHum();
+}
+
+void connectToWifi() {
+  WiFi.begin(STASSID, STAPSK);
+  unsigned int stat_counter = 0;
+  Serial.print("Connecting to " + String(STASSID) + "\t");
+  while (WiFi.status() != WL_CONNECTED) {
+    if (stat_counter % 10 == 0)
+      Serial.println(wl_status_to_string(WiFi.status()));
+    else
+      Serial.print("#");
+
+    stat_counter += 1;
+    delay(500 * 2);
+  }
+  Serial.println("");
+  Serial.print("Connected!IPaddress:");
+  Serial.println(WiFi.localIP());
 }
 
 String getCurrentDate(boolean withTime) {
@@ -199,7 +204,7 @@ String getCurrentDate(boolean withTime) {
   String currentDate = monthDay + "." + currentMonth + "." + currentYear;
 
   const String date_and_time =
-    currentDate + ' ' + (withTime ? formattedTime : "");
+    currentDate + (withTime ?   ' ' + formattedTime : "");
 
   return date_and_time;
 }

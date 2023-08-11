@@ -40,15 +40,15 @@ public class LeaderboardTable {
                     || !existingAirDataLeaderboardByType
                     .getOrDefault(leaderboardType, Collections.emptyList())
                     .stream()
-                    //filter was not originally part of this pipe; however the code broke down out of nowhere, hence the filter line was added to prevent throwing an exception
+                    //filter was not originally part of this pipe; however the code broke down out of nowhere,
+                    // hence the filter line was added to prevent throwing an exception
                     .filter(it -> it.getAirDataId() != null)
                     .allMatch(existing ->
                             newLeaderboardDataMap
                                     .getOrDefault(new LeaderBoardKey(leaderboardType), Collections.emptyList())
                                     .stream()
                                     .map(AirData::getId)
-                                    .toList()
-                                    .stream().allMatch(id -> id.equals(existing.getAirDataId().getId())))) {
+                                    .allMatch(id -> id.equals(existing.getAirDataId().getId())))) {
                 mismatchingLeaderboardTypes.add(leaderboardType);
             }
         }

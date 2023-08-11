@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { ActivatedRoute } from '@angular/router';
 import { AirDataDetailsService } from './air-data-details.service';
 import { AirData } from "../objects/airdata";
@@ -11,7 +11,6 @@ import { openSnackBar } from '../errors/custom in-page errors/snack-bar/server_e
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { HttpErrorResponse } from "@angular/common/http";
 import { SubSink } from "subsink";
-import { openCustomSnackBar } from "../errors/custom in-page errors/snack-bar/fullycustomizable_snackbar/custom-error-snackbar";
 import { popUpSnackBar } from "../utilities/utils";
 
 @Component({

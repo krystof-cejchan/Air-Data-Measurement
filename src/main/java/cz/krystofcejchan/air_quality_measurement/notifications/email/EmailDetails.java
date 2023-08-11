@@ -1,92 +1,126 @@
 package cz.krystofcejchan.air_quality_measurement.notifications.email;
 
 import cz.krystofcejchan.air_quality_measurement.enums.Production;
-import cz.krystofcejchan.air_quality_measurement.exceptions.DataNotFoundException;
 import cz.krystofcejchan.air_quality_measurement.forecast.ForecastDataList;
 import cz.krystofcejchan.air_quality_measurement.notifications.NotificationReceiver;
 import cz.krystofcejchan.air_quality_measurement.utilities.psw.Psw;
 import cz.krystofcejchan.lite_weather_lib.enums_exception.enums.DAY;
 import cz.krystofcejchan.lite_weather_lib.enums_exception.enums.TIME;
 import cz.krystofcejchan.lite_weather_lib.weather_objects.subparts.forecast.days.hour.ForecastAtHour;
+import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.IntSummaryStatistics;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class EmailDetails {
-
-    private String recipient;
-    private String msgBody;
+public sealed class EmailDetails permits EmailController.EmailDetailsSimple {
+    /**
+     * recipient's email address to an email text addressed to him
+     */
+    private final Map<String, String> recipientToText = new HashMap<>();
     private String subject;
     @Nullable
     private String attachment;
 
     @Contract(pure = true)
-    public EmailDetails(@NotNull String recipient, String msgBody, String subject, @Nullable String attachment) {
-        this.recipient = recipient;
-        this.msgBody = msgBody;
+    public EmailDetails(String msgBody, String subject, @Nullable String attachment, @NotNull String @NotNull ... recipient) {
+        try {
+            this.recipientToText.putAll(Arrays.stream(recipient).distinct()
+                    .collect(Collectors.toMap(
+                            key -> key,
+                            value -> msgBody,
+                            (oldValue, newValue) -> newValue)));
+        } catch (NullPointerException n) {
+            n.printStackTrace();
+        }
         this.subject = subject;
         this.attachment = attachment;
     }
 
-    @Contract(pure = true)
-    public EmailDetails() {
+    public EmailDetails(String msgBody, String subject, @NotNull String recipient) {
+        this(msgBody, subject, null, recipient);
     }
 
-
     @Contract(pure = true)
-    public EmailDetails(@NotNull NotificationReceiver receiver, @NotNull EmailTemplates template) throws IllegalArgumentException {
+    public EmailDetails(@NotNull EmailTemplates template, @NotNull NotificationReceiver... receivers) throws IllegalArgumentException {
         final String url = Psw.production == Production.TESTING ? "http://localhost:4200" : "https://krystofcejchan.cz/arduino_aiq_quality/beta";
-        this.recipient = receiver.getEmailAddress();
-        this.subject = "UPočasí |\s";
-
-        switch (template) {
-            case CONFIRM -> {
-                this.msgBody = "<p style='text-align:center'><strong><span style='font-size:30px'><span style='background-color:#2969b0;color:#efefef;text-shadow:rgba(255,255,255,.65) 3px 2px 4px'>UPočasí</span></span></strong></p><p>Dobrý den,</p><p>k potvrzení klikněte: <a href='%s/predplatne/potvrzeni/%s/%s' rel='noopener noreferrer' target='_blank'>TADY</a></p><p><br></p><p>Pokud jste o nic nezažádali, e-mail můžete ignorovat nebo smazat.</p><p><br></p><p><br></p><p><br></p><hr><p><span style='font-size:10px'><strong>E-mail byl vygenerován automaricky - neodpovídejte na něj.</strong></span></p>"
-                        .formatted(url, receiver.getId(), receiver.getRndHash());
-                this.subject += "Potvrzení";
+        String weatherForecastText = null;
+        if (template == EmailTemplates.WEATHER_FORECAST) {
+            final String textUrl = "https://krystofcejchan.cz/projects/airM/weather_forecast.txt";
+            try (InputStream inputStream = new URL(textUrl).openStream()) {
+                weatherForecastText = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            case WEATHER_FORECAST -> {
-                TIME[] dayTimes = {TIME.AM_6, TIME.AM_9, TIME.AM_12, TIME.PM_3, TIME.PM_6, TIME.PM_9};
+        }
+        for (NotificationReceiver notificationReceiver : receivers) {
+            this.subject = "UPočasí |\s";
+            String msgBody;
+            switch (template) {
+                case CONFIRM -> {
+                    msgBody = "<p style='text-align:center'><strong><span style='font-size:30px'><span style='background-color:#2969b0;color:#efefef;text-shadow:rgba(255,255,255,.65) 3px 2px 4px'>UPočasí</span></span></strong></p><p>Dobrý den,</p><p>k potvrzení klikněte: <a href='%s/predplatne/potvrzeni/%s/%s' rel='noopener noreferrer' target='_blank'>TADY</a></p><p><br></p><p>Pokud jste o nic nezažádali, e-mail můžete ignorovat nebo smazat.</p><p><br></p><p><br></p><p><br></p><hr><p><span style='font-size:10px'><strong>E-mail byl vygenerován automaricky - neodpovídejte na něj.</strong></span></p>"
+                            .formatted(url, notificationReceiver.getId(), notificationReceiver.getRndHash());
+                    this.subject += "Potvrzení";
+                }
+                case WEATHER_FORECAST -> {
+                    TIME[] dayTimes = {TIME.AM_6, TIME.AM_9, TIME.AM_12, TIME.PM_3, TIME.PM_6, TIME.PM_9};
 
-                var tempAvgByTime = ForecastDataList.forecastAtHourList.parallelStream()
-                        .filter(it -> it.getDay() == DAY.TODAY && Arrays.stream(dayTimes).anyMatch(time -> time == it.getTime()))
-                        .collect(Collectors.toMap(ForecastAtHour::getTime, ForecastAtHour::getTemperatureC));
+                    var tempAvgByTime = ForecastDataList.forecastAtHourList.stream()
+                            .filter(it -> it.getDay() == DAY.TODAY && Arrays.stream(dayTimes).anyMatch(time -> time == it.getTime()))
+                            .collect(Collectors.toMap(ForecastAtHour::getTime, Function.identity()));
 
-                var tempList = ForecastDataList.forecastAtHourList.stream().filter(day -> day.getDay() == DAY.TODAY)
-                        .toList();
+                    var tempList = ForecastDataList.forecastAtHourList.stream()
+                            .filter(day -> day.getDay() == DAY.TODAY && Arrays.stream(dayTimes)
+                                    .anyMatch(t -> t.equals(day.getTime())))
+                            .toList();
 
-                DecimalFormat decimalFormatForTemp = new DecimalFormat("#0.00");
-                //<p style='text-align:center'><span style='font-size:30px;color:#2c82c9'><strong><br></strong></span></p><p>Dobr&yacute; den,</p><p>dnes bude v Olomouci %s s teplotou %s&deg;C.</p><p><br>V&iacute;ce informac&iacute; m&uring;&zcaron;ete naj&iacute;t <a href='https://krystofcejchan.cz/arduino_aiq_quality/beta/predpoved/' rel='noopener noreferrer' target='_blank'>na webov&eacute; str&aacute;nce ZDE.</a></p><p style='text-align:center'><strong><span style='font-size:36px;color:#2c82c9'>UPo&ccaron;as&iacute;</span></strong></p><p><br></p><p><br></p><hr><p><span style='font-size:10px'>Pokus nechcete dost&aacute;vat tyto upozorn&ecaron;n&iacute;, m&uring;&zcaron;ete tak prov&eacute;zt <a href='%s/predplatne/zruseni/%s/%s' rel='noopener noreferrer' target='_blank'> ZDE</a>.</span></p>
-                this.msgBody =
-                        String.format("<div style='font-family: Times, \"Times New Roman\", Georgia, serif;'><p style='text-align:center'><span style='font-size:30px;color:#2c82c9'><strong><br></strong></span></p><p>Dobrý den,</p><p>dnes bude v Olomouci %s</p><table style=\"border-collapse:collapse;border-color:#9ABAD9;border-spacing:0;border-style:solid;border-width:1px\" class=\"tg\"><thead><tr><th style=\"background-color:#409cff;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#fff;font-family:Arial, sans-serif;font-size:14px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">Čas</th><th style=\"background-color:#409cff;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#fff;font-family:Arial, sans-serif;font-size:14px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">Teplota [°C]</th></tr></thead><tbody><tr><td style=\"background-color:#D2E4FC;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:serif !important;font-size:15px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">6:00</td><td style=\"background-color:#D2E4FC;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">%s</td></tr><tr><td style=\"background-color:#EBF5FF;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">9:00</td><td style=\"background-color:#EBF5FF;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">%s</td></tr><tr><td style=\"background-color:#D2E4FC;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">12:00</td><td style=\"background-color:#D2E4FC;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">%s</td></tr><tr><td style=\"background-color:#EBF5FF;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">15:00</td><td style=\"background-color:#EBF5FF;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">%s</td></tr><tr><td style=\"background-color:#D2E4FC;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">18:00</td><td style=\"background-color:#D2E4FC;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">%s</td></tr><tr><td style=\"background-color:#EBF5FF;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">21:00</td><td style=\"background-color:#EBF5FF;border-color:#9ABAD9;border-style:solid;border-width:0px;color:#444;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal\">%s</td></tr></tbody></table><p><br>Více informací můžete najít <a href='https://krystofcejchan.cz/arduino_aiq_quality/beta/predpoved/' rel='noopener noreferrer' target='_blank'>na webové stránce ZDE.</a></p><p style='text-align:center'><strong><span style='font-size:36px;color:#2c82c9'>UPočasí</span></strong></p><p><br></p><p><br></p><hr><p><span style='font-size:10px'>Pokus nechcete dostávat tyto upozornění, můžete tak provést <a href='%s/predplatne/zruseni/%s/%s' rel='noopener noreferrer' target='_blank'> ZDE</a>.</span></p></div>",
-                                weatherCodeToDescriptionInCzech(tempList.stream()
-                                        .filter(it -> it.getTime() == TIME.AM_12)
-                                        .limit(1)
-                                        .findAny()
-                                        .orElseThrow(DataNotFoundException::new)
-                                        .getWeatherCode()),
-                                decimalFormatForTemp.format(tempAvgByTime.get(TIME.AM_6)),
-                                decimalFormatForTemp.format(tempAvgByTime.get(TIME.AM_9)),
-                                decimalFormatForTemp.format(tempAvgByTime.get(TIME.AM_12)),
-                                decimalFormatForTemp.format(tempAvgByTime.get(TIME.PM_3)),
-                                decimalFormatForTemp.format(tempAvgByTime.get(TIME.PM_6)),
-                                decimalFormatForTemp.format(tempAvgByTime.get(TIME.AM_9)),
-                                url,
-                                receiver.getId(),
-                                receiver.getRndHash());
-                //this.msgBody = new String(this.msgBody.getBytes(StandardCharsets.UTF_8),StandardCharsets.UTF_8);
-                this.subject += "Dnešní předpověď pro Olomouc";
+                    DecimalFormat decimalFormatForTemp = new DecimalFormat("#0.00'°C'");
+                    IntSummaryStatistics temperatureSummary = tempList.stream().mapToInt(ForecastAtHour::getTemperatureC).summaryStatistics();
+                    assert weatherForecastText != null;
+                    msgBody = weatherForecastText.formatted(
+                            temperatureSummary.getMin(), temperatureSummary.getMax(),
+                            decimalFormatForTemp.format(tempAvgByTime.get(TIME.AM_6).getTemperatureC()),
+                            weatherCodeToDescriptionInCzech(tempAvgByTime.get(TIME.AM_6).getWeatherCode()),
+
+                            decimalFormatForTemp.format(tempAvgByTime.get(TIME.AM_9).getTemperatureC()),
+                            weatherCodeToDescriptionInCzech(tempAvgByTime.get(TIME.AM_9).getWeatherCode()),
+
+                            decimalFormatForTemp.format(tempAvgByTime.get(TIME.AM_12).getTemperatureC()),
+                            weatherCodeToDescriptionInCzech(tempAvgByTime.get(TIME.AM_12).getWeatherCode()),
+
+                            decimalFormatForTemp.format(tempAvgByTime.get(TIME.PM_3).getTemperatureC()),
+                            weatherCodeToDescriptionInCzech(tempAvgByTime.get(TIME.PM_3).getWeatherCode()),
+
+                            decimalFormatForTemp.format(tempAvgByTime.get(TIME.PM_6).getTemperatureC()),
+                            weatherCodeToDescriptionInCzech(tempAvgByTime.get(TIME.PM_6).getWeatherCode()),
+
+                            decimalFormatForTemp.format(tempAvgByTime.get(TIME.PM_9).getTemperatureC()),
+                            weatherCodeToDescriptionInCzech(tempAvgByTime.get(TIME.PM_9).getWeatherCode()),
+
+                            url,
+                            notificationReceiver.getId(),
+                            notificationReceiver.getRndHash());
+                    this.subject += "Dnešní předpověď pro Olomouc";
+                }
+                case UNSUBSCRIBE -> {
+                    msgBody = "<p style='text-align:center'><span style='font-size:30px;color:#efefef'><span style='background-color:#2969b0'>UPočasí</span></span></p><p style='text-align:left'><span style='font-size:14px;color:#2969b0'>Dobrý den, vaše předplatné bylo zrušeno.<br></span></p>";
+                    this.subject += "Zrušení Vašeho předplatného";
+                }
+                default -> throw new IllegalArgumentException();
+
             }
-            case UNSUBSCRIBE -> {
-                this.msgBody = "<p style='text-align:center'><span style='font-size:30px;color:#efefef'><span style='background-color:#2969b0'>UPočasí</span></span></p><p style='text-align:left'><span style='font-size:14px;color:#2969b0'>Dobrý den, vaše předplatné bylo zrušeno.<br></span></p>";
-                this.subject += "Zrušení Vašeho předplatného";
-            }
-            default -> throw new IllegalArgumentException();
-
+            this.recipientToText.putIfAbsent(notificationReceiver.getEmailAddress(), msgBody);
         }
 
     }
@@ -146,24 +180,9 @@ public class EmailDetails {
         };
     }
 
-    /*
-    <p style='text-align:center'><strong><span style='font-size:30px'><span style='background-color:#2969b0;color:#efefef;text-shadow:rgba(255,255,255,.65) 3px 2px 4px'>UPočas&iacute;</span></span></strong></p><p>Dobr&yacute; den,</p><p>k potvrzen&iacute; klikněte zde:<a href='https://google.cz' rel='noopener noreferrer' target='_blank'>TADY</a></p><p><br></p><p>Pokud jste o nic nezaž&aacute;dali, e-mail můžete ignorovat nebo smazat.</p><p><br></p><p><br></p><p><br></p><hr><p><span style='font-size:10px'><strong>E-mail byl vygenerov&aacute;n automaricky - neodpov&iacute;dejte na něj.</strong></span></p>
-     */
 
-    public String getRecipient() {
-        return recipient;
-    }
-
-    public void setRecipient(String recipient) {
-        this.recipient = recipient;
-    }
-
-    public String getMsgBody() {
-        return msgBody;
-    }
-
-    public void setMsgBody(String msgBody) {
-        this.msgBody = msgBody;
+    public Map<String, String> getRecipientToText() {
+        return recipientToText;
     }
 
     public String getSubject() {

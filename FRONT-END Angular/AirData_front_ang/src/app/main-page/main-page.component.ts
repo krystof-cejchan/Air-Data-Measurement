@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { AirData } from '../objects/airdata';
 import { LatestDataService } from '../dropdownlist/latest-data/latest-data.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
@@ -48,6 +48,33 @@ export class MainPageComponent implements OnInit, OnDestroy {
       }
     }));
   }
+
+  getVideoSource(): string {
+    if (this.isMobile())
+      return "./assets/videos/olomouc-drone-bcg-r-cropped-to-mobile-apect_ratio.webm"
+    return "./assets/videos/olomouc bcg s rr.webm"
+  }
+  getVideoFormat(): string {
+    const vs = this.getVideoSource();
+    return vs.substring(vs.lastIndexOf('.') + 1)
+  }
+  private round(value: number, precision: number) {
+    this.temp_sentence_show = true;
+    return round(value, precision);
+  }
+
+  public isMobile(): boolean {
+    return this.deviceService.isMobile();
+  }
+
+  public openLink(url: string) {
+    window.open(url)
+  }
+
+  public getCurrYear(): number {
+    return new Date().getFullYear();
+  }
+  
   public getColourBasedOnTemp(): string {
     if (this.current_temperature <= -15)
       return "#535eba"
@@ -79,23 +106,5 @@ export class MainPageComponent implements OnInit, OnDestroy {
     if (this.current_temperature > 35)
       return "#d2449a";
     else return "black";
-  }
-  private round(value: number, precision: number) {
-    this.temp_sentence_show = true;
-    return round(value, precision);
-  }
-
-  public isMobile(): boolean {
-    // console.log(this.deviceService.isMobile());
-
-    return this.deviceService.isMobile();
-  }
-
-  public openLink(url: string) {
-    window.open(url)
-  }
-
-  public getCurrYear(): number {
-    return new Date().getFullYear();
   }
 }

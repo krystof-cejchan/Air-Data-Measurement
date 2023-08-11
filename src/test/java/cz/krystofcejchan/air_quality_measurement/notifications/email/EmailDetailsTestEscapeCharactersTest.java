@@ -1,13 +1,8 @@
 package cz.krystofcejchan.air_quality_measurement.notifications.email;
 
 import com.google.common.html.HtmlEscapers;
-import org.apache.commons.text.StringEscapeUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.util.HtmlUtils;
-import org.springframework.web.util.HtmlUtils.*;
-
-import java.nio.charset.StandardCharsets;
 
 class EmailDetailsTestEscapeCharactersTest {
 
