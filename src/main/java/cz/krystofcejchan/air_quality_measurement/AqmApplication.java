@@ -93,4 +93,3 @@ public class AqmApplication implements CommandLineRunner {
                 .getRunnableList().forEach(ScheduledTaskRunnable::runScheduledTask);
     }
 }
-
