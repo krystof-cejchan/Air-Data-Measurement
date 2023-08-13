@@ -3,15 +3,19 @@ package cz.krystofcejchan.air_quality_measurement.scheduled_tasks.tasks.notifica
 import cz.krystofcejchan.air_quality_measurement.notifications.NotificationsRepository;
 import cz.krystofcejchan.air_quality_measurement.notifications.email.EmailDetails;
 import cz.krystofcejchan.air_quality_measurement.notifications.email.EmailServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-public record SendForecastForTheDay(
-        NotificationsRepository notificationsRepository,
-        EmailServiceImpl emailService) {
+public class SendForecastForTheDay {
+    @Autowired
+    private NotificationsRepository notificationsRepository;
+    @Autowired
+    private EmailServiceImpl emailService;
 
-
+    @Async
     @Scheduled(cron = "0 0 4 * * ?", zone = "Europe/Prague")
     public void scheduledEmailDelivery() {
         try {

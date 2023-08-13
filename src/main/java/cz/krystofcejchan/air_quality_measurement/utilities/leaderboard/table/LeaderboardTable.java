@@ -24,7 +24,7 @@ public class LeaderboardTable {
      */
     public static void saveChangedDataAndDeleteOldData(@NotNull AirDataLeaderboardRepository airDataLeaderboardRepository,
                                                        @NotNull List<AirDataLeaderboard> existingAirData,
-                                                       @NotNull Map<LeaderBoardKey, List<AirData>> newLeaderboardDataMap) {
+                                                       @NotNull Map<LeaderBoardKey, Set<AirData>> newLeaderboardDataMap) {
 
         List<AirDataLeaderboard> airDataLeaderboardToBeInserted = new ArrayList<>();
 
@@ -45,7 +45,7 @@ public class LeaderboardTable {
                     .filter(it -> it.getAirDataId() != null)
                     .allMatch(existing ->
                             newLeaderboardDataMap
-                                    .getOrDefault(new LeaderBoardKey(leaderboardType), Collections.emptyList())
+                                    .getOrDefault(new LeaderBoardKey(leaderboardType), Collections.emptySet())
                                     .stream()
                                     .map(AirData::getId)
                                     .allMatch(id -> id.equals(existing.getAirDataId().getId())))) {
@@ -59,14 +59,14 @@ public class LeaderboardTable {
                 .toList());
 
         mismatchingLeaderboardTypes.forEach(leaderboardType -> {
-            List<AirData> airData = newLeaderboardDataMap.getOrDefault(new LeaderBoardKey(leaderboardType),
-                    Collections.emptyList());
+            Set<AirData> airData = newLeaderboardDataMap.getOrDefault(new LeaderBoardKey(leaderboardType),
+                    Collections.emptySet());
             if (!airData.isEmpty()) {
                 airData.forEach(airData1 -> airDataLeaderboardToBeInserted.add(
                         new AirDataLeaderboard(airData1,
                                 leaderboardType,
                                 airData1.getLocationId(),
-                                airData.indexOf(airData1) + 1)));
+                                airData.stream().toList().indexOf(airData1) + 1)));
             }
         });
 
@@ -80,8 +80,8 @@ public class LeaderboardTable {
      * @return Map {@link LeaderBoardKey} to {@link List} of {@link AirData}
      */
     @Contract(pure = true)
-    public static @NotNull Map<LeaderBoardKey, List<AirData>> getFreshDataForLeaderboard(AirDataRepository airDataRepo) {
-        Map<LeaderBoardKey, List<AirData>> map = new HashMap<>();
+    public static @NotNull Map<LeaderBoardKey, Set<AirData>> getFreshDataForLeaderboard(AirDataRepository airDataRepo) {
+        Map<LeaderBoardKey, Set<AirData>> map = new HashMap<>();
 
 
         for (LeaderboardType leaderboardType : LeaderboardType.values()) {
@@ -89,27 +89,27 @@ public class LeaderboardTable {
                 case HIGHEST_HUM -> map.putIfAbsent(new LeaderBoardKey(leaderboardType),
                         airDataRepo
                                 .findTop3HumidityByOrderByHumidityDesc()
-                                .orElse(Collections.singletonList(new AirData((byte) -1))));
+                                .orElse(Collections.singleton(new AirData((byte) -1))));
                 case LOWEST_HUM -> map.putIfAbsent(new LeaderBoardKey(leaderboardType),
                         airDataRepo
                                 .findTop3HumidityByOrderByHumidityAsc()
-                                .orElse(Collections.singletonList(new AirData((byte) -1))));
+                                .orElse(Collections.singleton(new AirData((byte) -1))));
                 case HIGHEST_AIRQ -> map.putIfAbsent(new LeaderBoardKey(leaderboardType),
                         airDataRepo
                                 .findTop3AirQualityByOrderByAirQualityDesc()
-                                .orElse(Collections.singletonList(new AirData((byte) -1))));
+                                .orElse(Collections.singleton(new AirData((byte) -1))));
                 case LOWEST_AIRQ -> map.putIfAbsent(new LeaderBoardKey(leaderboardType),
                         airDataRepo
                                 .findTop3AirQualityByOrderByAirQualityAsc()
-                                .orElse(Collections.singletonList(new AirData((byte) -1))));
+                                .orElse(Collections.singleton(new AirData((byte) -1))));
                 case HIGHEST_TEMP -> map.putIfAbsent(new LeaderBoardKey(leaderboardType),
                         airDataRepo
                                 .findTop3TemperatureByOrderByTemperatureDesc()
-                                .orElse(Collections.singletonList(new AirData((byte) -1))));
+                                .orElse(Collections.singleton(new AirData((byte) -1))));
                 case LOWEST_TEMP -> map.putIfAbsent(new LeaderBoardKey(leaderboardType),
                         airDataRepo
                                 .findTop3TemperatureDistinctByOrderByTemperatureAsc()
-                                .orElse(Collections.singletonList(new AirData((byte) -1))));
+                                .orElse(Collections.singleton(new AirData((byte) -1))));
             }
 
         }

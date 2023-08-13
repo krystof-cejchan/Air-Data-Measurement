@@ -1,6 +1,7 @@
 package cz.krystofcejchan.air_quality_measurement.service;
 
 import cz.krystofcejchan.air_quality_measurement.domain.AirData;
+import cz.krystofcejchan.air_quality_measurement.domain.AirDataLeaderboard;
 import cz.krystofcejchan.air_quality_measurement.domain.location.LocationData;
 import cz.krystofcejchan.air_quality_measurement.domain.nondatabase_objects.AirDataAverage;
 import cz.krystofcejchan.air_quality_measurement.enums.LeaderboardType;
@@ -29,6 +30,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+import static java.lang.Math.abs;
 import static org.springframework.http.HttpStatus.*;
 
 
@@ -102,27 +104,30 @@ public class AirDataService {
      */
     @Nullable
     public synchronized AirData reportAirDataById(Long id, @CheckForNull String pswd) {
-        var airDataOptional = airDataRepository.findById(id);
+        Optional<AirData> airDataOptional = airDataRepository.findById(id);
         if (airDataOptional.isPresent()) {
             AirData airData = airDataOptional.get();
             airData.setReportedN(airData.getReportedN() + 1);
 
-            List<AirData> previousAirDataList = airDataRepository.findByLocationIdAndReceivedDataDateTimeBefore(airData.getLocationId(),
+            AirData previousAirData = airDataRepository.findLatestByLocationAndBeforeGivenTime(airData.getLocationId(),
                             airData.getReceivedDataDateTime())
-                    .orElse(Collections.emptyList());
+                    .orElse(null);
 
-            AirData previousAirData = previousAirDataList.isEmpty() ? airData : previousAirDataList.get(0);
+            //AirData previousAirData = previousAirDataList.isEmpty() ? airData : previousAirDataList.get(0);
             boolean isAuthRequest = !(pswd == null || pswd.isEmpty() || pswd.isBlank() || !pswd.equals(String.valueOf(Psw.dbpsd)));
             try {
                 if (isAuthRequest || !areDataValid(airData) || !compareAirDataObjects(airData, previousAirData)) {
+                    Optional<List<AirDataLeaderboard>> airDataLeaderboard = leaderboardRepository.findByAirDataId(airData);
+                    airDataLeaderboard.ifPresent(leaderboardRepository::deleteAll);
                     airDataRepository.delete(airData);
+
                     LeaderboardTable.saveChangedDataAndDeleteOldData(leaderboardRepository,
                             leaderboardRepository.findAll(),
-                            LeaderboardTable.getFreshDataForLeaderboard((airDataRepository)));
+                            LeaderboardTable.getFreshDataForLeaderboard(airDataRepository));
                     return airData;
                 }
                 return airDataRepository.save(airData);
-            } catch (AlreadyInvalidData | GreatTimeDifferenceException exception) {
+            } catch (AlreadyInvalidData | GreatTimeDifferenceException | DataNotFoundException exception) {
                 return null;
             }
         }
@@ -150,33 +155,51 @@ public class AirDataService {
      * @throws AlreadyInvalidData           currentAirData or previouslyAirData have been marked as invalid data!
      * @throws GreatTimeDifferenceException previous and current AirData measurement time differs more than 2 hours,
      *                                      therefore data cannot be validly compared
+     * @throws DataNotFoundException        if there is no previous data found
      */
     @Contract(pure = true)
-    private boolean compareAirDataObjects(@NotNull AirData currentAirData, AirData previouslyAirData) throws AlreadyInvalidData, GreatTimeDifferenceException {
+    private boolean compareAirDataObjects(@NotNull AirData currentAirData, @Nullable AirData previouslyAirData)
+            throws AlreadyInvalidData, GreatTimeDifferenceException, DataNotFoundException {
+        if (previouslyAirData == null)
+            throw new DataNotFoundException();
         if (currentAirData.getInvalidData() || previouslyAirData.getInvalidData())
             throw new AlreadyInvalidData();
-        if (currentAirData.getReceivedDataDateTime().until(previouslyAirData.getReceivedDataDateTime(),
-                ChronoUnit.MINUTES) >= 60 * 2)
+        if (previouslyAirData.getReceivedDataDateTime().until(currentAirData.getReceivedDataDateTime(),
+                ChronoUnit.MINUTES) > 90)
             throw new GreatTimeDifferenceException();
 
-        ArrayList<Boolean> airQ_temp_hum = new ArrayList<>();
+        Boolean[] airQ_temp_hum = new Boolean[3];
+        airQ_temp_hum[0] = true;
+        //airQ_temp_hum[0] = calculateDifferenceBetweenNumbers(currentAirData.getAirQuality(), previouslyAirData.getAirQuality()) < 100;
+        airQ_temp_hum[1] = calculateDifferenceBetweenNumbers(currentAirData.getTemperature(), previouslyAirData.getTemperature()) < 10;
+        airQ_temp_hum[2] = calculateDifferenceBetweenNumbers(currentAirData.getHumidity(), previouslyAirData.getHumidity()) < 20;
 
-        airQ_temp_hum.add(Math.abs(currentAirData.getAirQuality().doubleValue() - previouslyAirData.getAirQuality().doubleValue()) < 20);
-        airQ_temp_hum.add(Math.abs(currentAirData.getTemperature().doubleValue() - previouslyAirData.getTemperature().doubleValue()) < 10);
-        airQ_temp_hum.add(Math.abs(currentAirData.getHumidity().doubleValue() - previouslyAirData.getHumidity().doubleValue()) < 20);
-
-        return airQ_temp_hum.stream().allMatch(Boolean::booleanValue);
+        return Arrays.stream(airQ_temp_hum).parallel().allMatch(b -> b);
     }
 
+    private <N extends Number> double calculateDifferenceBetweenNumbers(@NotNull N a, @NotNull N b) {
+        if (a.equals(b)) return 0;
+        if (a.doubleValue() < 0.0 && b.doubleValue() < 0.0) {
+            return abs(abs(a.doubleValue()) - abs(b.doubleValue()));
+        } else
+            return abs(a.doubleValue() - b.doubleValue());
+    }
+
+    /**
+     * tests whether the AirData is valid or not
+     *
+     * @param testedAirData {@link AirData} to be tested
+     * @return true → data are valid; else false
+     */
     @Contract(pure = true)
-    private boolean areDataValid(@NotNull AirData airData1) {
-        ArrayList<Boolean> airQ_temp_hum = new ArrayList<>();
+    private boolean areDataValid(@NotNull AirData testedAirData) {
+        Boolean[] airQ_temp_hum = new Boolean[3];
 
-        airQ_temp_hum.add(MathUtils.isInBetween(airData1.getAirQuality(), 0, 1_000, false));
-        airQ_temp_hum.add(MathUtils.isInBetween(airData1.getTemperature(), -30, 55, true));
-        airQ_temp_hum.add(MathUtils.isInBetween(airData1.getHumidity(), 0, 100, true));
+        airQ_temp_hum[0] = MathUtils.isInBetween(testedAirData.getAirQuality(), 0, 1_000, false);
+        airQ_temp_hum[1] = MathUtils.isInBetween(testedAirData.getTemperature(), -50, 60, true);
+        airQ_temp_hum[2] = MathUtils.isInBetween(testedAirData.getHumidity(), 0, 100, true);
 
-        return airQ_temp_hum.stream().allMatch(Boolean::booleanValue);
+        return Arrays.stream(airQ_temp_hum).allMatch(b -> b);
     }
 
     /**
@@ -240,15 +263,31 @@ public class AirDataService {
      */
     @Contract("_ -> new")
     public @NotNull ResponseEntity<?> getAverageAirDataForOneSpecificDay(java.time.LocalDate day) {
-        Optional<List<AirData>> receivedDate = airDataRepository.findByReceivedDataDateTimeBetween(LocalDateTime.of(day, LocalTime.MIN), LocalDateTime.of(day, LocalTime.MAX));
+        Optional<List<AirData>> receivedDate = airDataRepository.findByReceivedDataDateTimeBetween(
+                LocalDateTime.of(day, LocalTime.MIN), LocalDateTime.of(day, LocalTime.MAX));
 
         if (receivedDate.orElseThrow(DataNotFoundException::new).isEmpty())
             return new ResponseEntity<>(BAD_REQUEST);
 
         try {
-            BigDecimal airQualityAvg = BigDecimal.valueOf(receivedDate.orElseThrow(DataNotFoundException::new).stream().map(AirData::getAirQuality).mapToDouble(BigDecimal::doubleValue).average().orElseThrow(DataNotFoundException::new));
-            BigDecimal humidityAvg = BigDecimal.valueOf(receivedDate.orElseThrow(DataNotFoundException::new).stream().map(AirData::getHumidity).mapToDouble(BigDecimal::doubleValue).average().orElseThrow(DataNotFoundException::new));
-            BigDecimal temperatureAvg = BigDecimal.valueOf(receivedDate.orElseThrow(DataNotFoundException::new).stream().map(AirData::getTemperature).mapToDouble(BigDecimal::doubleValue).average().orElseThrow(DataNotFoundException::new));
+            BigDecimal airQualityAvg = BigDecimal.valueOf(receivedDate
+                    .orElseThrow(DataNotFoundException::new).stream()
+                    .map(AirData::getAirQuality)
+                    .mapToDouble(BigDecimal::doubleValue)
+                    .average()
+                    .orElseThrow(DataNotFoundException::new));
+            BigDecimal humidityAvg = BigDecimal.valueOf(receivedDate
+                    .orElseThrow(DataNotFoundException::new).stream()
+                    .map(AirData::getHumidity)
+                    .mapToDouble(BigDecimal::doubleValue)
+                    .average()
+                    .orElseThrow(DataNotFoundException::new));
+            BigDecimal temperatureAvg = BigDecimal.valueOf(receivedDate
+                    .orElseThrow(DataNotFoundException::new).stream()
+                    .map(AirData::getTemperature)
+                    .mapToDouble(BigDecimal::doubleValue)
+                    .average()
+                    .orElseThrow(DataNotFoundException::new));
 
             return new ResponseEntity<>(new AirDataAverage(temperatureAvg.setScale(2, RoundingMode.HALF_UP), humidityAvg.setScale(2, RoundingMode.HALF_UP), airQualityAvg.setScale(2, RoundingMode.HALF_UP)), OK);
 
@@ -308,7 +347,7 @@ public class AirDataService {
      * @param leaderboardType the leaderboard type
      * @return the leader board data
      */
-    public Optional<List<AirData>> getLeaderBoardData(LeaderboardType leaderboardType) {
+    public Optional<Set<AirData>> getLeaderBoardData(LeaderboardType leaderboardType) {
         return switch (leaderboardType) {
             case HIGHEST_AIRQ -> airDataRepository.findTop3AirQualityByOrderByAirQualityDesc();
             case LOWEST_AIRQ -> airDataRepository.findTop3AirQualityByOrderByAirQualityAsc();

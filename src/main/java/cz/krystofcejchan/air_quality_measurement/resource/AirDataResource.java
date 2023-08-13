@@ -31,8 +31,6 @@ import java.util.List;
         methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PATCH},
         maxAge = 60, allowedHeaders = "*", exposedHeaders = "*")
 public record AirDataResource(AirDataService airDataService) {
-
-
     /**
      * Gets all air data.
      *
@@ -63,7 +61,7 @@ public record AirDataResource(AirDataService airDataService) {
 
         List<Boolean> validations = new LinkedList<>();
 
-        var tokenParams = token.split(";", 2);
+        String[] tokenParams = token.split(";", 2);
 
         BooleanValidation<AirData, String[]> token_params1_validation = (airD, strArr) -> airD.getArduinoTime().equals(strArr[0]);
         BooleanValidation<String, String[]> token_params2_validation = (str1, strArr) -> str1.equals(strArr[1]);
@@ -92,9 +90,9 @@ public record AirDataResource(AirDataService airDataService) {
      */
 
     @PatchMapping("/update_reportN")
-    public @NotNull ResponseEntity<AirData> increaseReportNumberByOne(@RequestHeader() @NotNull Long id,
+    public @NotNull ResponseEntity<AirData> increaseReportNumberByOne(@RequestBody() String id,
                                                                       @RequestHeader(required = false) @CheckForNull String pswd) {
-        var reportingAirData = airDataService.reportAirDataById(id, pswd);
+        var reportingAirData = airDataService.reportAirDataById(Long.valueOf(id), pswd);
         return new ResponseEntity<>(reportingAirData, reportingAirData == null ? HttpStatus.CONFLICT : HttpStatus.OK);
     }
 

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * The interface Air data repository.
@@ -48,49 +49,60 @@ public interface AirDataRepository extends JpaRepository<AirData, Long> {
      * @param endTimeLine the end time line
      * @return the optional
      */
-    Optional<List<AirData>> findByLocationIdAndReceivedDataDateTimeBefore(LocationData locationId, LocalDateTime endTimeLine);
+    Optional<AirData> findTopByLocationIdAndReceivedDataDateTimeBeforeOrderByReceivedDataDateTimeDesc(LocationData locationId, LocalDateTime endTimeLine);
+
+    /**
+     * default method created for name convenience
+     * @param locationId {@link LocationData}
+     * @param endTimeLine {@link LocalDateTime} for filtering
+     * @return the result of {@code findTopByLocationIdAndReceivedDataDateTimeBeforeOrderByReceivedDataDateTimeDesc}
+     * located in this interface
+     */
+    default Optional<AirData> findLatestByLocationAndBeforeGivenTime(LocationData locationId, LocalDateTime endTimeLine) {
+        return findTopByLocationIdAndReceivedDataDateTimeBeforeOrderByReceivedDataDateTimeDesc(locationId, endTimeLine);
+    }
 
     /**
      * Find top 3 temperature distinct by location order by air quality asc optional.
      *
      * @return the optional
      */
-    Optional<List<AirData>> findTop3TemperatureDistinctByOrderByTemperatureAsc();
+    Optional<Set<AirData>> findTop3TemperatureDistinctByOrderByTemperatureAsc();
 
     /**
      * Find top 3 temperature distinct by location order by air quality desc optional.
      *
      * @return the optional
      */
-    Optional<List<AirData>> findTop3TemperatureByOrderByTemperatureDesc();
+    Optional<Set<AirData>> findTop3TemperatureByOrderByTemperatureDesc();
 
     /**
      * Find top 3 humidity distinct by location order by air quality desc optional.
      *
      * @return the optional
      */
-    Optional<List<AirData>> findTop3HumidityByOrderByHumidityDesc();
+    Optional<Set<AirData>> findTop3HumidityByOrderByHumidityDesc();
 
     /**
      * Find top 3 humidity distinct by location order by air quality asc optional.
      *
      * @return the optional
      */
-    Optional<List<AirData>> findTop3HumidityByOrderByHumidityAsc();
+    Optional<Set<AirData>> findTop3HumidityByOrderByHumidityAsc();
 
     /**
      * Find top 3 air quality distinct by location order by air quality asc optional.
      *
      * @return the optional
      */
-    Optional<List<AirData>> findTop3AirQualityByOrderByAirQualityAsc();
+    Optional<Set<AirData>> findTop3AirQualityByOrderByAirQualityAsc();
 
     /**
      * Find top 3 air quality distinct by location order by air quality desc optional.
      *
      * @return the optional
      */
-    Optional<List<AirData>> findTop3AirQualityByOrderByAirQualityDesc();
+    Optional<Set<AirData>> findTop3AirQualityByOrderByAirQualityDesc();
 
 
 }
