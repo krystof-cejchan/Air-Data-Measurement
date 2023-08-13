@@ -4,7 +4,7 @@ enum LocationsEnum {
     PdF, PrF, PF, LF, FZV, FTK, FF, CMTF, OTHER
 }
 
-function getBcgImageUrl(location: LocationsEnum): string {
+/*function getBcgImageUrl(location: LocationsEnum): string {
     var returnValue = "";
     switch (location) {
         case LocationsEnum.PdF:
@@ -35,5 +35,5 @@ function getBcgImageUrl(location: LocationsEnum): string {
             break;
     }
     return returnValue;
-}
+}*/
 

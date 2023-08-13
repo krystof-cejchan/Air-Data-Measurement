@@ -172,12 +172,21 @@ export class HistorySearchBarComponent implements OnInit, IComponent, OnDestroy 
     return "Historie";
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.updateChoosenDate();
     this.showData(this.route.snapshot.params['start'], this.route.snapshot.params['end']);
+    let counter = 0;
+    while (counter < 5 && !this.tableShown) {
+      counter++;
+      await new Promise(f => setTimeout(f, 100));
+    }
+    this.sortData({ active: "time", direction: "desc" } as Sort)
   }
 
+
+
   sortData(sort: Sort) {
+    console.log(sort)
     const data = this.sortedData.slice();
     if (sort.direction === '') {
       sort.direction = 'asc';

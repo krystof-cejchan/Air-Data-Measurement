@@ -18,10 +18,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -32,6 +34,7 @@ import java.util.stream.Stream;
  */
 @SpringBootApplication
 @EnableScheduling
+@EnableAsync
 public class AqmApplication implements CommandLineRunner {
 
     @Autowired
@@ -75,10 +78,10 @@ public class AqmApplication implements CommandLineRunner {
         final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         Runnable recalculateLeaderboard = () -> {
             List<AirDataLeaderboard> existingAirData = airDataLeaderboardRepo.findAll();
-            Map<LeaderBoardKey, List<AirData>> map = LeaderboardTable.getFreshDataForLeaderboard(airDataRepo);
+            Map<LeaderBoardKey, Set<AirData>> map = LeaderboardTable.getFreshDataForLeaderboard(airDataRepo);
             LeaderboardTable.saveChangedDataAndDeleteOldData(airDataLeaderboardRepo, existingAirData, map);
         };
-        scheduledExecutorService.schedule(recalculateLeaderboard, 100, TimeUnit.SECONDS);
+        scheduledExecutorService.schedule(recalculateLeaderboard, 10, TimeUnit.SECONDS);
 
         new InsertLocationData().runScheduledTask(locationDataRepository);
 
@@ -90,4 +93,3 @@ public class AqmApplication implements CommandLineRunner {
                 .getRunnableList().forEach(ScheduledTaskRunnable::runScheduledTask);
     }
 }
-

@@ -1,5 +1,6 @@
 package cz.krystofcejchan.air_quality_measurement.repository;
 
+import cz.krystofcejchan.air_quality_measurement.domain.AirData;
 import cz.krystofcejchan.air_quality_measurement.domain.AirDataLeaderboard;
 import cz.krystofcejchan.air_quality_measurement.domain.location.LocationData;
 import cz.krystofcejchan.air_quality_measurement.enums.LeaderboardType;
@@ -14,4 +15,6 @@ public interface AirDataLeaderboardRepository extends JpaRepository<AirDataLeade
     Optional<List<AirDataLeaderboard>> findByLocationIdAndLeaderboardType(LocationData locationId, LeaderboardType leaderboardType);
 
     Optional<List<AirDataLeaderboard>> findTop3ByLeaderboardType(LeaderboardType leaderboardType);
+
+    Optional<List<AirDataLeaderboard>> findByAirDataId(AirData airData);
 }
