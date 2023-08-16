@@ -56,24 +56,6 @@ section {
 	}
 }
 
-.fullscreen-bg__video {
-	position: fixed;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	z-index: 0;
-	overflow: hidden;
-	min-width: 100vw;
-	min-height: 100vh;
-}
-
-
-#list {
-	list-style-type: none;
-	margin-top: 4px;
-}
-
 #overlay {
 	position: relative;
 	width: 100%;
@@ -92,6 +74,45 @@ section {
 		background: radial-gradient(circle, rgba(0, 0, 0, 0.700000) 0%, rgba(0, 0, 0, 0.970000) 100%);
 		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000000", endColorstr="#000000", GradientType=1);
 	}
+
+	.image-container-focused_on_center {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		overflow: hidden;
+	}
+}
+
+.fullscreen-bg {
+	&.video {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: 0;
+		overflow: hidden;
+		min-width: 100vw;
+		min-height: 100vh;
+	}
+
+	&.image {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		min-width: 100%;
+		min-height: 100%;
+		width: auto;
+		height: auto;
+	}
+}
+
+#list {
+	list-style-type: none;
+	margin-top: 4px;
 }
 
 #logo {

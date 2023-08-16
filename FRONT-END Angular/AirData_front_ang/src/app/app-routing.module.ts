@@ -15,6 +15,7 @@ import { ConfirmationComponent } from "./newsletter subscription/confirmation/co
 import { CancellationComponent } from "./newsletter subscription/cancellation/cancellation.component";
 import { ManagerComponent } from "./newsletter subscription/manager/manager.component";
 import { LocationDetailsComponent } from "./location-details/location-details.component";
+import { UsersPreferencesComponent } from './users-preferences/users-preferences.component';
 
 
 const routes: Routes = [
@@ -63,6 +64,9 @@ const routes: Routes = [
   },
   {
     path: 'predplatne/zruseni/:id/:hash', pathMatch: 'full', title: 'Zrušení odběru', component: CancellationComponent
+  },
+  {
+    path: 'preference', pathMatch: 'full', title: 'Uživatelské preference', component: UsersPreferencesComponent
   },
   {
     path: '**', title: 'Vyskytla se chyba', component: ErrorsComponent
