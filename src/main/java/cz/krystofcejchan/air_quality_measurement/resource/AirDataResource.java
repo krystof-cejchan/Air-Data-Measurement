@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 
@@ -59,7 +58,6 @@ public record AirDataResource(AirDataService airDataService) {
         if (airData == null || userAgent.isEmpty() || token.isEmpty())
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        List<Boolean> validations = new LinkedList<>();
 
         String[] tokenParams = token.split(";", 2);
 
@@ -67,12 +65,14 @@ public record AirDataResource(AirDataService airDataService) {
         BooleanValidation<String, String[]> token_params2_validation = (str1, strArr) -> str1.equals(strArr[1]);
         BooleanValidation<String, String> user_agent_validation = String::equals;
 
-        validations.add(user_agent_validation.validPassed(userAgent, "ESP8266HTTPClient"));
-        validations.add(token_params1_validation.validPassed(airData, tokenParams));
-        validations.add(token_params2_validation.validPassed(String.valueOf(Psw.ardtkn), tokenParams));
+        boolean[] validations = new boolean[3];
+
+        validations[0] = user_agent_validation.validPassed(userAgent, "ESP8266HTTPClient");
+        validations[1] = token_params1_validation.validPassed(airData, tokenParams);
+        validations[2] = token_params2_validation.validPassed(String.valueOf(Psw.ardtkn), tokenParams);
 
 
-        if (validations.stream().allMatch(Boolean::booleanValue))
+        if (validations[0] && validations[1] && validations[2])
             return new ResponseEntity<>(airDataService.addAirData(airData,
                     LocalDateTime.now(ZonedDateUtils.getPragueZoneId())),
                     HttpStatus.CREATED);

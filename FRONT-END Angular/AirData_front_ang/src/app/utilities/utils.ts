@@ -13,13 +13,29 @@ export function round(value: number, precision: number): number {
 export function uniqByFilter<T>(array: T[]) {
     return array.filter((value, index) => array.indexOf(value) === index);
 }
+/**
+ * converts celsius to fahrenheit
+ * @param celsius input value in °C
+ * @returns fahrenheit calculated from calsius input value
+ */
+export function convertCelsiusToFahrenheit(celsius: number): number {
+    return (celsius * 9 / 5) + 32;
+}
+/**
+ * converts fahrenheit to celsisu
+ * @param fahrenheit input value in °F
+ * @returns celsisu calculated from fahrenheit input value
+ */
+export function convertFahrenheitToCelsius(fahrenheit: number): number {
+    return (fahrenheit - 32) * 5 / 9;
+}
 
 /**
  * open a new snackbar on the current page
  * @param snackBar MatSnackBar reff
  * @param message text to be displayed
- * @param durationInSeconds seconds for which the message will be shown
- * @param withConfirmationButton true=>message can be dismissed earlier than desired seconds; false=>a user won't be able to dismiss the message
+ * @param durationInSeconds seconds for which the message will be shown | if undefined, then 5
+ * @param withConfirmationButton true=>message can be dismissed earlier than desired seconds; false=>a user won't be able to dismiss the message | if undefined, then true
  */
 export function popUpSnackBar(snackBar: MatSnackBar, message: string, durationInSeconds: number = 5, withConfirmationButton: boolean = true) {
     snackBar.open(message, withConfirmationButton ? 'OK' : undefined, {

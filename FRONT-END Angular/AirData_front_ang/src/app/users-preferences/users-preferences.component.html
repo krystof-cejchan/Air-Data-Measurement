@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{getTitle()}}</title>
+</head>
+
+<body>
+    <div class="container px-0 py-5">
+        <div class="container px-2 px-md-0 py-5">
+            <h2 class="pb-2 border-bottom"><span id="bordertext">{{getTitle()}}</span></h2>
+            <form class="preference-form" #form="ngForm" (ngSubmit)="savePreferences(form.form, true)">
+                <mat-slide-toggle *ngFor="let preference of prefMap | keyvalue; let i = index" color="primary"
+                    [(ngModel)]=preference.value
+                    name="{{preference.key}}">{{stringToEnumDescription(preference.key)}}</mat-slide-toggle>
+                <button mat-raised-button>Uložit preference</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
