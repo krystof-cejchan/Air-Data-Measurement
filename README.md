@@ -1,5 +1,4 @@
 # UPočasí
-![workflow passing?](https://github.com/krystof-cejchan/Air-Data-Measurement/actions/workflows/master_airq-app.yml/badge.svg)
 
 ## Obsah
 - [UPočasí](#upočasí)
