@@ -2,8 +2,8 @@
 
 ## Supported Versions
 
-| Version        | Supported          | Latest|
-|----------------| ------------------ | ------ |
-| 1.2.1          | :white_check_mark: | 🟢 |
-| other releases | :x:           |     |
-| pre-releases   | :x:           |     |
+| Version                   | Supported          | Latest|
+|---------------------------| ------------------ | ------ |
+| 1.2.2                     | :white_check_mark: | 🟢 |
+| Other versions / releases | :x:           |     |
+| Prereleases               | :x:           |     |

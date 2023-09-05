@@ -23,14 +23,16 @@ public class JpaConfig {
     @Bean
     public DataSource getPrimaryDataSource() {
         boolean isProd = Production.valueOf(System.getenv("PROD")).equals(Production.LIVE);
-        var testingDBDataSource = DataSourceBuilder.create()
+
+        if (isProd)
+            return DataSourceBuilder.create()
+                    .url(System.getenv("DB"))
+                    .username(System.getenv("DB_U"))
+                    .password(String.valueOf(Psw.dbpsd)).build();
+
+        else return DataSourceBuilder.create()
                 .url("jdbc:mysql://localhost:3306/airDataMeasurement")
                 .username("root")
-                .password("jetotereza");
-
-        return (isProd ? DataSourceBuilder.create()
-                .url(System.getenv("DB"))
-                .username(System.getenv("DB_U"))
-                .password(String.valueOf(Psw.dbpsd)) : testingDBDataSource).build();
+                .password("jetotereza").build();
     }
 }
