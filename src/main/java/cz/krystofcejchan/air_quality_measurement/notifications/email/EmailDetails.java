@@ -54,7 +54,7 @@ public sealed class EmailDetails permits EmailController.EmailDetailsSimple {
 
     @Contract(pure = true)
     public EmailDetails(@NotNull EmailTemplates template, @NotNull NotificationReceiver... receivers) throws IllegalArgumentException {
-        final String url = Psw.production == Production.TESTING ? "http://localhost:4200" : "https://krystofcejchan.cz/arduino_aiq_quality/beta";
+        final String url = Psw.production == Production.TESTING ? "http://localhost:4200" : "https://krystofcejchan.cz/projects/upocasi/";
         String weatherForecastText = null;
         if (template == EmailTemplates.WEATHER_FORECAST) {
             final String textUrl = "https://krystofcejchan.cz/projects/airM/weather_forecast.txt";

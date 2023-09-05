@@ -49,8 +49,7 @@ export class MainPageComponent implements OnInit, OnDestroy {
         openSnackBar(this.snackBar)
       }
     }));
-    //mock value
-    this.current_temperature = 2;
+    
     if (!this.isCelsiusPreferred() && !Number.isNaN(this.current_temperature)) {
       //(2°C × 9/5) + 32 = 35.6°F
       this.current_temperature = convertCelsiusToFahrenheit(this.current_temperature);

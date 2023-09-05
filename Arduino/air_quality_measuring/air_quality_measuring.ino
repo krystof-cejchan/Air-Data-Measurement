@@ -21,14 +21,15 @@
 
 DHT_Unified dht(DHTPIN, DHTTYPE);
 
+// DO NOT use https protocol — only http works
 #define SERVER_IP \
-  "♠♠♠"
+  "http://◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘"
 #define HOST SERVER_IP
 
 
 #ifndef STASSID
-#define STASSID "♠♠♠♠♠♠♠♠♠♠♠♠"
-#define STAPSK "♠♠♠♠♠♠♠♠♠♠♠♠"
+#define STASSID "◘◘◘◘◘◘◘◘◘◘◘◘"
+#define STAPSK "◘◘◘◘◘◘◘◘◘◘◘◘"
 #endif
 
 #define MQ135_PIN A0
@@ -43,7 +44,7 @@ NTPClient timeClient(ntpUDP, "pool.ntp.org", 1 * 60 * 60, 60000);
 
 #define location_Id 5
 
-const String scrtpsw = "♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠";
+const String scrtpsw = "◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘";
 
 float ppms[sizeofppms] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -64,8 +65,6 @@ float hum = 55;
 float temp = 20;
 float correctedPPM;
 
-byte startUpMinutes;
-
 void setup() {
   Serial.begin(115200);
 
@@ -74,7 +73,7 @@ void setup() {
   sensor_t sensor;
   dht.temperature().getSensor(&sensor);
   connectToWifi();
-  startUpMinutes = getCurrentMinutes();
+
 }
 
 /**
@@ -89,11 +88,6 @@ void loop() {
     delay(200);
     return;  // starts the loop() method from the beggining
   }
-  else {
-    byte closerHalfHour = startUpMinutes > 30 ? 60 : 30;
-    while (closerHalfHour >= getCurrentMinutes())
-      delay(498);
-    }
 
   if (first || millis() - lastMillis > sleep_ms) {
     first = false;
@@ -101,6 +95,7 @@ void loop() {
       calcTempAndHum();
 
       Serial.println(String(temp) + "°C;\t" + String(hum) + "%");
+      lastMillis = millis();
 
       correctedPPM = mq135_sensor.getCorrectedPPM(temp, hum);
       delay(300);
@@ -141,10 +136,10 @@ void loop() {
       Serial.println( String(currDate) + ";" + String(scrtpsw));
       Serial.print(currDate);
 
-      lastMillis = millis();
-
-
       int httpCode = http.POST(json_post_data);
+      /*while (isnan(httpCode) or httpCode == 0) {
+        delay(100);
+        }*/
 
       Serial.println(httpCode);
       if (httpCode > 0) {
@@ -166,7 +161,6 @@ void loop() {
       http.end();
     }
     else connectToWifi();
-
 
   } else
     calcTempAndHum();
@@ -214,11 +208,6 @@ String getCurrentDate(boolean withTime) {
   return date_and_time;
 }
 
-byte getCurrentMinutes() {
-  timeClient.update();
-  return (byte) timeClient.getMinutes();
-}
-
 boolean isConfigurated(float ppm) {
   Serial.println("CONFIGURATING \t" + String(ppm));
   Serial.println(String(loop_counter) + " / " + String(sizeofppms - 1));
@@ -235,10 +224,7 @@ boolean isConfigurated(float ppm) {
 
 boolean isCloseTo(float ppm_) {
   for (int i = 0; i < sizeofppms; i++)
-    if (ppms[i] == 0) return false;
-  for (int i = 0; i < sizeofppms; i++)
-    if (abs(ppm_ - ppms[i]) >= conf_limit) return false;
-
+    if (ppms[i] == 0 or abs(ppm_ - ppms[i]) >= conf_limit) return false;
   return true;
 }
 
@@ -247,7 +233,6 @@ boolean isConfsTrue() {
     if (not isConfs[j]) return false;
   }
   isConf = true;
-  startUpMinutes = getCurrentMinutes();
   Serial.println("Conf.100% done...");
   return true;
 }

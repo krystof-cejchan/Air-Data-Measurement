@@ -59,7 +59,7 @@ public record AirDataResource(AirDataService airDataService) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 
-        String[] tokenParams = token.split(";", 2);
+        final String[] tokenParams = token.split(";", 2);
 
         BooleanValidation<AirData, String[]> token_params1_validation = (airD, strArr) -> airD.getArduinoTime().equals(strArr[0]);
         BooleanValidation<String, String[]> token_params2_validation = (str1, strArr) -> str1.equals(strArr[1]);

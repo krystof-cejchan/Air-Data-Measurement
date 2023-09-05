@@ -1,6 +1,5 @@
 # UPočasí
-
-    předběžný přístup
+![workflow passing?](https://github.com/krystof-cejchan/Air-Data-Measurement/actions/workflows/master_airq-app.yml/badge.svg)
 
 ## Obsah
 - [UPočasí](#upočasí)
@@ -35,12 +34,12 @@ napsanou v HTML5, SCSS a Typescriptu za použití Angular frameworku.
 - Zasílání aktuální předpovědi na e-mail
 - Nahlašování chybných měření uživateli
 - Responzivita pro většinu obrazovek
-- Dostupnost **API** pro vývojáře(coming soon)
+- Dostupnost **API** pro vývojáře(may be coming soon)
 
 ## Technologie, na kterých to běží
 
-- Na back-endu byl použit **framework Spring Boot** s programovacím jazykem **Java**
-  - Back-end běží v cloudu díky **AWS Elastic Beanstalk**, který má doinstalované SSL certifikáty
+- Na back-endu byl použit **framework Spring Boot** s programovacím jazykem **Java 17**
+  - Back-end běží v cloudu díky **Microsoft Azure Web App** s doinstalovanými SSL certifikáty
 - Vzhled a funkčnost webové stránky byl napsán v **HTML5**, **SCSS** a **TypeScriptu** za pomoci dodatečného **JavaScriptu** a
   to celé je zabaleno ve **frameworku Angular**
   - Celé je to hostované přes web-hosting
@@ -49,7 +48,6 @@ napsanou v HTML5, SCSS a Typescriptu za použití Angular frameworku.
   - Databázový systém je taky hostován na cloudu
 - Data jsou měřena za pomocí čipů a senzorů připojených na **Arduino (NodeMCU)**
   - Kód běžící na Arduinu je napsán v **C++**
-- Dostupnost *API* pro vývojáře
 
 ## Screenshoty
 ### Úvodní stránka
@@ -72,6 +70,3 @@ napsanou v HTML5, SCSS a Typescriptu za použití Angular frameworku.
 
 ### Detaily dat
 ![image](https://user-images.githubusercontent.com/40124530/222467129-81644761-649c-46cb-a2d8-58a795702545.png)
-
-
-
