@@ -54,7 +54,7 @@ public sealed class EmailDetails permits EmailController.EmailDetailsSimple {
 
     @Contract(pure = true)
     public EmailDetails(@NotNull EmailTemplates template, @NotNull NotificationReceiver... receivers) throws IllegalArgumentException {
-        final String url = Psw.production == Production.TESTING ? "http://localhost:4200" : "https://krystofcejchan.cz/projects/upocasi/";
+        final String url = Psw.production == Production.TESTING ? "http://localhost:4200" : "https://krystofcejchan.cz/projects/upocasi";
         String weatherForecastText = null;
         if (template == EmailTemplates.WEATHER_FORECAST) {
             final String textUrl = "https://krystofcejchan.cz/projects/airM/weather_forecast.txt";
@@ -69,7 +69,7 @@ public sealed class EmailDetails permits EmailController.EmailDetailsSimple {
             String msgBody;
             switch (template) {
                 case CONFIRM -> {
-                    msgBody = "<p style='text-align:center'><strong><span style='font-size:30px'><span style='background-color:#2969b0;color:#efefef;text-shadow:rgba(255,255,255,.65) 3px 2px 4px'>UPočasí</span></span></strong></p><p>Dobrý den,</p><p>k potvrzení klikněte: <a href='%s/predplatne/potvrzeni/%s/%s' rel='noopener noreferrer' target='_blank'>TADY</a></p><p><br></p><p>Pokud jste o nic nezažádali, e-mail můžete ignorovat nebo smazat.</p><p><br></p><p><br></p><p><br></p><hr><p><span style='font-size:10px'><strong>E-mail byl vygenerován automaricky - neodpovídejte na něj.</strong></span></p>"
+                    msgBody = "<p style='text-align:center'><strong><span style='font-size:30px'><span style='background-color:#2969b0;color:#efefef;text-shadow:rgba(255,255,255,.65) 3px 2px 4px'>UPočasí</span></span></strong></p><p>Dobrý den,</p><p>k potvrzení klikněte: <a href='%s/predplatne/potvrzeni/%s/%s' rel='noopener noreferrer' target='_blank'>TADY</a></p><p><br></p><p>Pokud jste o nic nezažádali, e-mail můžete ignorovat nebo smazat.</p><p><br></p><p><br></p><p><br></p><hr><p><span style='font-size:10px'><strong>E-mail byl vygenerován automaticky - neodpovídejte na něj.</strong></span></p>"
                             .formatted(url, notificationReceiver.getId(), notificationReceiver.getRndHash());
                     this.subject += "Potvrzení";
                 }

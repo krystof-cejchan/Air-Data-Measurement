@@ -5,17 +5,19 @@ import cz.krystofcejchan.air_quality_measurement.notifications.email.EmailDetail
 import cz.krystofcejchan.air_quality_measurement.notifications.email.EmailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
+@EnableScheduling
 public class SendForecastForTheDay {
     @Autowired
     private NotificationsRepository notificationsRepository;
     @Autowired
     private EmailServiceImpl emailService;
 
-    @Scheduled(cron = "0 0 4 * * ?", zone = "Europe/Prague")
+    @Scheduled(cron = "0 0 4 * * *", zone = "Europe/Prague")
     public void scheduledEmailDelivery() {
         try {
             HttpStatus emailStatus = new SendForecastManager(notificationsRepository, emailService)
