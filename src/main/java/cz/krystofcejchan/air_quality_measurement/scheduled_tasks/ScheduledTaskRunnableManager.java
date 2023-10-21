@@ -16,7 +16,7 @@ import java.util.List;
  * The type Scheduled task runnable manager.
  */
 public class ScheduledTaskRunnableManager {
-    private final List<ScheduledTaskRunnable> runnableList = new ArrayList<>();
+    private final ArrayList<ScheduledTaskRunnable> runnableList = new ArrayList<ScheduledTaskRunnable>();
 
 
     /**
