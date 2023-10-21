@@ -15,7 +15,7 @@
     + [Předpověď počasí](#předpověď-počasí)
     + [Detaily dat](#detaily-dat)
 
-<span style="border:1px solid #59ff20">Odkaz na stránku https://krystofcejchan.cz/arduino_aiq_quality/beta/ </span>
+<span style="border:1px solid #59ff20">Odkaz na stránku [zde](https://krystofcejchan.cz/projects/upocasi). </span>
 
 ## Popis projektu
 
