@@ -31,7 +31,7 @@ export class MainPageComponent implements OnInit, OnDestroy {
     this.getAirDatas();
   }
 
-  public getAirDatas(): void {
+  public async getAirDatas(): Promise<void> {
     this.subs.add(this.latestDataService.getLatestData().subscribe({
       next: async (response: AirData[]) => {
         var counter = 0;
@@ -43,17 +43,17 @@ export class MainPageComponent implements OnInit, OnDestroy {
         this.current_temperature = this.round((response
           .map(airData => airData.temperature)
           .reduce((sum, current) => sum + current, 0) / response.length), 1);
+
+        if (!this.isCelsiusPreferred() && !Number.isNaN(this.current_temperature)) {
+          //(2°C × 9/5) + 32 = 35.6°F
+          this.current_temperature = convertCelsiusToFahrenheit(this.current_temperature);
+        }
       },
       error: () => {
         this.current_temperature = this.round(this.current_temperature, 1);
         openSnackBar(this.snackBar)
       }
     }));
-    
-    if (!this.isCelsiusPreferred() && !Number.isNaN(this.current_temperature)) {
-      //(2°C × 9/5) + 32 = 35.6°F
-      this.current_temperature = convertCelsiusToFahrenheit(this.current_temperature);
-    }
   }
 
   getVideoSource(): string {
