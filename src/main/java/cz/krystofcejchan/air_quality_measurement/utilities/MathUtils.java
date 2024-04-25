@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Contract;
 /**
  * The type Math utils.
  */
-public class MathUtils<N extends Number> {
+public class MathUtils {
     /**
      * Is in between boolean.
      *
